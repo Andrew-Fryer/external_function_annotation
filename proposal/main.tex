@@ -1,0 +1,57 @@
+\documentclass[11pt]{article}
+
+\usepackage{listings}
+
+\title{ELEC 875 Project Proposal}
+\author{Andrew Fryer}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Problem Definition}
+
+I am trying to modify LibAFL to add support for collecting data that is output from the software system that is being fuzzed.
+This feature should ideally be added in a way that fits in well with the existing software abstractions.
+At a high level, there are many Rust traits that describe the interface of abstract fuzzer components.
+For example, the \lstinline{Executor} trait provides the interface to a \lstinline{struct} that can run the target system that is being fuzzed with a given \lstinline{Input}.
+Some implementations of \lstinline{Executor} use the clib functions \lstinline{fork} and \lstinline{execve} to run the target system in a child process.
+Other implementations fork when they initialized and then run each input by writing it to a file or shared memory and then sending control signals over a pipe.
+
+To do this (add the feature without screwing up the software abstractions), I need to understand the abtractions and how each implementation works quickly.
+
+Tracing the inner workings of each implementation of each fuzzer component manually would be very time consuming (also need to record this data in a way that makes sense).
+(Note: this is the design recovery that needs to be done.)
+While this would be feasible, this problem shows up in software projects frequently enough that I believe it warrants the development of special tooling to support software engineerings in this capacity.
+
+\section{Proposed Design}
+
+I will write a bash script that will accept the path to a `main.rs' file.
+The bash script will first recursively substitue \lstinline{mod <module_name>;} and \lstinline{use}??
+
+Once we have the entire source code in one file, the bash script will run a TXL program that will do the rest of the processing.
+Actually, it might be easiest to use TXL to replace \lstinline{mod <module_name>;}\dots
+The TXL program will replace all names with their fully qualified names.
+The TXL program will then find the set of functions that are defined externally. (FFIs, which I think is just clib.)
+The TXL program will then extract the `calls' relation from the source code.
+Any function that calls a closure or other function that cannot be identified will be marked.
+I am hopeful that I will be able to identify the type of objects whose methods are called and even find each of the 
+
+Hold on, doesn't \lstinline{strace -k ./program} give us fully qualified function names on the call stack?
+To find which functions call which system calls in a given execution is a trivial grep operation...
+Hmm, maybe instead of doing static analysis I should just parse the output from strace and then turn that into annotations for the Rust functions that I could then add as comments to the Rust code using TXL\dots
+
+Note: this should be doable in 40-60 hours.
+
+\section{Goal: Technical Requirements/Satisiability Criteria}
+
+The tool can be a command line interface.
+
+The tool should accept a the path to a main.rs Rust file (which contains a `main' function).
+
+The tool should output the fully qualified names of all functions that may be called from this `main' function and the set of clib functions that may be called directly or indirectly from the function.
+
+\section{Planned Method}
+% \lstinline[language=C]!while{$a || $b}!
+
+\end{document}
