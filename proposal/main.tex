@@ -1,6 +1,20 @@
 \documentclass[11pt]{article}
 
 \usepackage{listings}
+% \lstset{
+%     language=c,
+%     % frame=single,
+%     backgroundcolor=\color{white}
+    
+% }
+\lstset{
+    basicstyle=\ttfamily,
+    frame=none,
+    xleftmargin=3.5ex,
+    xrightmargin=3.5ex,
+    aboveskip=20pt,
+    belowskip=20pt
+}
 
 \title{ELEC 875 Project Proposal}
 \author{Andrew Fryer}
@@ -16,42 +30,79 @@ This feature should ideally be added in a way that fits in well with the existin
 At a high level, there are many Rust traits that describe the interface of abstract fuzzer components.
 For example, the \lstinline{Executor} trait provides the interface to a \lstinline{struct} that can run the target system that is being fuzzed with a given \lstinline{Input}.
 Some implementations of \lstinline{Executor} use the clib functions \lstinline{fork} and \lstinline{execve} to run the target system in a child process.
-Other implementations fork when they initialized and then run each input by writing it to a file or shared memory and then sending control signals over a pipe.
+Other implementations fork when they are initialized and then run each input by writing it to a file or shared memory and then sending control signals over a pipe.
 
-To do this (add the feature without screwing up the software abstractions), I need to understand the abtractions and how each implementation works quickly.
+To complete this software engineering task, I need to do design recovery to understand the abtractions and how each implementation works.
 
-Tracing the inner workings of each implementation of each fuzzer component manually would be very time consuming (also need to record this data in a way that makes sense).
-(Note: this is the design recovery that needs to be done.)
-While this would be feasible, this problem shows up in software projects frequently enough that I believe it warrants the development of special tooling to support software engineerings in this capacity.
+Tracing the inner workings of each implementation of each fuzzer component manually can be very time consuming.
+Additionally, recording this findings in an intelligible way may be time consuming.
+While this would be feasible, this problem shows up in software projects frequently enough that I believe it warrants the development of special tooling to support software engineers.
 
 \section{Proposed Design}
 
-I will write a bash script that will accept the path to a `main.rs' file.
-The bash script will first recursively substitue \lstinline{mod <module_name>;} and \lstinline{use}??
+I will write a bash script that will accept the path to directory containing a Rust project.
+The bash script will first use `cargo expand' to generate one file that contains all of the source code in the project.
+The modules of the Rust project are structured coherently, but identifiers are generally not fully qualified to be globally unique and accessible.
+In Rust, the \lstinline{use} keyword brings nested identifiers into scope directly so that they can be referenced without fully qualifying them.
+Next, the bash scrip will run txl on the file containing all the project source code.
+The TXL program will traverse the syntax tree.
+In each Rust scope block, the txl program will iterate through each use declaration or statement that is not nested.
+Use declarations will be tabulated.
+Each identifier in the statements will be replaced by its fully qualified identifier.
+I am hopeful that I will also be able to keep track of the type of each parameter and variable so that method calls can also be traced.
+% Crap, this might actually be really hard because Rust infers types!
 
-Once we have the entire source code in one file, the bash script will run a TXL program that will do the rest of the processing.
-Actually, it might be easiest to use TXL to replace \lstinline{mod <module_name>;}\dots
-The TXL program will replace all names with their fully qualified names.
-The TXL program will then find the set of functions that are defined externally. (FFIs, which I think is just clib.)
-The TXL program will then extract the `calls' relation from the source code.
-Any function that calls a closure or other function that cannot be identified will be marked.
-I am hopeful that I will be able to identify the type of objects whose methods are called and even find each of the 
+Then, a separate TXL tree traversal will find all of the function calls and which function is making the call.
+The caller callee pair of fully qualified function identifiers will then be output to a text file (using txl's `write' keyword).
+This extracts the `calls' relation from the source code.
+This TXL tree traversal can also record the names of all functions that have been defined.
+That way, we know which we cannot find a definition for.
 
-Hold on, doesn't \lstinline{strace -k ./program} give us fully qualified function names on the call stack?
-To find which functions call which system calls in a given execution is a trivial grep operation...
-Hmm, maybe instead of doing static analysis I should just parse the output from strace and then turn that into annotations for the Rust functions that I could then add as comments to the Rust code using TXL\dots
+Lastly, the text file generated by txl can be automatically formatted and fed to grok.
 
-Note: this should be doable in 40-60 hours.
+The end result is that the user can make grok queries.
+This includes the ability to find all of the functions whose definitions are unknown (because they are defined externally or our analysis failed to find them) that may be called when a given function is called because grok supports transitive closure.
 
-\section{Goal: Technical Requirements/Satisiability Criteria}
+% extract the `calls' relation from the source code.
+% Any function that calls a closure or other function that cannot be identified will be marked.
 
-The tool can be a command line interface.
+% Hold on, doesn't \lstinline{strace -k ./program} give us fully qualified function names on the call stack?
+% To find which functions call which system calls in a given execution is a trivial grep operation...
+% Hmm, maybe instead of doing static analysis I should just parse the output from strace and then turn that into annotations for the Rust functions that I could then add as comments to the Rust code using TXL\dots
 
-The tool should accept a the path to a main.rs Rust file (which contains a `main' function).
+I think I will be able to make this work in 40-60 hours of work.
 
-The tool should output the fully qualified names of all functions that may be called from this `main' function and the set of clib functions that may be called directly or indirectly from the function.
+% \section{Goal: Technical Requirements/Satisiability Criteria}
 
-\section{Planned Method}
-% \lstinline[language=C]!while{$a || $b}!
+% The tool can be a command line interface.
+
+% The tool should accept a the path to a main.rs Rust file (which contains a `main' function).
+
+% The tool should output the fully qualified names of all functions that may be called from this `main' function and the set of clib functions that may be called directly or indirectly from the function.
+
+\begin{figure}
+    \caption{Example of use declaration and fully qualified identifier.}
+    \begin{lstlisting}
+        mod my_module {
+            pub fn foo() {}
+        }
+        // function call with indirect/nested identifier
+        my_module::foo();
+        // use declaration brings `foo` into scope
+        use my_module::foo;
+        // function call with direct identifier
+        foo();
+        // function call with fully qualified identifier
+        crate::my_module::foo();
+    \end{lstlisting}
+\end{figure}
+
+\section{Stretch Goals}
+If I have extra time, I will first work on including code from external libraries in the analysis.
+I will likely add a parameter to the bash script that will indicate where to look for Rust libraries.
+This will improve the analysis because it will be able to look through libraries all the way to \lstinline{extern} functions which are written in c and linked in.
+
+The other stretch goal I have is to write more complex TXL rules that will build a table of all traits (similar to interfaces) and then use the table to track down trait method calls.
+This will further imrpove the analysis because it will be able to analyze method calls on trait objects.
 
 \end{document}
