@@ -28,18 +28,26 @@ function extractUseDeclarations be [BlockExpression]
         qt
 end function
 
-function fullyQualify sp [SimplePath] qt [QualifierTable]
+rule fullyQualify %sp [SimplePath] qt [QualifierTable]
     replace $ [Statements]
         Ss [Statements]
     by
         Ss
-end function
+end rule
+
+rule expand_uses
+    replace [UseTree]
+        simple_path [SimplePath?] ':: '{ use_tree [UseTree,] _ [', ?] '}
+    by
+        simple_path ':: '{ '}
+end rule
 
 function main
     replace [program]
         p [program]
+        % p [fullyQualify "crate" _]
     by
-        p [fullyQualify "" _]
+        p [expand_uses]
 end function
 
 % Note: the leaves of the tree will be ExternBlock
