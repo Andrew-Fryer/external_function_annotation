@@ -39,12 +39,19 @@ rule expand_uses
     replace * [Item]
         'use root_use_tree [UseTree] ';
     deconstruct root_use_tree
-        simple_path [SimplePath] ':: '{ use_tree [SimplePath] ', use_tree2 [UseTree] _ [', ?] '}
+        outer_simple_path [SimplePath] ':: '{ inner_simple_path [SimplePath] ', use_tree2 [UseTree] _ [', ?] '}
+    deconstruct outer_simple_path
+        outer_colons [':: ?] outer_sps [SimplePathSegment] outer_ccspss[COLON_COLON_SimplePathSegment*]
+    deconstruct inner_simple_path
+        inner_sps [SimplePathSegment] inner_ccspss[COLON_COLON_SimplePathSegment*]
     construct _ [UseTree]
         root_use_tree [print]
+    construct new_simple_path_ccsps [COLON_COLON_SimplePathSegment*]
+        %outer_ccspss [. ':: inner_sps] [. inner_ccspss]
+        outer_ccspss [. inner_ccspss]
     construct result [Item]
         %simple_path ':: '*
-        'use simple_path ':: use_tree ';
+        'use outer_colons outer_sps new_simple_path_ccsps ';
         %'use root_use_tree ';
     by
         result
