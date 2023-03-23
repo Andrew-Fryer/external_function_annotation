@@ -36,10 +36,15 @@ rule fullyQualify %sp [SimplePath] qt [QualifierTable]
 end rule
 
 rule expand_uses
-    replace [UseTree]
-        simple_path [SimplePath?] ':: '{ use_tree [UseTree,] _ [', ?] '}
+    replace $ [UseTree]
+        root_use_tree [UseTree]
+    %deconstruct root_use_tree
+        %simple_path [SimplePath?] ':: '{ use_tree [UseTree] _ [', ?] '}
+    construct _ [UseTree]
+        root_use_tree [print]
     by
-        simple_path ':: '{ '}
+        %simple_path ':: '*
+        root_use_tree
 end rule
 
 function main
