@@ -47,11 +47,13 @@ rule expand_uses
     construct _ [UseTree]
         root_use_tree [print]
     construct new_simple_path_ccsps [COLON_COLON_SimplePathSegment*]
+        ':: inner_sps
+    construct new_simple_path_ccspss [COLON_COLON_SimplePathSegment*]
         %outer_ccspss [. ':: inner_sps] [. inner_ccspss]
-        outer_ccspss [. inner_ccspss]
+        outer_ccspss [. new_simple_path_ccsps] [. inner_ccspss]
     construct result [Item]
         %simple_path ':: '*
-        'use outer_colons outer_sps new_simple_path_ccsps ';
+        'use outer_colons outer_sps new_simple_path_ccspss ';
         %'use root_use_tree ';
     by
         result
