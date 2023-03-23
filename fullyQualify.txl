@@ -36,8 +36,9 @@ rule fullyQualify %sp [SimplePath] qt [QualifierTable]
 end rule
 
 rule expand_uses
-    replace * [Item]
+    replace * [Item*]
         'use root_use_tree [UseTree] ';
+        post_items [Item*]
     deconstruct root_use_tree
         outer_simple_path [SimplePath] ':: '{ inner_simple_path [SimplePath] ', use_tree2 [UseTree] _ [', ?] '}
     deconstruct outer_simple_path
@@ -51,10 +52,11 @@ rule expand_uses
     construct new_simple_path_ccspss [COLON_COLON_SimplePathSegment*]
         %outer_ccspss [. ':: inner_sps] [. inner_ccspss]
         outer_ccspss [. new_simple_path_ccsps] [. inner_ccspss]
-    construct result [Item]
+    construct result [Item*]
         %simple_path ':: '*
         'use outer_colons outer_sps new_simple_path_ccspss ';
         %'use root_use_tree ';
+        post_items
     by
         result
 end rule
