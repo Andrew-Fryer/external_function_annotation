@@ -36,7 +36,7 @@ rule fullyQualify %sp [SimplePath] qt [QualifierTable]
 end rule
 
 function append_joined_simple_paths outer_simple_path [SimplePath] inner_simple_path [SimplePath]
-    replace [SimplePath*]
+    replace $ [SimplePath*]
         existing [SimplePath*]
     deconstruct outer_simple_path
         outer_colons [':: ?] outer_sps [SimplePathSegment] outer_ccspss[COLON_COLON_SimplePathSegment*]
@@ -47,30 +47,53 @@ function append_joined_simple_paths outer_simple_path [SimplePath] inner_simple_
     construct new_simple_path_ccspss [COLON_COLON_SimplePathSegment*]
         %outer_ccspss [. ':: inner_sps] [. inner_ccspss]
         outer_ccspss [. new_simple_path_ccsps] [. inner_ccspss]
-    construct new_use_tree [UseTree*]
+    construct new_simple_path [SimplePath*]
         outer_colons outer_sps new_simple_path_ccspss
     by
-        %items [. new_use_decl]
-        existing %[. new_use_tree]
+        existing [. new_simple_path]
 end function
 
 %function append_simple_path use_tree []
 
-function extract_simple_paths use_tree [UseTree]
-    replace [SimplePath*]
+function extract_nested_simple_paths use_tree [UseTree]
+    replace * [SimplePath*]
         existing [SimplePath*]
+    construct _ [SimplePath*]
+        existing %[print]
     deconstruct use_tree
         outer_simple_path [SimplePath] ':: '{ inner_use_trees [UseTree,] '}
+    construct _ [UseTree,]
+        inner_use_trees %[print]
     construct inner_simple_paths [SimplePath*]
         _ [extract_simple_paths each inner_use_trees]
-    construct outer_simple_paths [SimplePath*]
-        outer_simple_path % todo: make n copies here somehow
+    construct _ [SimplePath*]
+        inner_simple_paths %[print]
     by
-        existing [append_joined_simple_paths each outer_simple_paths inner_simple_paths]
+        existing [append_joined_simple_paths outer_simple_path each inner_simple_paths]
+end function
+
+function extract_inline_simple_paths use_tree [UseTree]
+    replace $ [SimplePath*]
+        existing [SimplePath*]
+    deconstruct use_tree
+        simple_path [SimplePath]
+    construct new_simple_paths [SimplePath*]
+        simple_path %[print]
+    by
+        existing [. new_simple_paths]
+end function
+
+function extract_simple_paths use_tree [UseTree]
+    replace $ [SimplePath*]
+        existing [SimplePath*]
+    construct new_simple_paths [SimplePath*]
+        _ [extract_inline_simple_paths use_tree] [extract_nested_simple_paths use_tree]
+    by
+        existing [. new_simple_paths]
 end function
 
 function append_use_decl use_simple_path [SimplePath]
-    replace [Item*]
+    replace $ [Item*]
         existing [Item*]
     construct new_use_decl [Item*]
         'use use_simple_path ';
@@ -79,13 +102,13 @@ function append_use_decl use_simple_path [SimplePath]
 end function
 
 rule expand_uses
-    replace * [Item*]
+    replace $ [Item*]
         'use root_use_tree [UseTree] ';
         post_items [Item*]
     construct use_simple_paths [SimplePath*]
         _ [extract_simple_paths root_use_tree]
     construct new_use_decls [Item*]
-        _ [append_use_decl each use_simple_paths]
+        _ [append_use_decl each use_simple_paths] %[print]
     by
         new_use_decls [. post_items]
 
