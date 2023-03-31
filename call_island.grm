@@ -1,0 +1,52 @@
+% Andrew Fryer, 2023
+
+define program
+    [Wave*]
+    %[IslandGrammar]
+end define
+
+keys
+    %'Call
+    % 'Func
+end keys
+
+define IslandGrammar
+    [Element*]
+end define
+
+define Element
+    [Land]
+    | [Water]
+end define
+
+define Land
+    [Call]
+    | [MethodCall]
+    | [Func]
+end define
+
+define Call
+    'Call '{ [IslandGrammar] '}
+end define
+
+define MethodCall
+    'MethodCall '{ [IslandGrammar] '}
+end define
+
+define Func
+    'Func '{ [IslandGrammar] '}
+end define
+
+define Water
+    '{ [IslandGrammar] '}
+    | '( [IslandGrammar] ')
+    | '[ [IslandGrammar] ']
+    | [Wave]
+end define
+
+define Wave
+      [token]
+    | [key]
+    %| [id]
+    %| [any]
+end define
