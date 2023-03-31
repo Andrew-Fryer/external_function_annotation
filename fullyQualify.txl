@@ -10,7 +10,7 @@ function append_joined_simple_paths outer_simple_path [SimplePath] inner_use_tre
     replace [UseTree,]
         existing [UseTree,]
     construct _ [UseTree]
-        inner_use_tree [debug]
+        inner_use_tree %[debug]
     deconstruct outer_simple_path
         outer_colons [':: ?] outer_sps [SimplePathSegment] outer_ccspss [COLON_COLON_SimplePathSegment*]
     deconstruct inner_use_tree
@@ -22,15 +22,26 @@ function append_joined_simple_paths outer_simple_path [SimplePath] inner_use_tre
     construct new_simple_path [SimplePath]
         outer_colons outer_sps new_simple_path_ccspss
     construct new_use_tree [UseTree,]
-        new_simple_path [print]
+        new_simple_path %[print]
     by
         existing [, new_use_tree]
+end function
+
+function has_branching
+    match * [UseTree,]
+        outer_simple_path [SimplePath] ':: '{ inner_use_trees [UseTree,] _ [', ?] '}
+    construct violating_use_tree [UseTree]
+        outer_simple_path ':: '{ inner_use_trees '}
+    construct _ [UseTree]
+        violating_use_tree [print]
 end function
 
 rule expand_use_trees
     replace [UseTree,]
         outer_simple_path [SimplePath] ':: '{ inner_use_trees [UseTree,] _ [', ?] '}
         ', rest [UseTree,]
+    where not
+        inner_use_trees [?has_branching]
     by
         _ [append_joined_simple_paths outer_simple_path each inner_use_trees] [, rest]
 end rule
