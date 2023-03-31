@@ -37,7 +37,10 @@ define Func
 end define
 
 define Water
-    [Wave]
+      '{ [IslandGrammar] '}
+    | '( [IslandGrammar] ')
+    | '[ [IslandGrammar] ']
+    | [Wave]
 end define
 
 define Wave
