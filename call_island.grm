@@ -14,12 +14,12 @@ define IslandGrammar
 end define
 
 define Element
-    [Land]
+      [Land]
     | [Water]
 end define
 
 define Land
-    [Call]
+      [Call]
     | [MethodCall]
     | [Func]
 end define
