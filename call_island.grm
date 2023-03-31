@@ -37,13 +37,25 @@ define Func
 end define
 
 define Water
-    '{ [IslandGrammar] '}
-    | '( [IslandGrammar] ')
-    | '[ [IslandGrammar] ']
-    | [Wave]
+    [Wave]
 end define
 
 define Wave
       [token]
     | [key]
 end define
+
+rule remove_waves
+    replace [Element*]
+        w [Wave]
+        remaining [Element*]
+    by
+        remaining
+end rule
+
+function main
+    replace [program]
+        p [program]
+    by
+        p [remove_waves]
+end function
