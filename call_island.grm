@@ -1,8 +1,7 @@
 % Andrew Fryer, 2023
 
 define program
-    [Wave*]
-    %[IslandGrammar]
+    [IslandGrammar]
 end define
 
 keys
@@ -47,6 +46,4 @@ end define
 define Wave
       [token]
     | [key]
-    %| [id]
-    %| [any]
 end define
