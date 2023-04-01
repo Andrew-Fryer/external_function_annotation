@@ -5,7 +5,9 @@ define program
 end define
 
 keys
-    %'Call
+    '{
+    '}
+    'Call
     % 'Func
 end keys
 
@@ -20,32 +22,19 @@ end define
 
 define Land
       [Call]
-    | [MethodCall]
-    | [Func]
 end define
 
 define Call
     'Call '{ [IslandGrammar] '}
 end define
 
-define MethodCall
-    'MethodCall '{ [IslandGrammar] '}
-end define
-
-define Func
-    'Func '{ [IslandGrammar] '}
-end define
-
 define Water
       '{ [IslandGrammar] '}
-    | '( [IslandGrammar] ')
-    | '[ [IslandGrammar] ']
     | [Wave]
 end define
 
 define Wave
-      [token]
-    | [key]
+    [token]
 end define
 
 rule remove_waves
