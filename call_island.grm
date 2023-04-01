@@ -11,6 +11,10 @@ keys
     % 'Func
 end keys
 
+tokens
+    charlit "" % undefines character literals because rust uses a single quote for lifetimes
+end tokens
+
 define IslandGrammar
     [Element*]
 end define
