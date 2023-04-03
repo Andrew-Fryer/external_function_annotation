@@ -11,7 +11,7 @@ keys
     ')
     '[
     ']
-    % 'Call
+    'Call
     % 'Func
 end keys
 
@@ -24,18 +24,24 @@ define IslandGrammar
 end define
 
 define Element
-    [Water]
+      [Land]
+    | [Water]
+end define
+
+define Land
+    'Call '{ [IslandGrammar] '}
 end define
 
 define Water
       '{ [IslandGrammar] '}
-      '( [IslandGrammar] ')
-      '[ [IslandGrammar] ']
+    | '( [IslandGrammar] ')
+    | '[ [IslandGrammar] ']
     | [Wave]
 end define
 
 define Wave
-    [token*] %| [id]
+    % Note: if I make this a [token*], TXL gets very slow and gives TXL0127E
+    [token+] %| [id]
 end define
 
 rule remove_waves
@@ -49,6 +55,8 @@ end rule
 function main
     replace [program]
         p [program]
+    construct all_calls [Land*]
+        _ [^ p]
     by
-        p [remove_waves]
+        p [reparse all_calls]
 end function
