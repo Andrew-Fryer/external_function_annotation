@@ -7,9 +7,48 @@ end define
 keys
     '{
     '}
+    '(
+    ')
+    '[
+    ']
+    % 'Call
+    % 'Func
 end keys
 
+tokens
+    charlit "" % undefines character literals because rust uses a single quote for lifetimes
+end tokens
+
 define IslandGrammar
-      '{ [IslandGrammar] '}
-    | [token*]
+    [Element*]
 end define
+
+define Element
+    [Water]
+end define
+
+define Water
+      '{ [IslandGrammar] '}
+      '( [IslandGrammar] ')
+      '[ [IslandGrammar] ']
+    | [Wave]
+end define
+
+define Wave
+    [token*] %| [id]
+end define
+
+rule remove_waves
+    replace [Element*]
+        w [Wave]
+        remaining [Element*]
+    by
+        remaining
+end rule
+
+function main
+    replace [program]
+        p [program]
+    by
+        p [remove_waves]
+end function
