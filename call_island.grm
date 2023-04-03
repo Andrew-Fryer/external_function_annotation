@@ -2,7 +2,6 @@
 
 define program
     [Decl*]
-    | [Land*]
 end define
 
 % Dr. Dean says to use `[not opening_brace] [token]` instead of using keywords. I'm not sure why...
@@ -52,20 +51,3 @@ define Wave
     % Note: if I make this a [token*], TXL gets very slow and gives TXL0127E
     [token+] %| [id]
 end define
-
-rule remove_waves
-    replace [Element*]
-        w [Wave]
-        remaining [Element*]
-    by
-        remaining
-end rule
-
-function main
-    replace [program]
-        p [program]
-    construct all_calls [Land*]
-        _ [^ p]
-    by
-        p [reparse all_calls]
-end function
