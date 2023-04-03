@@ -22,20 +22,35 @@ redefine program
     | [Table]
 end redefine
 
-rule remove_waves
-    replace [Element*]
+function is_wave
+    match [Element]
         w [Wave]
-        remaining [Element*]
+end function
+
+function extract_land e [Element]
+    replace [Element*]
+        existing [Element*]
+    deconstruct e
+        l [Land]
+    construct new_e [Element]
+        l
     by
-        remaining
-end rule
+        existing [. new_e]
+end function
+
+function remove_waves
+    replace [Element*]
+        first [Element]
+        remaining [Element*]
+    construct new_remaining [Element*]
+        remaining [remove_waves]
+    by
+        _ [extract_land first] [. new_remaining]
+end function
 
 function main
     replace [program]
-        p [program]
-    %construct all_calls [Land*]
-        %_ [^ p]
+        ds [Decl*]
     by
-        %p [reparse all_calls]
-        p [remove_waves]
+        _ [remove_waves each ds????]
 end function
