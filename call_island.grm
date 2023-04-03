@@ -1,9 +1,11 @@
 % Andrew Fryer, 2023
 
 define program
-    [IslandGrammar]
+    [Decl*]
+    | [Land*]
 end define
 
+% Dr. Dean says to use `[not opening_brace] [token]` instead of using keywords. I'm not sure why...
 keys
     '{
     '}
@@ -18,6 +20,13 @@ end keys
 tokens
     charlit "" % undefines character literals because rust uses a single quote for lifetimes
 end tokens
+
+define Decl
+    'DefId '( [IslandGrammar] ') ': % todo: don't allow 'Call in here...
+    'Thir '{
+        [IslandGrammar]
+    '}
+end define
 
 define IslandGrammar
     [Element*]
