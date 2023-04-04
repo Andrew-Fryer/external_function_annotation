@@ -25,9 +25,9 @@ function append_entries decl_name [IslandGrammar] c [Call]
     replace [Entry*]
         existing [Entry*]
     construct dry_decl_name [IslandGrammar]
-        decl_name [remove_waves]
+        decl_name %[remove_waves]
     construct dry_c [Call]
-        c [remove_waves]
+        c% [remove_waves]
     by
         dry_decl_name '-> dry_c ';
         existing
