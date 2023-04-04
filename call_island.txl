@@ -5,16 +5,7 @@ define Table
 end define
 
 define Entry
-    [Func] '-> [Func] ';
-end define
-
-define Func
-    [Any*]
-end define
-
-define Any
-      [token]
-    | [key]
+    [IslandGrammar] '-> [Call] ';
 end define
 
 redefine program
@@ -22,35 +13,45 @@ redefine program
     | [Table]
 end redefine
 
-function is_wave
-    match [Element]
+rule remove_waves
+    replace [Element*]
         w [Wave]
-end function
-
-function extract_land e [Element]
-    replace [Element*]
-        existing [Element*]
-    deconstruct e
-        l [Land]
-    construct new_e [Element]
-        l
-    by
-        existing [. new_e]
-end function
-
-function remove_waves
-    replace [Element*]
-        first [Element]
         remaining [Element*]
-    construct new_remaining [Element*]
-        remaining [remove_waves]
     by
-        _ [extract_land first] [. new_remaining]
+        remaining
+end rule
+
+function append_entries decl_name [IslandGrammar] c [Call]
+    replace [Entry*]
+        existing [Entry*]
+    construct dry_decl_name [IslandGrammar]
+        decl_name [remove_waves]
+    construct dry_c [Call]
+        c [remove_waves]
+    by
+        dry_decl_name '-> dry_c ';
+        existing
+end function
+
+function extract_calls d [Decl]
+    replace [Entry*]
+        existing [Entry*]
+    deconstruct d
+        'DefId '( decl_name [IslandGrammar] ') ':
+        'Thir '{
+            decl_body [IslandGrammar]
+        '}
+    construct calls [Call*]
+        _ [^ decl_body]
+    by
+        existing [append_entries decl_name each calls]
 end function
 
 function main
     replace [program]
         ds [Decl*]
+    construct result [Entry*]
+        _ [extract_calls each ds]
     by
-        _ [remove_waves each ds????]
+        result
 end function

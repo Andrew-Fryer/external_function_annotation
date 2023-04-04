@@ -37,6 +37,10 @@ define Element
 end define
 
 define Land
+    [Call]
+end define
+
+define Call
     'Call '{ [IslandGrammar] '}
 end define
 
