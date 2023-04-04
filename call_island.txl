@@ -5,7 +5,7 @@ define Table
 end define
 
 define Entry
-    [IslandGrammar] '-> [Call] ';
+    [IslandGrammar] '-> [not_bracket*] ';
 end define
 
 redefine program
@@ -26,10 +26,10 @@ function append_entries decl_name [IslandGrammar] c [Call]
         existing [Entry*]
     construct dry_decl_name [IslandGrammar]
         decl_name %[remove_waves]
-    construct dry_c [Call]
-        c% [remove_waves]
+    deconstruct c
+        'Call '{ 'ty ': _ [not_bracket*] '{ callee [not_bracket*] '} _ [IslandGrammar] '}
     by
-        dry_decl_name '-> dry_c ';
+        dry_decl_name '-> callee ';
         existing
 end function
 

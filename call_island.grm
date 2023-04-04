@@ -40,8 +40,16 @@ define Land
     [Call]
 end define
 
+define not_bracket
+      [token]
+    | '(
+    | ')
+    | '[
+    | ']
+end define
+
 define Call
-    'Call '{ [IslandGrammar] '}
+    'Call '{ 'ty ': [not_bracket*] '{ [not_bracket*] '} [IslandGrammar] '}
 end define
 
 define Water
