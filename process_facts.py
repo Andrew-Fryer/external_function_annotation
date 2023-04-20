@@ -1,7 +1,9 @@
 import sys
 
 
-relation = {}
+called_by_relation = {} # is called by relation
+# relation_domain = set()
+called_by_relation_range = set()
 
 buffer = ""
 for line in sys.stdin:
@@ -24,8 +26,32 @@ for line in sys.stdin:
     origin_fn_name = line[:ind]
     target_fn_name = line[ind + 2:-1]
     
-    if origin_fn_name not in relation:
-        relation[origin_fn_name] = set()
-    relation[origin_fn_name].add(target_fn_name)
+    if target_fn_name not in called_by_relation:
+        called_by_relation[target_fn_name] = set()
+    called_by_relation[target_fn_name].add(origin_fn_name)
+    called_by_relation_range.add(origin_fn_name)
 
-print(relation)
+internal_fns = called_by_relation_range
+external_fns = set(called_by_relation.keys()) - internal_fns
+
+print(external_fns)
+print(internal_fns)
+
+transitive_call_relation = {}
+for fn in internal_fns:
+    transitive_call_relation[fn] = set()
+for external_fn in external_fns:
+    work = list(called_by_relation[external_fn])
+    while len(work) > 0:
+        internal_fn = work.pop()
+        if external_fn not in transitive_call_relation[internal_fn]:
+            transitive_call_relation[internal_fn].add(external_fn)
+            for fn in called_by_relation.get(internal_fn, []):
+                work.push(fn)
+
+# print(called_by_relation)
+# print(transitive_call_relation)
+for fn in transitive_call_relation:
+    print(fn + ':')
+    for external_fn in transitive_call_relation[fn]:
+        print('\t' + external_fn)
