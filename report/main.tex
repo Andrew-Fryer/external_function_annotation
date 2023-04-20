@@ -1,0 +1,57 @@
+\documentclass[11pt]{article}
+
+\usepackage{listings}
+% \lstset{
+%     language=c,
+%     % frame=single,
+%     backgroundcolor=\color{white}
+    
+% }
+\lstset{
+    basicstyle=\ttfamily,
+    frame=none,
+    xleftmargin=3.5ex,
+    xrightmargin=3.5ex,
+    aboveskip=20pt,
+    belowskip=20pt
+}
+
+\title{ELEC 875 Project Proposal}
+\author{Andrew Fryer}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+I should be able to grab this out of the propsocal.
+
+\section{Design Process and Dead Ends}
+I tried a bunch of stuff that didn't work.
+
+\section{Final Solution Results}
+This is what it is capable of...
+
+\section{Limitations}
+It can't do...
+
+\section{Future Work}
+
+
+\begin{figure}
+    \caption{Example of use declaration and fully qualified identifier.}
+    \label{fig:qualifiers}
+    \begin{lstlisting}
+        rust code!
+    \end{lstlisting}
+\end{figure}
+
+\section{Learning Outcomes}
+If I have extra time, I will first work on including code from external libraries in the analysis.
+I will likely add a parameter to the bash script that will indicate where to look for Rust libraries.
+This will improve the analysis because it will be able to look through libraries all the way to \lstinline{extern} functions which are written in c and linked in.
+
+The other stretch goal I have is to write more complex TXL rules that will build a table of all traits (similar to interfaces) and then use the table to track down trait method calls.
+This will further imrpove the analysis because it will be able to analyze method calls on trait objects.
+
+\end{document}
