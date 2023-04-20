@@ -5,7 +5,7 @@ define Table
 end define
 
 define Entry
-    [IslandGrammar] '-> [not_bracket*] '; [NL]
+    [IslandGrammar] '-->> [not_bracket*] '; [NL]
 end define
 
 redefine program

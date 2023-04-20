@@ -2,21 +2,25 @@ import sys
 
 
 def convert_orign_fn_name(fn_name):
-    ind = fn_name.find('~')
-    if ind < 0:
-        return fn_name
-    ind = fn_name.find('::')
-    assert(ind >= 0)
-    fn_name = fn_name[ind + 2:]
+    l = fn_name.split('::')
+    l.pop(0)
+    l = [x for x in l if len(l) > 0 and l[0] != '{']
+    return l
+    # ind = fn_name.find('~')
+    # if ind < 0:
+    #     return fn_name
+    # ind = fn_name.find('::')
+    # assert(ind >= 0)
+    # fn_name = fn_name[ind + 2:]
 
-    ind_opening = fn_name.find('{')
-    ind_closing = fn_name.find('}')
-    if ind_opening >= 0 and ind_closing > ind_opening:
-        assert(ind_opening > 2 and fn_name[ind_opening - 1] == ':' and fn_name[ind_opening - 2] == ':')
-        fn_name = fn_name[:ind_opening] + "_" + fn_name[ind_closing + 1:]
-    # else:
-    #     assert(False)
-    return fn_name
+    # ind_opening = fn_name.find('{')
+    # ind_closing = fn_name.find('}')
+    # if ind_opening >= 0 and ind_closing > ind_opening:
+    #     assert(ind_opening > 2 and fn_name[ind_opening - 1] == ':' and fn_name[ind_opening - 2] == ':')
+    #     fn_name = fn_name[:ind_opening] + "_" + fn_name[ind_closing + 1:]
+    # # else:
+    # #     assert(False)
+    # return fn_name
 
 def convert_target_fn_name(fn_name):
     i = len(fn_name)
@@ -50,9 +54,9 @@ for line in open('./all_calls.txt', 'r'): #sys.stdin:
     line = buffer + line
     buffer = ""
 
-    ind = line.find("->")
+    ind = line.find("-->>")
     if ind < 0:
-        raise Exception("couldn't find '->' in line")
+        raise Exception("couldn't find '-->>' in line")
     
     origin_fn_name = line[:ind]
     target_fn_name = line[ind + 2:-1]
