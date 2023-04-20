@@ -13,7 +13,23 @@ def convert_orign_fn_name(fn_name):
     ind_closing = fn_name.find('}')
     if ind_opening >= 0 and ind_closing > ind_opening:
         assert(ind_opening > 2 and fn_name[ind_opening - 1] == ':' and fn_name[ind_opening - 2] == ':')
-        fn_name = fn_name[:ind_opening - 2] + fn_name[ind_closing + 1:]
+        fn_name = fn_name[:ind_opening] + "_" + fn_name[ind_closing + 1:]
+    # else:
+    #     assert(False)
+    return fn_name
+
+def convert_target_fn_name(fn_name):
+    i = len(fn_name)
+    j = None
+    while i >= 2:
+        if fn_name[i - 2] == ':' and fn_name[i - 1] == ':':
+            if j != None:
+                fn_name = fn_name[:i] + '_' + fn_name[j - 2:]
+                return fn_name
+            else:
+                j = i
+        i -= 1
+    # assert(False)
     return fn_name
 
 called_by_relation = {} # is called by relation
@@ -41,7 +57,11 @@ for line in open('./all_calls.txt', 'r'): #sys.stdin:
     origin_fn_name = line[:ind]
     target_fn_name = line[ind + 2:-1]
 
+    origin_fn_name_old = origin_fn_name
+    target_fn_name_old = target_fn_name
+
     origin_fn_name = convert_orign_fn_name(origin_fn_name)
+    target_fn_name = convert_target_fn_name(target_fn_name)
     
     if target_fn_name not in called_by_relation:
         called_by_relation[target_fn_name] = set()
