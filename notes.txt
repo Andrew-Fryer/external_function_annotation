@@ -1,0 +1,25 @@
+I followed instructions here to get nightly rust:
+https://doc.rust-lang.org/book/appendix-07-nightly-rust.html
+`rustup toolchain install nightly`
+`rustup toolchain list`
+`rustup override set nightly` inside project root
+
+I do this inside the root of a Rust project to get the thir:
+`cargo rustc -- -Z unpretty=thir-tree >> thir-tree.txt`
+The command is given here for hir:
+https://rustc-dev-guide.rust-lang.org/hir.html
+and I'm using thir:
+https://rustc-dev-guide.rust-lang.org/thir.html
+
+`ulimit -s hard` solves the stack overflow error (TXL0911W)
+`txl -s 4000M example_thir.txt call_island.grm`
+the "-s" option solves the error about the input being too long (TXL0142E).
+
+This showed me how to get the thir-flat representation, which I think is better for me.
+
+
+I used this kind of thing to count the openning and closes braces/parentheses/brackets:
+`cat example_thir.txt | fgrep -o ']' | wc -l`
+
+
+I think it is way too hard to automatically work out that "std : : rc : : Rc : : < core : : DataModelBase > : : new" just calls "core : : DataModelBase : : new"
