@@ -1,6 +1,10 @@
 import sys
 
 
+def remove_generics(fn_name):
+    while True:
+        ind = fn_name.find('<')
+
 def convert_orign_fn_name(fn_name):
     l = fn_name.split('::')
     l.pop(0)
