@@ -34,3 +34,12 @@ https://docs.rust-embedded.org/embedonomicon/smallest-no-std.html
 I need to build the Rust compiler with the nightly Rust compiler!
 
 Or, I could just manually put the rust std stuff in a file and then cat it with the TXL program output.
+
+Here's what dynamic dispatch looks like:
+`0 : 443 ~ andrew_fuzz [741 f] : : library : : constraint : : {impl # 10} : : do_serialization - - > > < dyn core : : DataModel as core : : Serializer > : : do_serialization;`
+
+Here's an example of a line we don't care about:
+`0 : 443 ~ andrew_fuzz [741 f] : : library : : constraint : : {impl # 10} : : do_serialization - - > > < std : : rc : : Rc < dyn core : : DataModel > as std : : ops : : Deref > : : deref;`
+I think the most elegant way to treat this is to just add "deref" to the list of internal functions.
+
+I think it would be good to use another TXL program to transform the facts into something that python can process more easily.
