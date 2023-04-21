@@ -1,15 +1,16 @@
 import sys
+import re
 
 
-def remove_generics(fn_name):
-    while True:
-        ind = fn_name.find('<')
+# def remove_generics(fn_name):
+#     while True:
+#         ind = fn_name.find('<')
 
 def convert_orign_fn_name(fn_name):
     l = fn_name.split('::')
     l.pop(0)
-    l = [x for x in l if len(l) > 0 and l[0] != '{']
-    return l
+    l = [x for x in l if len(l) > 0 and x[0] != '{']
+    return str(l)
     # ind = fn_name.find('~')
     # if ind < 0:
     #     return fn_name
@@ -27,16 +28,38 @@ def convert_orign_fn_name(fn_name):
     # return fn_name
 
 def convert_target_fn_name(fn_name):
-    i = len(fn_name)
-    j = None
-    while i >= 2:
-        if fn_name[i - 2] == ':' and fn_name[i - 1] == ':':
-            if j != None:
-                fn_name = fn_name[:i] + '_' + fn_name[j - 2:]
-                return fn_name
-            else:
-                j = i
-        i -= 1
+    # ind = fn_name.find('->')
+    # if ind >= 0:
+    #     fn_name = fn_name[:ind] + fn_name[ind + 2:]
+
+    # if fn_name.find("advance_to_match") >= 0:
+    #     print("here")
+
+    while True:
+        res = re.search('<.*>', fn_name)
+        if res:
+            before = fn_name[:res.regs[0][0]]
+            after = fn_name[res.regs[0][1]:]
+            if len(before) == 0 or len(before) > 2 and before[-2] == ':' and before[-1] == ':':
+                if len(after) > 2 and after[0] == ':' and after[1] == ':':
+                    after = after[2:]
+            fn_name = before + after
+        else:
+            break
+    
+    l = fn_name.split('::')
+    l = [x for x in l if len(x) > 0 and not x[0].isupper()]
+    return str(l)
+    # i = len(fn_name)
+    # j = None
+    # while i >= 2:
+    #     if fn_name[i - 2] == ':' and fn_name[i - 1] == ':':
+    #         if j != None:
+    #             fn_name = fn_name[:i] + '_' + fn_name[j - 2:]
+    #             return fn_name
+    #         else:
+    #             j = i
+    #     i -= 1
     # assert(False)
     return fn_name
 
@@ -63,7 +86,7 @@ for line in open('./all_calls.txt', 'r'): #sys.stdin:
         raise Exception("couldn't find '-->>' in line")
     
     origin_fn_name = line[:ind]
-    target_fn_name = line[ind + 2:-1]
+    target_fn_name = line[ind + 4:-1]
 
     origin_fn_name_old = origin_fn_name
     target_fn_name_old = target_fn_name
@@ -79,8 +102,8 @@ for line in open('./all_calls.txt', 'r'): #sys.stdin:
 internal_fns = called_by_relation_range
 external_fns = set(called_by_relation.keys()) - internal_fns
 
-print(external_fns)
-print(internal_fns)
+# print(external_fns)
+# print(internal_fns)
 
 transitive_call_relation = {}
 for fn in internal_fns:

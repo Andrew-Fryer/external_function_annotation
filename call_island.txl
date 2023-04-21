@@ -43,8 +43,11 @@ function extract_calls d [Decl]
         '}
     construct calls [Call*]
         _ [^ decl_body]
+    construct existing_and_dummy [Entry*]
+        decl_name '-->> ';
+        existing
     by
-        existing [append_entries decl_name each calls]
+        existing_and_dummy [append_entries decl_name each calls]
 end function
 
 function main
