@@ -10,6 +10,7 @@ The command is given here for hir:
 https://rustc-dev-guide.rust-lang.org/hir.html
 and I'm using thir:
 https://rustc-dev-guide.rust-lang.org/thir.html
+`cargo rustc -- -Z unpretty=thir-flat >> thir-flat.txt`
 
 `ulimit -s hard` solves the stack overflow error (TXL0911W)
 `txl -s 4000M example_thir.txt call_island.grm`
@@ -24,3 +25,12 @@ I used this kind of thing to count the openning and closes braces/parentheses/br
 
 I think it is way too hard to automatically work out that "std : : rc : : Rc : : < core : : DataModelBase > : : new" just calls "core : : DataModelBase : : new"
 Maybe I could and should hardcode this in...
+
+https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#build-std
+https://docs.rust-embedded.org/embedonomicon/smallest-no-std.html
+`cargo rustc -Z build-std=std,core,alloc --target x86_64-unknown-linux-gnu -- -Z unpretty=thir-flat`
+^crap, that doesn't actually print out the THIR for std :|
+
+I need to build the Rust compiler with the nightly Rust compiler!
+
+Or, I could just manually put the rust std stuff in a file and then cat it with the TXL program output.
