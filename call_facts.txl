@@ -20,10 +20,10 @@ end define
 
 % inspiration taken from rust.grm:
 define SimplePath
-    [IDENTIFIER] [COLON_COLON_SimplePathSegment*]
+    [id] [COLON_COLON_SimplePathSegment*]
 end define
 define COLON_COLON_SimplePathSegment
-    ':: [IDENTIFIER]
+    ':: [id]
 end define
 %^ inspiration taken from rust.grm
 

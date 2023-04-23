@@ -89,6 +89,9 @@ I got rid of spaces and added new lines in the first TXL program's output like s
 Note that it may still add extra new lines if a line is very long.
 Removing spaces is important because the next TXL program in the pipeline groups the characts into tokens differently (does it really?).
 This causes TXL to remove spaces between identifiers, causing them to be merged... wtf?!?
+Update:
+I'm not doing this.
+I had to add `::' to the compounds list so that it can be parsed together in the next stage I think.
 
 \section{Final Solution Results}
 This is what it is capable of...
