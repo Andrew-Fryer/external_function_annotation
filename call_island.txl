@@ -1,60 +1,41 @@
 include "./call_island.grm"
 
-define Table
-    [Entry*]
-end define
-
-define Entry
-    [SPOFF] [IslandGrammar] '-->> [not_bracket*] '; [SPON] [NL]
-end define
-
-redefine program
+redefine Decl
       ...
-    | [Table]
+%               caller_fn            callee_fns
+    | [SPOFF] 'Decl '( [IslandGrammar] ') '{ [NL] [IN]
+        [Callee*] [NL] [EX]
+    '} [SPON] [NL]
 end redefine
 
-rule remove_waves
-    replace [Element*]
-        w [Wave]
-        remaining [Element*]
-    by
-        remaining
-end rule
+define Callee
+    [not_bracket*] '; [NL]
+end define
 
-function append_entries decl_name [IslandGrammar] c [Call]
-    replace [Entry*]
-        existing [Entry*]
-    construct dry_decl_name [IslandGrammar]
-        decl_name %[remove_waves]
+function append_callee c [Call]
+    replace [Callee*]
+        existing [Callee*]
     deconstruct c
-        'Call '{ 'ty ': _ [not_bracket*] '{ callee [not_bracket*] '} _ [IslandGrammar] '}
+        'Call '{ 'ty ': _ [not_bracket*] '{ callee_name [not_bracket*] '} _ [IslandGrammar] '}
+    construct callee [Callee]
+        callee_name ';
     by
-        dry_decl_name '-->> callee ';
+        callee
         existing
 end function
 
-function extract_calls d [Decl]
-    replace [Entry*]
-        existing [Entry*]
-    deconstruct d
+rule main
+    replace [Decl]
         'DefId '( decl_name [IslandGrammar] ') ':
         'Thir '{
             decl_body [IslandGrammar]
         '}
     construct calls [Call*]
         _ [^ decl_body]
-    construct existing_and_dummy [Entry*]
-        decl_name '-->> ';
-        existing
+    construct callees [Callee*]
+        _ [append_callee each calls]
     by
-        existing_and_dummy [append_entries decl_name each calls]
-end function
-
-function main
-    replace [program]
-        ds [Decl*]
-    construct result [Entry*]
-        _ [extract_calls each ds]
-    by
-        result
-end function
+        'Decl '( decl_name ') '{
+            callees
+        '}
+end rule
