@@ -2,9 +2,8 @@ include "./call_island.grm"
 
 redefine Decl
       ...
-%               caller_fn            callee_fns
-    | [SPOFF] 'Decl '( [IslandGrammar] ') '{ [NL] [IN]
-        [Callee*] [EX]
+    | [SPOFF] 'Decl '( [IslandGrammar] ') '{ [NL] [IN] % caller_fn
+        [Callee*] [EX] % callee_fns
     '} [SPON] [NL]
 end redefine
 

@@ -82,11 +82,13 @@ mm, actually I think it is surjective (`every element of the function's codomain
 
 We also want to be able to specify the set of internal functions (which is different from the domain of the relation because internal functions do not necessarily call another function).
 (I think I had an example of this.)
+Therefore, we are not only extracting the calls relation.
 
 I got rid of spaces and added new lines in the first TXL program's output like so:
 \lstinline{[SPOFF] [IslandGrammar] '-->> [not_bracket*] '; [SPON] [NL]}
 Note that it may still add extra new lines if a line is very long.
 Removing spaces is important because the next TXL program in the pipeline groups the characts into tokens differently (does it really?).
+This causes TXL to remove spaces between identifiers, causing them to be merged... wtf?!?
 
 \section{Final Solution Results}
 This is what it is capable of...

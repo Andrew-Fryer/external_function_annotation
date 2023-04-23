@@ -1,8 +1,31 @@
 % Andrew Fryer, 2023
 
 define program
-    [Table]
+    [Decl*]
 end define
+
+define Decl
+    [SPOFF] 'Decl '( [Caller] ') '{ [NL] [IN]
+        [Callee*] [EX]
+    '} [SPON] [NL]
+end redefine
+
+define Callee
+    [] '; [NL]
+end define
+
+define Caller
+    %
+end define
+
+% inspiration taken from rust.grm:
+define SimplePath
+    [IDENTIFIER] [COLON_COLON_SimplePathSegment*]
+end define
+define COLON_COLON_SimplePathSegment
+    ':: [IDENTIFIER]
+end define
+%^ inspiration taken from rust.grm
 
 % Dr. Dean says to use `[not opening_brace] [token]` instead of using keywords. I'm not sure why...
 keys
@@ -22,14 +45,6 @@ tokens
     charlit "" % undefines character literals because rust uses a single quote for lifetimes
 end tokens
 
-define Table
-    [Entry*]
-end define
-
-define Entry
-    [Anything*] '-->> [Anything*] '; [NL]
-end define
-
 define Anything
       [not '-] [token]
     | [not '<] [not '>] [key]
@@ -47,5 +62,5 @@ function main
     replace [program]
         es [Entry*]
     by
-        es [remove_generics]
+        es %[remove_generics]
 end function
