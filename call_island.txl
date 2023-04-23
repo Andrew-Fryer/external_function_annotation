@@ -8,14 +8,14 @@ redefine Decl
 end redefine
 
 define Callee
-    [not_bracket*] '; [NL]
+    [not_brace*] '; [NL]
 end define
 
 function append_callee c [Call]
     replace [Callee*]
         existing [Callee*]
     deconstruct c
-        'Call '{ 'ty ': _ [not_bracket*] '{ callee_name [not_bracket*] '} _ [IslandGrammar] '}
+        'Call '{ 'ty ': _ [not_brace*] '{ callee_name [not_brace*] '} _ [IslandGrammar] '}
     construct callee [Callee]
         callee_name ';
     by

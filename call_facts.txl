@@ -1,5 +1,7 @@
 % Andrew Fryer, 2023
 
+include "./call_island.grm"
+
 define program
     [Decl*]
 end define
@@ -11,7 +13,7 @@ define Decl
 end redefine
 
 define Callee
-    [] '; [NL]
+    [not_brace_or_parenthesis] '; [NL]
 end define
 
 define Caller

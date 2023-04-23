@@ -85,7 +85,7 @@ We also want to be able to specify the set of internal functions (which is diffe
 Therefore, we are not only extracting the calls relation.
 
 I got rid of spaces and added new lines in the first TXL program's output like so:
-\lstinline{[SPOFF] [IslandGrammar] '-->> [not_bracket*] '; [SPON] [NL]}
+\lstinline{[SPOFF] [IslandGrammar] '-->> [not_brace*] '; [SPON] [NL]}
 Note that it may still add extra new lines if a line is very long.
 Removing spaces is important because the next TXL program in the pipeline groups the characts into tokens differently (does it really?).
 This causes TXL to remove spaces between identifiers, causing them to be merged... wtf?!?

@@ -44,7 +44,7 @@ define Land
     [Call]
 end define
 
-define not_bracket
+define not_brace
       [token]
     | '(
     | ')
@@ -53,7 +53,7 @@ define not_bracket
 end define
 
 define Call
-    'Call '{ 'ty ': [not_bracket*] '{ [not_bracket*] '} [IslandGrammar] '}
+    'Call '{ 'ty ': [not_brace*] '{ [not_brace*] '} [IslandGrammar] '}
 end define
 
 define Water
