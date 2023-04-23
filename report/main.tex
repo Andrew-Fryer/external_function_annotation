@@ -26,11 +26,67 @@
 \section{Introduction}
 I should be able to grab this out of the propsocal.
 
+Note: resolving dynamic dispatch is uncomputable, so we are making a best effort attempt out of the gate.
+
+I would like the tool to indicate when it wasn't able to resolve a function call.
+(Generally, the tool is conservative/liberal, but in this case, that would mean marking the function with all FFIs, which is silly).
+Instead of FFIs, we could just do external functions.
+
 \section{Design Process and Dead Ends}
 I tried a bunch of stuff that didn't work.
 
+bash script to link files together is difficult because you can't find external dependencies
+But, cargo expand doesn't actually solve that I don't think
+
+Cargo expand
+I looked through the project, but had trouble following how it works.
+
+expand use declarations
+I got this to work for the most part, but then pivoted when I learned how to generate intermediate representation text from rustc
+
+I decided to use an intermediate representation because it will resolve which function is being called (at least better than I could without).
+
+It is difficult to understand exactly what everything in the textual intermediate representations means.
+To keep the project in a reasonable scope (easy debugging) (and because I wanted to use TXL (phrase this as: I wanted to explore how a functional tree-based language, namely, TXL, could be used to extract facts from an intermediate language)) I decided to use the text and TXL instead of writing code that links with rustc.
+(I should have investigated precisely what information is in the textual format more rigorously.)
+Of the representations, HIR doesn't have types, MIR doesn't have clear function call sites (it is hard to see where a function is called and whatnot I think).
+THIR is best.
+THIR-flat is better than THIR-tree. (I found this by reading the source.)
+(THIR-tree has a bug with matching parenthesis.)
+
+Extracting the calls can be done using a TXL island grammar and a TXL program that uses TXL's extraction capability.
+(I can give an example of what the THIR-flat looks like and what the extracted calls look like.)
+
+Rather than using grok or a full graph database, I decided to implement my own solution since the logic is very easy to implement given an implementation of a hash table.
+I chose to use Python (3) for this because it is very easy to debug Python code (since it is an interpreted language) and the dict type in Python implements the hash table functionality in a way that is easy to use.
+
+I started by parsing the output of the TXL program directly.
+This became complicated when I tried to correct for differences between how the same function/method is represented in its definition and in its call sites.
+(Show an example here.)
+% \lstinline{0:333~andrew_fuzz[c4b5]::library::u8::{impl#0}::from_u8} vs. \lstinline{library::u8::U8::from_u8}
+
+I remembered from the lectures that it is good TXL practice to write several TXL programs that run in a pipeline.
+This way, the TXL parser (which is fast) can do much of the work by representing the data in a way that works well for the desired operation.
+In this case, brackets and braces are used for different things and extracting the functions calls is a different process than working out which function call corresponds to which function definition.
+(the -> stuff screws stuff up for island grammars, but we need to pair up < and > symbols when we remove generics)
+
+To make a best effort attempt at dynamic dispatch, I'm just going to replace dynamic objects with a tag indicating that it is dynamic (not known at compile time).
+Then, when the Python code processes the facts, it will record entries for each defined function both in its dynamic and static forms.
+
+Another whole thing is that the TXL stuff originally output a table.
+Now, this has been changed to output a structure that makes more sense (allows specifying the input and output sets separately from the relation, which implies the domain and range).
+
+It is not necessarily surjective (meaning that all of the outputs are covered) becuase we don't want a function that we can't resolve to pop up as another new FFI.
+mm, actually I think it is surjective (`every element of the function's codomain is the image of at least one element of its domain') because we wnat to flag when we can't resolve a function call (so just pretend it is a new FFI).
+% https://en.wikipedia.org/wiki/Surjective_function
+
+We also want to be able to specify the set of internal functions (which is different from the domain of the relation because internal functions do not necessarily call another function).
+(I think I had an example of this.)
+
 \section{Final Solution Results}
 This is what it is capable of...
+
+I should do a performance benchmark here.
 
 \section{Limitations}
 It can't do...

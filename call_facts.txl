@@ -32,13 +32,20 @@ end define
 
 define Anything
       [not '-] [token]
-    | [key]
+    | [not '<] [not '>] [key]
     | '->
 end define
+
+rule remove_generics
+    replace [Anything*]
+        '< text [Anything*] '>
+    by
+        _
+end rule
 
 function main
     replace [program]
         es [Entry*]
     by
-        es %[remove_generics]
+        es [remove_generics]
 end function
