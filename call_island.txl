@@ -4,7 +4,7 @@ redefine Decl
       ...
 %               caller_fn            callee_fns
     | [SPOFF] 'Decl '( [IslandGrammar] ') '{ [NL] [IN]
-        [Callee*] [NL] [EX]
+        [Callee*] [EX]
     '} [SPON] [NL]
 end redefine
 
