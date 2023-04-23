@@ -41,7 +41,7 @@ define Land
 end define
 
 define not_bracket
-      [token]
+      [id]
     | '(
     | ')
     | '[
