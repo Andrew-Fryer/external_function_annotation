@@ -105,7 +105,7 @@ end define
 define Generic
       [FullQualifiedTypeOrLifeTime,]
     | 'impl 'f64 % change to [id] ?
-    | 'impl '[ [Type] ']
+    | 'impl '[ [FullQualifiedType] ']
 end define
 
 define FullQualifiedTypeOrLifeTime
