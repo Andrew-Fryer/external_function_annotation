@@ -50,7 +50,61 @@ end define
 
 
 define Callee
-    [Type] '; [NL]
+    [FullQualifiedCallable] '; [NL]
+end define
+
+define FullQualifiedCallable
+    [CallableStart] [Callable]
+end define
+
+define Callable
+      [id]
+    %| '[ 'closure [] ']
+end define
+
+define CallableStart
+      %[TypePrefix?] [CallablePathSegment_COLON_COLON*]
+      [CallablePathSegment_COLON_COLON*]
+    | '< [FullQualifiedType] 'as [FullQualifiedType] '> '::
+end define
+
+define CallablePathSegment_COLON_COLON
+    [CallablePathSegment] '::
+end define
+
+define CallablePathSegment
+      [id]
+    | '< [FullQualifiedType] '>
+end define
+
+define FullQualifiedType
+    [TypePrefix?] [TypePathSegment_COLON_COLON*] [Type]
+end define
+
+define TypePrefix
+      '&
+    | '& 'mut
+    | 'dyn
+    | 'dyn 'for '< '' [id] '>
+end define
+
+define Type
+      [id]
+    %|
+end define
+
+define TypePathSegment_COLON_COLON
+    [TypePathSegment] '::
+end define
+
+define TypePathSegment
+      [id]
+    | [id] '< [FullQualifiedTypeOrLifeTime,] '>
+end define
+
+define FullQualifiedTypeOrLifeTime
+      [FullQualifiedType]
+    | '' [id]
 end define
 
 define not_semi_colon
@@ -64,13 +118,6 @@ end define
 
 define not_brackets
     [not '[] [not ']] [wildcard]
-end define
-
-define TypePrefix
-      '&
-    | '& 'mut
-    | 'dyn
-    | 'dyn 'for '< '' [id] '>
 end define
 
 define TypePath % ':: [id] for easily extracting the method name?
@@ -122,72 +169,20 @@ keys
     ')
     '[
     ']
-    'Call
     '<
     '>
+
     'dyn
+    'as
 end keys
 
 tokens
     charlit "" % undefines character literals because rust uses a single quote for lifetimes
 end tokens
 
-rule clean_caller
-    replace [Caller]
-        _ [number] ': _ [number] '~ caller_name [id] '[ _ [number] 'f '] path [COLON_COLON_SimplePathSegment*]
-    by
-        caller_name path
-end rule
-
-% this converts things like "{closure # 5}" to "{closure # 0}" or "{impl # 8}" to "{impl # 0}"
-rule normalize_simple_path_segments
-    replace $ [SimplePathSegment] % this is a one-pass rule
-        '{ type [id] '# _ [number] '}
-    by
-        '{ type '# '0 '}
-end rule
-
-rule remove_generics_from_path
-    replace [COLON_COLON_PathSegment*]
-        ':: '< _ [Generic] '> remaining [COLON_COLON_PathSegment*]
-    by
-        remaining
-end rule
-
-rule remove_generics_from_types
-    replace [Type]
-        type [Type]
-    deconstruct type
-        simple_type [id] '< _ [TypeOrLifetime,] '>
-    construct _ [Type]
-        type [print]
-    construct _ [id]
-        simple_type [message "success"] [print]
-    by
-        simple_type
-end rule
-
-rule remove_as_type
-    replace [TypePath]
-        '< pre [TypePrefix?] first [id] next [COLON_COLON_PathSegment*] 'as _ [Type] '> rest [COLON_COLON_PathSegment*]
-    construct new_rest [COLON_COLON_PathSegment*]
-        next [. rest]
-    construct result [Type]
-        pre first new_rest [print] [debug]
-    by
-        result [remove_generics_from_types]
-end rule
-
-rule transform_decl
-    replace $ [Decl]
-        d [Decl]
-    by
-        d [remove_generics_from_path] [remove_generics_from_types] [remove_as_type] [remove_generics_from_path] [remove_generics_from_types]
-end rule
-
 function main
     replace [program]
         es [Decl*]
     by
-        es [clean_caller] [normalize_simple_path_segments] [transform_decl]
+        es %[clean_caller] [normalize_simple_path_segments] [transform_decl]
 end function
