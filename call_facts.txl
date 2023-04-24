@@ -15,7 +15,7 @@ redefine Decl
 end redefine
 
 define Callee
-    [not_semi_colon*] '; [NL]
+    [not '}] [not_semi_colon*] '; [NL]
 end define
 
 define not_semi_colon
@@ -74,12 +74,12 @@ define Anything
     | '->
 end define
 
-function clean_caller
+rule clean_caller
     replace [Caller]
         _ [number] ': _ [number] '~ caller_name [id] '[ _ [number] 'f '] path [COLON_COLON_SimplePathSegment*]
     by
         caller_name path
-end function
+end rule
 
 rule normalize_impls
     replace $ [impl] % this is a one-pass rule
@@ -97,9 +97,16 @@ rule remove_generics
         _
 end rule
 
+rule transform_decl
+    replace $ [Decl]
+        d [Decl]
+    by
+        d %[clean_decl]
+end rule
+
 function main
     replace [program]
         es [Decl*]
     by
-        es %[normalize_impls] %[remove_generics]
+        es [clean_caller] %[transform_decl] %[normalize_impls] %[remove_generics]
 end function
