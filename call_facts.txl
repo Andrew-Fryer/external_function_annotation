@@ -37,15 +37,13 @@ define SimplePath
     [id] [COLON_COLON_SimplePathSegment*]
 end define
 define COLON_COLON_SimplePathSegment
-    ':: [impl_or_id]
+    ':: [path_segment]
 end define
 %^ inspiration taken from rust.grm
 
-define impl_or_id
+define path_segment
       [id]
-    | [impl]
-    | [closure]
-    | [constant]
+    | '{ [id] '# [number] '}
 end define
 
 define impl
@@ -91,11 +89,11 @@ rule clean_caller
         caller_name path
 end rule
 
-rule normalize_impls
-    replace $ [impl] % this is a one-pass rule
-        _ [impl]
+rule normalize_path_segments
+    replace $ [path_segment] % this is a one-pass rule
+        '{ type [id] '# _ [number] '}
     by
-        '{ 'impl '# '0 '}
+        '{ type '# '0 '}
 end rule
 
 rule remove_generics
@@ -116,5 +114,5 @@ function main
     replace [program]
         es [Decl*]
     by
-        es [clean_caller] [normalize_impls] %[transform_decl] %[remove_generics]
+        es [clean_caller] [normalize_path_segments] %[transform_decl] %[remove_generics]
 end function
