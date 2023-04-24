@@ -15,7 +15,7 @@ redefine Decl
 end redefine
 
 define Callee
-    [Path] '; [NL]
+    [Type] '; [NL]
 end define
 
 define not_semi_colon
@@ -36,28 +36,32 @@ define Caller
     | [SimplePath] % output
 end define
 
-define Path % ':: [id] for easily extracting the method name?
-      [id] [COLON_COLON_PathSegment*]
+define TypePrefix
+      '&
+    | '& 'mut
+    | 'dyn
+    | 'dyn 'for '< '' [id] '>
+end define
+
+define TypePath % ':: [id] for easily extracting the method name?
+      [TypePrefix?] [id] [COLON_COLON_PathSegment*]
     | '< [Type] 'as [Type] '> [COLON_COLON_PathSegment*]
+    | [PathSegment]
 end define
 
 define TypeOrLifetime
-      [Type]
+      [TypePath]
     | '' [id]
 end define
 
 define Type
-      [Path]
-    | [Path] ':: [Type] % this is hacky :|
+      [TypePath]
+    | [TypePath] ':: [Type] % this is hacky :|
     | '[ 'closure [not_brackets*] ']
-    | '& [Type]
-    | '& 'mut [Type]
-    | 'dyn [Type]
-    | 'dyn 'for '< '' [id] '> [Type]
     | '( [Type,] [',?] ') % tuple type
     | 'Fn '( [Type] ') '-> [Type] % fn type
     | '[ [Type] '; [number] '] % slice type
-    | [id] '< [TypeOrLifetime,] '> % this is hacky :|
+    | [id] '< [TypeOrLifetime,] '>
 end define
 
 define COLON_COLON_PathSegment
@@ -66,10 +70,11 @@ end define
 
 define PathSegment
       [id]
-    | [id] '< [TypeOrLifetime,] '>
+    %| [id] '< [TypeOrLifetime,] '> % this is hacky :|
     | '< [TypeOrLifetime,] '>
     | '< 'impl 'f64 '> % change to [id] ?
     | '< 'impl '[ [Type] '] '>
+    | [Type]
 end define
 
 define not_angle_bracket
@@ -156,12 +161,12 @@ rule remove_generics_from_types
 end rule
 
 rule remove_as_type
-    replace [Path]
-        '< first [id] next [COLON_COLON_PathSegment*] 'as _ [Type] '> rest [COLON_COLON_PathSegment*]
+    replace [TypePath]
+        '< pre [TypePrefix?] first [id] next [COLON_COLON_PathSegment*] 'as _ [Type] '> rest [COLON_COLON_PathSegment*]
     construct new_rest [COLON_COLON_PathSegment*]
         next [. rest]
     by
-        simple_type new_rest
+        pre simple_type new_rest
 end rule
 
 rule transform_decl
