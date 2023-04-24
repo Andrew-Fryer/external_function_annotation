@@ -64,7 +64,7 @@ end define
 
 define CallableStart
       %[TypePrefix?] [CallablePathSegment_COLON_COLON*]
-      [CallablePathSegment_COLON_COLON*]
+      [id] ':: [CallablePathSegment_COLON_COLON*]
     | '< [FullQualifiedType] 'as [FullQualifiedType] '> '::
 end define
 
@@ -107,59 +107,7 @@ define FullQualifiedTypeOrLifeTime
     | '' [id]
 end define
 
-define not_semi_colon
-    [not ';] [wildcard]
-end define
 
-define wildcard
-      [token]
-    | [key]
-end define
-
-define not_brackets
-    [not '[] [not ']] [wildcard]
-end define
-
-define TypePath % ':: [id] for easily extracting the method name?
-      [TypePrefix?] [id] [COLON_COLON_PathSegment*]
-    | '< [Type] 'as [Type] '> [COLON_COLON_PathSegment*]
-    | [PathSegment]
-end define
-
-define TypeOrLifetime
-      [TypePath]
-    | '' [id]
-end define
-
-define Type
-      [TypePath]
-    | [TypePath] ':: [Type] % this is hacky :|
-    | '[ 'closure [not_brackets*] ']
-    | '( [Type,] [',?] ') % tuple type
-    | 'Fn '( [Type] ') '-> [Type] % fn type
-    | '[ [Type] '; [number] '] % slice type
-    | [id] '< [TypeOrLifetime,] '>
-end define
-
-define COLON_COLON_PathSegment
-    ':: [PathSegment]
-end define
-
-define PathSegment
-      [id]
-    | '< [Generic] '>
-    | [Type]
-end define
-
-define Generic
-      [TypeOrLifetime,]
-    | 'impl 'f64 % change to [id] ?
-    | 'impl '[ [Type] ']
-end define
-
-define not_angle_bracket
-    [not '<] [not '>] [wildcard]
-end define
 
 % Dr. Dean says to use `[not opening_brace] [token]` instead of using keywords. I'm not sure why...
 keys
