@@ -2,6 +2,8 @@
 
 include "./call_island.grm"
 
+% Note that the input contains no double quotes, so we can insert them wherever we like in the output to make things clear for Pyhton.
+
 redefine program
     [Decl*]
 end define

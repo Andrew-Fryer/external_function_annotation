@@ -43,3 +43,5 @@ Here's an example of a line we don't care about:
 I think the most elegant way to treat this is to just add "deref" to the list of internal functions.
 
 I think it would be good to use another TXL program to transform the facts into something that python can process more easily.
+
+I searched through all_calls.txt and found: no double quotes!
