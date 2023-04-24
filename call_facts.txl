@@ -54,8 +54,9 @@ define Type
     | '& 'mut [Type]
     | 'dyn [Type]
     | 'dyn 'for '< '' [id] '> [Type]
-    | '( [Type,] ')
+    | '( [Type,] [',?] ')
     | 'Fn '( [Type] ') '-> [Type]
+    | [id] '< [TypeOrLifetime,] '> % this is hacky :|
 end define
 
 define COLON_COLON_PathSegment
