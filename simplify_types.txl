@@ -75,7 +75,7 @@ end define
 
 define CallablePathSegment
       [id]
-    | '< [FullQualifiedTypeOrLifeTime,] '>
+    | '< [Generic] '>
 end define
 
 define FullQualifiedType
@@ -100,6 +100,12 @@ end define
 
 define TypePathSegment
       [id]
+end define
+
+define Generic
+      [FullQualifiedTypeOrLifeTime,]
+    | 'impl 'f64 % change to [id] ?
+    | 'impl '[ [Type] ']
 end define
 
 define FullQualifiedTypeOrLifeTime
