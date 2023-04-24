@@ -54,7 +54,7 @@ define Callee
 end define
 
 define FullQualifiedCallable
-    [CallableStart] [Callable]
+    [CallableStart] ':: [CallablePathSegment_COLON_COLON*] [Callable]
 end define
 
 define Callable
@@ -65,8 +65,8 @@ end define
 
 define CallableStart
       %[TypePrefix?] [CallablePathSegment_COLON_COLON*]
-      [id] ':: [CallablePathSegment_COLON_COLON*]
-    | '< [FullQualifiedType] 'as [FullQualifiedType] '> '::
+      [id]
+    | '< [FullQualifiedType] 'as [FullQualifiedType] '>
 end define
 
 define CallablePathSegment_COLON_COLON
