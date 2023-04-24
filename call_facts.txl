@@ -9,9 +9,9 @@ redefine program
 end define
 
 redefine Decl
-    [SPOFF] 'Decl '( [Caller] ') '{ [NL] [IN]
+    'Decl '( [Caller] ') '{ [NL] [IN]
         [Callee*] [EX]
-    '} [SPON] [NL]
+    '} [NL] [NL] % I'm not sure why the formatting isn't working
 end redefine
 
 define Callee
@@ -77,6 +77,13 @@ function clean_caller
         caller_name path
 end function
 
+rule normalize_impls
+    replace $ [impl_or_id] % this is a one-pass rule
+        '{ 'impl '# _ [number] '}
+    by
+        '{ 'impl '# '0 '}
+end rule
+
 rule remove_generics
     replace [Anything*]
         %'< text [Anything*] '>
@@ -88,5 +95,5 @@ function main
     replace [program]
         es [Decl*]
     by
-        es %[remove_generics]
+        es [normalize_impls] %[remove_generics]
 end function
