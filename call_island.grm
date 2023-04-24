@@ -4,18 +4,6 @@ define program
     [Decl*]
 end define
 
-% Dr. Dean says to use `[not opening_brace] [token]` instead of using keywords. I'm not sure why...
-keys
-    '{
-    '}
-    '(
-    ')
-    '[
-    ']
-    'Call
-    % 'Func
-end keys
-
 compounds
     '::
     '->
@@ -45,24 +33,6 @@ define Land
     [Call]
 end define
 
-define not_brace
-      [not_brace_or_parenthesis]
-    | '(
-    | ')
-end define
-
-define not_parenthesis
-      [not_brace_or_parenthesis]
-    | '{
-    | '}
-end define
-
-define not_brace_or_parenthesis
-      [token]
-    | '[
-    | ']
-end define
-
 define Call
     'Call '{ 'ty ': [not_brace*] '{ [not_brace*] '} [IslandGrammar] '}
 end define
@@ -76,5 +46,44 @@ end define
 
 define Wave
     % Note: if I make this a [token*], TXL gets very slow and gives TXL0127E
-    [token+] %| [id]
+    [not_call_or_bracket_or_brace_or_parenthesis+] %| [id]
+end define
+
+define wildcard
+    [token]
+end define
+
+define bracket
+      '[
+    | ']
+end define
+
+define brace
+      '{
+    | '}
+end define
+
+define parenthesis
+      '(
+    | ')
+end define
+
+define not_brace
+    [not brace] [wildcard]
+end define
+
+define not_parenthesis
+    [not parenthesis] [wildcard]
+end define
+
+define not_brace_or_parenthesis
+    [not brace] [not_parenthesis]
+end define
+
+define not_bracket_or_brace_or_parenthesis
+    [not bracket] [not_brace_or_parenthesis]
+end define
+
+define not_call_or_bracket_or_brace_or_parenthesis
+    [not 'Call] [not_bracket_or_brace_or_parenthesis]
 end define
