@@ -28,7 +28,8 @@ define wildcard
 end define
 
 define Caller
-    [not_parenthesis*]
+      [number] ': [number] '~ [id] '[ [number] 'f '] [COLON_COLON_SimplePathSegment*] % input
+    | [SimplePath] % output
 end define
 
 % inspiration taken from rust.grm:
@@ -63,6 +64,13 @@ define Anything
     | [not '<] [not '>] [key]
     | '->
 end define
+
+function clean_caller
+    replace [Caller]
+        _ [number] ': _ [number] '~ caller_name [id] '[ _ [number] 'f '] path [COLON_COLON_SimplePathSegment*]
+    by
+        caller_name path
+end function
 
 rule remove_generics
     replace [Anything*]
