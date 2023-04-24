@@ -179,12 +179,12 @@ rule transform_decl
     replace $ [Decl]
         d [Decl]
     by
-        d %[clean_decl]
+        d [remove_generics_from_path] [remove_generics_from_types] [remove_as_type]
 end rule
 
 function main
     replace [program]
         es [Decl*]
     by
-        es [clean_caller] [normalize_simple_path_segments] [remove_generics_from_path] [remove_generics_from_types] [remove_as_type] %[transform_decl]
+        es [clean_caller] [normalize_simple_path_segments] [transform_decl]
 end function
