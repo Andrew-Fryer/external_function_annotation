@@ -89,9 +89,11 @@ I got rid of spaces and added new lines in the first TXL program's output like s
 Note that it may still add extra new lines if a line is very long.
 Removing spaces is important because the next TXL program in the pipeline groups the characts into tokens differently (does it really?).
 This causes TXL to remove spaces between identifiers, causing them to be merged... wtf?!?
+    this is a problem because the "is" keyword gets squashed with neighboring identifiers.
 Update:
 I'm not doing this.
 I had to add `::' to the compounds list so that it can be parsed together in the next stage I think.
+    Yes, I've confirmed that this matters (for the next stage because ": :" doesn't match "::" when parsing).
 
 Then, ... I should output JSON so that Python can read it in really easily.
 

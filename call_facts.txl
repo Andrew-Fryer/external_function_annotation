@@ -37,9 +37,14 @@ define SimplePath
     [id] [COLON_COLON_SimplePathSegment*]
 end define
 define COLON_COLON_SimplePathSegment
-    ':: [id]
+    ':: [impl_or_id]
 end define
 %^ inspiration taken from rust.grm
+
+define impl_or_id
+      [id]
+    | '{ 'impl '# [number] '}
+end define
 
 % Dr. Dean says to use `[not opening_brace] [token]` instead of using keywords. I'm not sure why...
 keys
