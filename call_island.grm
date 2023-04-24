@@ -18,6 +18,7 @@ end keys
 
 compounds
     '::
+    '->
 end compounds
 
 tokens

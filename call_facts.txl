@@ -15,7 +15,7 @@ redefine Decl
 end redefine
 
 define Callee
-    [not '}] [not_semi_colon*] '; [NL]
+    [Path] '; [NL]
 end define
 
 define not_semi_colon
@@ -27,9 +27,51 @@ define wildcard
     | [key]
 end define
 
+define not_brackets
+    [not '[] [not ']] [wildcard]
+end define
+
 define Caller
       [number] ': [number] '~ [id] '[ [number] 'f '] [COLON_COLON_SimplePathSegment*] % input
     | [SimplePath] % output
+end define
+
+define Path % ':: [id] for easily extracting the method name?
+      [id] [COLON_COLON_PathSegment*]
+    | '< [Type] 'as [Type] '> [COLON_COLON_PathSegment*]
+end define
+
+define TypeOrLifetime
+      [Type]
+    | '' [id]
+end define
+
+define Type
+      [Path]
+    | [Path] ':: [Type] % this is hacky :|
+    | '[ 'closure [not_brackets*] ']
+    | '& [Type]
+    | '& 'mut [Type]
+    | 'dyn [Type]
+    | 'dyn 'for '< '' [id] '> [Type]
+    | '( [Type,] ')
+    | 'Fn '( [Type] ') '-> [Type]
+end define
+
+define COLON_COLON_PathSegment
+    ':: [PathSegment]
+end define
+
+define PathSegment
+      [id]
+    | [id] '< [TypeOrLifetime,] '>
+    | '< [TypeOrLifetime,] '>
+    | '< 'impl 'f64 '> % change to [id] ?
+    | '< 'impl '[ [Type] '] '>
+end define
+
+define not_angle_bracket
+    [not '<] [not '>] [wildcard]
 end define
 
 % inspiration taken from rust.grm:
@@ -37,11 +79,11 @@ define SimplePath
     [id] [COLON_COLON_SimplePathSegment*]
 end define
 define COLON_COLON_SimplePathSegment
-    ':: [path_segment]
+    ':: [SimplePathSegment]
 end define
 %^ inspiration taken from rust.grm
 
-define path_segment
+define SimplePathSegment
       [id]
     | '{ [id] '# [number] '}
 end define
@@ -90,8 +132,8 @@ rule clean_caller
 end rule
 
 % this converts things like "{closure # 5}" to "{closure # 0}" or "{impl # 8}" to "{impl # 0}"
-rule normalize_path_segments
-    replace $ [path_segment] % this is a one-pass rule
+rule normalize_simple_path_segments
+    replace $ [SimplePathSegment] % this is a one-pass rule
         '{ type [id] '# _ [number] '}
     by
         '{ type '# '0 '}
@@ -115,5 +157,5 @@ function main
     replace [program]
         es [Decl*]
     by
-        es [clean_caller] [normalize_path_segments] %[transform_decl] %[remove_generics]
+        es [clean_caller] [normalize_simple_path_segments] %[transform_decl] %[remove_generics]
 end function
