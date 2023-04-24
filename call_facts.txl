@@ -141,11 +141,27 @@ rule normalize_simple_path_segments
         '{ type '# '0 '}
 end rule
 
-rule remove_generics
-    replace [Anything*]
-        %'< text [Anything*] '>
+rule remove_generics_from_path
+    replace [COLON_COLON_PathSegment*]
+        ':: '< _ [TypeOrLifetime,] '> remaining [COLON_COLON_PathSegment*]
     by
-        _
+        remaining
+end rule
+
+rule remove_generics_from_types
+    replace [PathSegment]
+        simple_type [id] '< _ [TypeOrLifetime,] '>
+    by
+        simple_type
+end rule
+
+rule remove_as_type
+    replace [Path]
+        '< first [id] next [COLON_COLON_PathSegment*] 'as _ [Type] '> rest [COLON_COLON_PathSegment*]
+    construct new_rest [COLON_COLON_PathSegment*]
+        next [. rest]
+    by
+        simple_type new_rest
 end rule
 
 rule transform_decl
@@ -159,5 +175,5 @@ function main
     replace [program]
         es [Decl*]
     by
-        es [clean_caller] [normalize_simple_path_segments] %[transform_decl] %[remove_generics]
+        es [clean_caller] [normalize_simple_path_segments] [remove_generics_from_path] [remove_generics_from_types] [remove_as_type] %[transform_decl]
 end function

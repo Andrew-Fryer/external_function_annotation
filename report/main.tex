@@ -133,4 +133,7 @@ This will improve the analysis because it will be able to look through libraries
 The other stretch goal I have is to write more complex TXL rules that will build a table of all traits (similar to interfaces) and then use the table to track down trait method calls.
 This will further imrpove the analysis because it will be able to analyze method calls on trait objects.
 
+The counter-intuitive part of TXL programming for me is that a replacement is not re-parsed according to the grammar.
+This means you need to consider that the non-terminal types in a replacement may be different than if the same sequence of terminals was parsed at the beginning.
+
 \end{document}
