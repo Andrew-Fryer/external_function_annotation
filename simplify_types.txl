@@ -1,6 +1,6 @@
 % Andrew Fryer, 2023
 
-include "./call_island.grm"
+%include "./call_island.grm"
 
 % Note that the input contains no double quotes, so we can insert them wherever we like in the output to make things clear for Pyhton.
 
@@ -59,7 +59,7 @@ end define
 
 define Callable
       [id]
-    %| '[ 'closure [] ']
+    | '< [FullQualifiedType,] [', ?] '[ 'closure '@  [not_bracket*] '] '>
 end define
 
 define CallableStart
@@ -107,6 +107,21 @@ define FullQualifiedTypeOrLifeTime
 end define
 
 
+
+
+define wildcard
+      [token]
+    | [key]
+end define
+
+define bracket
+      '[
+    | ']
+end define
+
+define not_bracket
+    [not bracket] [wildcard]
+end define
 
 % Dr. Dean says to use `[not opening_brace] [token]` instead of using keywords. I'm not sure why...
 keys
