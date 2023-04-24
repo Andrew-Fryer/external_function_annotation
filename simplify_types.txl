@@ -60,6 +60,7 @@ end define
 define Callable
       [id]
     | '< [FullQualifiedType,] [', ?] '[ 'closure '@  [not_bracket*] '] '>
+    | [CallablePathSegment] % or, maybe I should merge Callable and CallablePathSegment
 end define
 
 define CallableStart
