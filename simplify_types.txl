@@ -74,7 +74,7 @@ end define
 
 define CallablePathSegment
       [id]
-    | '< [FullQualifiedType] '>
+    | '< [FullQualifiedType,] '>
 end define
 
 define FullQualifiedType
@@ -90,7 +90,7 @@ end define
 
 define Type
       [id]
-    %|
+    | [id] '< [FullQualifiedTypeOrLifeTime,] '>
 end define
 
 define TypePathSegment_COLON_COLON
@@ -99,7 +99,6 @@ end define
 
 define TypePathSegment
       [id]
-    | [id] '< [FullQualifiedTypeOrLifeTime,] '>
 end define
 
 define FullQualifiedTypeOrLifeTime
