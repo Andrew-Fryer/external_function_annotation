@@ -59,7 +59,7 @@ end define
 
 define Callable
       [id]
-    | '< [FullQualifiedType,] [', ?] '[ 'closure '@  [not_bracket*] '] '>
+    | '< [FullQualifiedType,] '>
     | [CallablePathSegment] % or, maybe I should merge Callable and CallablePathSegment
 end define
 
@@ -81,6 +81,7 @@ end define
 define FullQualifiedType
       [TypePrefix?] [TypePathSegment_COLON_COLON*] [Type]
     | '( [FullQualifiedType,] ')
+    | '[ 'closure '@  [not_bracket*] ']
 end define
 
 define TypePrefix
