@@ -70,11 +70,14 @@ end define
 
 define PathSegment
       [id]
-    %| [id] '< [TypeOrLifetime,] '> % this is hacky :|
-    | '< [TypeOrLifetime,] '>
-    | '< 'impl 'f64 '> % change to [id] ?
-    | '< 'impl '[ [Type] '] '>
+    | '< [Generic] '>
     | [Type]
+end define
+
+define Generic
+      [TypeOrLifetime,]
+    | 'impl 'f64 % change to [id] ?
+    | 'impl '[ [Type] ']
 end define
 
 define not_angle_bracket
@@ -148,7 +151,7 @@ end rule
 
 rule remove_generics_from_path
     replace [COLON_COLON_PathSegment*]
-        ':: '< _ [TypeOrLifetime,] '> remaining [COLON_COLON_PathSegment*]
+        ':: '< _ [Generic] '> remaining [COLON_COLON_PathSegment*]
     by
         remaining
 end rule
