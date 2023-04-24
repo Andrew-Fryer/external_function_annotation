@@ -14,6 +14,41 @@ redefine Decl
     '} [NL]
 end redefine
 
+define Caller
+      [number] ': [number] '~ [id] '[ [number] 'f '] [COLON_COLON_SimplePathSegment*] % input
+    | [SimplePath] % output
+end define
+
+% inspiration taken from rust.grm:
+define SimplePath
+    [id] [COLON_COLON_SimplePathSegment*]
+end define
+define COLON_COLON_SimplePathSegment
+    ':: [SimplePathSegment]
+end define
+%^ inspiration taken from rust.grm
+
+define SimplePathSegment
+      [id]
+    | '{ [id] '# [number] '}
+end define
+
+define impl
+    '{ 'impl '# [number] '}
+end define
+
+define closure
+    '{ 'closure '# [number] '}
+end define
+
+define constant
+    '{ 'constant '# [number] '}
+end define
+
+%%%
+
+
+
 define Callee
     [Type] '; [NL]
 end define
@@ -29,11 +64,6 @@ end define
 
 define not_brackets
     [not '[] [not ']] [wildcard]
-end define
-
-define Caller
-      [number] ': [number] '~ [id] '[ [number] 'f '] [COLON_COLON_SimplePathSegment*] % input
-    | [SimplePath] % output
 end define
 
 define TypePrefix
@@ -84,32 +114,6 @@ define not_angle_bracket
     [not '<] [not '>] [wildcard]
 end define
 
-% inspiration taken from rust.grm:
-define SimplePath
-    [id] [COLON_COLON_SimplePathSegment*]
-end define
-define COLON_COLON_SimplePathSegment
-    ':: [SimplePathSegment]
-end define
-%^ inspiration taken from rust.grm
-
-define SimplePathSegment
-      [id]
-    | '{ [id] '# [number] '}
-end define
-
-define impl
-    '{ 'impl '# [number] '}
-end define
-
-define closure
-    '{ 'closure '# [number] '}
-end define
-
-define constant
-    '{ 'constant '# [number] '}
-end define
-
 % Dr. Dean says to use `[not opening_brace] [token]` instead of using keywords. I'm not sure why...
 keys
     '{
@@ -127,12 +131,6 @@ end keys
 tokens
     charlit "" % undefines character literals because rust uses a single quote for lifetimes
 end tokens
-
-define Anything
-      [not '-] [token]
-    | [not '<] [not '>] [key]
-    | '->
-end define
 
 rule clean_caller
     replace [Caller]
