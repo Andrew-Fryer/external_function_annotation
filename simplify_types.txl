@@ -79,7 +79,8 @@ define CallablePathSegment
 end define
 
 define FullQualifiedType
-    [TypePrefix?] [TypePathSegment_COLON_COLON*] [Type]
+      [TypePrefix?] [TypePathSegment_COLON_COLON*] [Type]
+    | '( [FullQualifiedType,] ')
 end define
 
 define TypePrefix
