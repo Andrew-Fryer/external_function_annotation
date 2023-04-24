@@ -44,10 +44,20 @@ end define
 define impl_or_id
       [id]
     | [impl]
+    | [closure]
+    | [constant]
 end define
 
 define impl
     '{ 'impl '# [number] '}
+end define
+
+define closure
+    '{ 'closure '# [number] '}
+end define
+
+define constant
+    '{ 'constant '# [number] '}
 end define
 
 % Dr. Dean says to use `[not opening_brace] [token]` instead of using keywords. I'm not sure why...
