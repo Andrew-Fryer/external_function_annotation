@@ -151,9 +151,35 @@ define Anything
     | '->
 end define
 
+function append_callee c [Callee]
+    replace [QuotedCallee,]
+        existing [QuotedCallee,]
+    by
+        %new [, existing]
+        existing
+end function
+
+function append_key_val_pair d [Decl]
+    replace [KeyValPair,]
+        existing [KeyValPair,]
+    deconstruct d
+        'Decl '( caller [Caller] ') '{
+            callees [Callee*]
+        '}
+    construct new_callees [QuotedCallee,]
+        _ [append_callee each callees]
+    by
+        %new [, existing]
+        existing
+end function
+
 function main
     replace [program]
         ds [Decl*]
+    construct key_val_pairs [KeyValPair,]
+        _ [append_key_val_pair each ds]
     by
-        ds
+        '{
+            key_val_pairs
+        '}
 end function
