@@ -75,7 +75,7 @@ end define
 
 define CallablePathSegment
       [id]
-    | '< [FullQualifiedType,] '>
+    | '< [FullQualifiedTypeOrLifeTime,] '>
 end define
 
 define FullQualifiedType
