@@ -154,8 +154,14 @@ rule remove_generics_from_path
 end rule
 
 rule remove_generics_from_types
-    replace [PathSegment]
+    replace [Type]
+        type [Type]
+    deconstruct type
         simple_type [id] '< _ [TypeOrLifetime,] '>
+    construct _ [Type]
+        type [print]
+    construct _ [id]
+        simple_type [message "success"] [print]
     by
         simple_type
 end rule
