@@ -43,7 +43,11 @@ end define
 
 define impl_or_id
       [id]
-    | '{ 'impl '# [number] '}
+    | [impl]
+end define
+
+define impl
+    '{ 'impl '# [number] '}
 end define
 
 % Dr. Dean says to use `[not opening_brace] [token]` instead of using keywords. I'm not sure why...
@@ -78,10 +82,12 @@ function clean_caller
 end function
 
 rule normalize_impls
-    replace $ [impl_or_id] % this is a one-pass rule
-        '{ 'impl '# _ [number] '}
+    replace $ [impl] % this is a one-pass rule
+        a [impl] %'{ 'impl '# _ [number] '}
+    construct b [impl]
+        a [print]
     by
-        '{ 'impl '# '0 '}
+        '{ 'impl '# '1000000 '}
 end rule
 
 rule remove_generics
@@ -95,5 +101,5 @@ function main
     replace [program]
         es [Decl*]
     by
-        es [normalize_impls] %[remove_generics]
+        es %[normalize_impls] %[remove_generics]
 end function
