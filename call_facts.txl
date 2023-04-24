@@ -89,6 +89,7 @@ rule clean_caller
         caller_name path
 end rule
 
+% this converts things like "{closure # 5}" to "{closure # 0}" or "{impl # 8}" to "{impl # 0}"
 rule normalize_path_segments
     replace $ [path_segment] % this is a one-pass rule
         '{ type [id] '# _ [number] '}
