@@ -45,9 +45,19 @@ define Land
 end define
 
 define not_brace
-      [token]
+      [not_brace_or_parenthesis]
     | '(
     | ')
+end define
+
+define not_parenthesis
+      [not_brace_or_parenthesis]
+    | '{
+    | '}
+end define
+
+define not_brace_or_parenthesis
+      [token]
     | '[
     | ']
 end define

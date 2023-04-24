@@ -2,22 +2,31 @@
 
 include "./call_island.grm"
 
-define program
+redefine program
     [Decl*]
 end define
 
-define Decl
+redefine Decl
     [SPOFF] 'Decl '( [Caller] ') '{ [NL] [IN]
         [Callee*] [EX]
     '} [SPON] [NL]
 end redefine
 
 define Callee
-    [not_brace_or_parenthesis] '; [NL]
+    [not_semi_colon*] '; [NL]
+end define
+
+define not_semi_colon
+    [not ';] [wildcard]
+end define
+
+define wildcard
+      [token]
+    | [key]
 end define
 
 define Caller
-    %
+    [not_parenthesis*]
 end define
 
 % inspiration taken from rust.grm:
@@ -55,14 +64,14 @@ end define
 
 rule remove_generics
     replace [Anything*]
-        '< text [Anything*] '>
+        %'< text [Anything*] '>
     by
         _
 end rule
 
 function main
     replace [program]
-        es [Entry*]
+        es [Decl*]
     by
         es %[remove_generics]
 end function
