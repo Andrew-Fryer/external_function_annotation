@@ -11,7 +11,7 @@ end define
 redefine Decl
     'Decl '( [Caller] ') '{ [NL] [IN]
         [Callee*] [EX]
-    '} [NL] [NL] % I'm not sure why the formatting isn't working
+    '} [NL]
 end redefine
 
 define Callee
@@ -118,5 +118,5 @@ function main
     replace [program]
         es [Decl*]
     by
-        es [clean_caller] %[transform_decl] %[normalize_impls] %[remove_generics]
+        es [clean_caller] [normalize_impls] %[transform_decl] %[remove_generics]
 end function
