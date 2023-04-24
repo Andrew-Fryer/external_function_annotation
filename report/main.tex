@@ -23,8 +23,10 @@
 \begin{document}
 \maketitle
 
-\section{From Proposal}
-\section{Problem Definition}
+\section{Introduction}
+asd
+
+\subsection{Problem Definition}
 
 I am trying to modify LibAFL to add support for collecting data that is output from the software system that is being fuzzed.
 This feature should ideally be added in a way that fits in well with the existing software abstractions.
@@ -41,7 +43,19 @@ While this would be feasible, this problem shows up in software projects frequen
 
 In particular, I would like to know which c library functions may be called directly or indirectly by each function in LibAFL.
 
-\section{Proposed Design}
+\subsection{Desired Outcomes}
+I would like to learn to use TXL to process intermediate representation of a programming language.
+I would like to understand some of the challenges associated with resolving dynamic dispatch in greater detail.
+I would like to build a tool that is capable of providing some helpful information to a software engineer.
+I would also like to understand the Rust programming language better.
+
+\section{Design}
+
+\subsection{Known Challenges}
+Statically resolving dynamic dispatch is one of those problems were you can do better with more pattern recognition, but you can never get it completely right\dots
+Even getting it right at all is difficult because of type inference.
+
+\subsection{Proposed Design}
 
 I will write a bash script that will accept the path to a directory containing a Rust project.
 % I may use `cargo expand' and TXL to process the source code as described in sub-section \ref{sub-section:txl}.
@@ -208,6 +222,9 @@ I should do a performance benchmark here.
 It can't do...
 
 I'm pretty sure my tool will get confused if you give it a struct that implements several traits that have a method with the same name.
+
+\section{Considerations in Hindsight}
+I would pick a language that doesn't do dynamic dispatch in funky ways.
 
 \section{Future Work}
 

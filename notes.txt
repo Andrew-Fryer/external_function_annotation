@@ -45,3 +45,11 @@ I think the most elegant way to treat this is to just add "deref" to the list of
 I think it would be good to use another TXL program to transform the facts into something that python can process more easily.
 
 I searched through all_calls.txt and found: no double quotes!
+
+I tried running on LibAFL, and it is too long:
+"[./thir-flat.txt, call_island.txl] : TXL0142E line 1600002 of ./thir-flat.txt - (TXL implementation limit) Input file too long (> 1600000 lines) (a larger size should be used for this input)"
+"The total length of the input to the TXL program, in terms of individual input items,
+is longer than the TXL implementation can handle at the present size."
+Note: I'm already using the maximum size.
+"[./thir-flat.txt, call_island.txl] : TXL0141E - (TXL implementation limit) Input too large (total length > 16000000 tokens) (a larger size is required for this input)"
+"An line in the input is longer than the maximum that the TXL implementation can handle."
