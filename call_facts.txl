@@ -93,11 +93,9 @@ end rule
 
 rule normalize_impls
     replace $ [impl] % this is a one-pass rule
-        a [impl] %'{ 'impl '# _ [number] '}
-    construct b [impl]
-        a [print]
+        _ [impl]
     by
-        '{ 'impl '# '1000000 '}
+        '{ 'impl '# '0 '}
 end rule
 
 rule remove_generics
