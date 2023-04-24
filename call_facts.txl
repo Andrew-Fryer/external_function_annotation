@@ -54,8 +54,9 @@ define Type
     | '& 'mut [Type]
     | 'dyn [Type]
     | 'dyn 'for '< '' [id] '> [Type]
-    | '( [Type,] [',?] ')
-    | 'Fn '( [Type] ') '-> [Type]
+    | '( [Type,] [',?] ') % tuple type
+    | 'Fn '( [Type] ') '-> [Type] % fn type
+    | '[ [Type] '; [number] '] % slice type
     | [id] '< [TypeOrLifetime,] '> % this is hacky :|
 end define
 
