@@ -151,40 +151,9 @@ define Anything
     | '->
 end define
 
-function append_callee c [Callee]
-    replace [QuotedCallee,]
-        existing [QuotedCallee,]
-    construct new [QuotedCallee]
-        '" c '"
-    by
-        new [, existing]
-        exisitng
-end function
-
-function append_key_val_pair d [Decl]
-    replace [KeyValPair,]
-        existing [KeyValPair,]
-    deconstruct d
-        'Decl '( caller [Caller] ') '{
-            callees [Callee*]
-        '}
-    construct new_callees [QuotedCallee,]
-        _ [append_callee each callees]
-    construct new [KeyValPair]
-        '" caller '" ': '[
-            new_callees
-        ']
-    by
-        new [, existing]
-end function
-
-rule main
+function main
     replace [program]
         ds [Decl*]
-    construct key_val_pairs [KeyValPair,]
-        _ [append_key_val_pair each ds]
     by
-        '{
-            key_val_pairs
-        '}
-end rule
+        ds
+end function

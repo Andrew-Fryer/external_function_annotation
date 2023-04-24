@@ -174,15 +174,17 @@ rule remove_as_type
         '< pre [TypePrefix?] first [id] next [COLON_COLON_PathSegment*] 'as _ [Type] '> rest [COLON_COLON_PathSegment*]
     construct new_rest [COLON_COLON_PathSegment*]
         next [. rest]
+    construct result [Type]
+        pre first new_rest [print] [debug]
     by
-        pre first new_rest
+        result [remove_generics_from_types]
 end rule
 
 rule transform_decl
     replace $ [Decl]
         d [Decl]
     by
-        d [remove_generics_from_path] [remove_generics_from_types] [remove_as_type]
+        d [remove_generics_from_path] [remove_generics_from_types] [remove_as_type] [remove_generics_from_path] [remove_generics_from_types]
 end rule
 
 function main
