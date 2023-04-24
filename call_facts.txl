@@ -166,7 +166,7 @@ rule remove_as_type
     construct new_rest [COLON_COLON_PathSegment*]
         next [. rest]
     by
-        pre simple_type new_rest
+        pre first new_rest
 end rule
 
 rule transform_decl
