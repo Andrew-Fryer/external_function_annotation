@@ -97,10 +97,17 @@ I had to add `::' to the compounds list so that it can be parsed together in the
 
 Then, ... I should output JSON so that Python can read it in really easily.
 
+I tried to use a non-terminal from rust.grm, but it doesn't parse THIR properly and it seemed difficult to modify it in the correct places...
+
 \section{Final Tool} % maybe this should be a subsection
 talk about how I have several TXL passes doing: call extraction, function name normalization, and conversion to json
 why did I choose to use Python
 why did I choose thir over mir?
+
+Note that all_calls.txt has duplicate callees.
+
+I think I'll just deal with this in Python.
+
 
 \section{Final Solution Results}
 This is what it is capable of...

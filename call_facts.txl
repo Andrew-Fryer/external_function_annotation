@@ -5,6 +5,16 @@ include "./call_island.grm"
 
 % Note that the input contains no double quotes, so we can insert them wherever we like in the output to make things clear for Pyhton.
 
+redefine PathIdentSegment
+      ...
+    | '{ [id] '# [integer_number] '} % observed in THIR
+end redefine
+
+redefine TypePathSegment
+      ...
+    | '[ 'closure '@ [not_brackets*] ']
+end redefine
+
 redefine program
     [Decl*]
 end define
@@ -16,7 +26,7 @@ redefine Decl
 end redefine
 
 define Callee
-    [PathExpression] '; [NL]
+    [PathExpression] '; [NL] % or TypePath maybe?
 end define
 
 define not_semi_colon
@@ -54,19 +64,13 @@ end define
 
 define SimplePathSegment_
       [id]
-    | '{ [id] '# [integer_number] '}
+    | '{ [SimplePathSegmentAnnotation] '# [integer_number] '}
 end define
 
-define impl
-    '{ 'impl '# [integer_number] '}
-end define
-
-define closure
-    '{ 'closure '# [integer_number] '}
-end define
-
-define constant
-    '{ 'constant '# [integer_number] '}
+define SimplePathSegmentAnnotation
+      'impl
+    | 'closure
+    | 'constant
 end define
 
 % Dr. Dean says to use `[not opening_brace] [token]` instead of using keywords. I'm not sure why...
@@ -103,9 +107,9 @@ end rule
 % this converts things like "{closure # 5}" to "{closure # 0}" or "{impl # 8}" to "{impl # 0}"
 rule normalize_simple_path_segments
     replace $ [SimplePathSegment_] % this is a one-pass rule
-        '{ type [id] '# _ [integer_number] '}
+        '{ type [SimplePathSegmentAnnotation] '# _ [integer_number] '}
     by
-        type
+        '{ type '# '0 '}
 end rule
 
 rule remove_generics
