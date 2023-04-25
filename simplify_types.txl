@@ -174,7 +174,7 @@ end rule
 
 rule remove_as_type
     replace [FullQualifiedCallable]
-        callable_start [CallableStart] ':: callable_path_segment [CallablePathSegment_COLON_COLON*] callable [Callable]
+        callable_start [CallableStart] ':: callable_path_segments [CallablePathSegment_COLON_COLON*] callable [Callable]
     deconstruct callable_start
         '< full_type [FullQualifiedType] 'as _ [FullQualifiedType] '>
     deconstruct full_type
@@ -183,8 +183,18 @@ rule remove_as_type
         _ [empty]
     deconstruct type
         type_name [id]
+    construct path_segment_for_type_name [CallablePathSegment_COLON_COLON*]
+        type_name '::
+    construct path_segments [CallablePathSegment_COLON_COLON*]
+        _ %[append_callable_path_segment each type_segments]
+        [. path_segment_for_type_name]
+    deconstruct path_segments
+        first_path_segment [id] ':: cons_path_segments [CallablePathSegment_COLON_COLON*]
+    construct new_callable_path_segments [CallablePathSegment_COLON_COLON*]
+        cons_path_segments [. callable_path_segments]
     construct result [FullQualifiedCallable]
-        'asdf ':: callable_path_segment callable
+        %type_segments type ':: callable_path_segment callable
+        first_path_segment ':: new_callable_path_segments callable
     by
         result %[remove_generics_from_types]
 end rule
