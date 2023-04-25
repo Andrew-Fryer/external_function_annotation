@@ -99,6 +99,7 @@ define Type
       [id]
     | [id] '< [FullQualifiedTypeOrLifeTime,] '> % generic
     | 'Fn '( [FullQualifiedType] ') '-> [FullQualifiedType]
+    | '[ [FullQualifiedType] '; [number] '] % slice type
 end define
 
 define TypePathSegment_COLON_COLON
