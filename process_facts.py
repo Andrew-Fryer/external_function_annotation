@@ -54,4 +54,4 @@ for fn in transitive_internal_calls_external:
     for external_fn in transitive_internal_calls_external[fn]:
         print('\t' + external_fn)
 
-print('here')
+print()
