@@ -1,5 +1,87 @@
 {
-    " andrew_fuzz :: main " : [
+    " std :: result :: Result :: map " : [
+    ]
+    , " std :: fs :: read " : [
+    ]
+    , " std :: path :: Path :: new " : [
+    ]
+    , " std :: fs :: write " : [
+    ]
+    , " std :: vec :: Vec :: as_ref " : [
+    ]
+    , " std :: cell :: RefCell :: new " : [
+    ]
+    , " std :: cell :: Ref :: deref " : [
+    ]
+    , " std :: cell :: RefCell :: borrow " : [
+    ]
+    , " std :: collections :: HashMap :: len " : [
+    ]
+    , " std :: option :: Option :: eq " : [
+    ]
+    , " std :: collections :: HashMap :: insert " : [
+    ]
+    , " std :: collections :: HashMap :: new " : [
+    ]
+    , " Self :: do_vectorization " : [
+    ]
+    , " Self :: features " : [
+    ]
+    , " Self :: do_serialization " : [
+    ]
+    , " std :: vec :: Vec :: len " : [
+    ]
+    , " std :: vec :: Vec :: index_mut " : [
+    ]
+    , " std :: vec :: Vec :: clone " : [
+    ]
+    , " std :: iter :: Enumerate :: next " : [
+    ]
+    , " std :: iter :: Enumerate :: into_iter " : [
+    ]
+    , " std :: slice :: Iter :: enumerate " : [
+    ]
+    , " core :: slice :: iter " : [
+    ]
+    , " std :: slice :: Iter :: next " : [
+    ]
+    , " core :: panicking :: panic " : [
+    ]
+    , " std :: rc :: Rc :: downgrade " : [
+    ]
+    , " std :: rc :: Rc :: from " : [
+    ]
+    , " std :: slice :: into_vec " : [
+    ]
+    , " std :: boxed :: Box :: new " : [
+    ]
+    , " std :: rc :: Rc :: clone " : [
+    ]
+    , " std :: fmt :: Arguments :: new_const " : [
+    ]
+    , " std :: vec :: Vec :: push " : [
+    ]
+    , " std :: rc :: Rc :: deref " : [
+    ]
+    , " std :: vec :: IntoIter :: next " : [
+    ]
+    , " std :: vec :: Vec :: into_iter " : [
+    ]
+    , " std :: vec :: Vec :: new " : [
+    ]
+    , " std :: option :: Option :: unwrap " : [
+        " core :: panicking :: panic;
+        "]
+    , " std :: rc :: Rc :: new " : [
+    ]
+    , " std :: rc :: Weak :: new " : [
+    ]
+    , " std :: result :: Result :: unwrap " : [
+        " core :: panicking :: panic;
+        "]
+    , " str :: to_string " : [
+    ]
+    , " andrew_fuzz :: main " : [
         " dns :: dns;
         ", " str :: to_string;
         ", " core :: bit_array :: BitArray :: from_file;
