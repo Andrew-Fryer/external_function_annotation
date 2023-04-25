@@ -25,7 +25,10 @@
 
 \section{Introduction}
 
-\subsection{Problem Definition}
+Making changes to software systems is a necessary task that is often costly due to the time it takes software engineers to understand enough of the software system to make the changes.
+This is typically done by reading the source code and running the system with various inputs to understand its behaviour.
+
+\subsection{Motivating Example}
 
 I am trying to modify LibAFL to add support for collecting data that is output from the software system that is being fuzzed.
 This feature should ideally be added in a way that fits in well with the existing software abstractions.
@@ -42,13 +45,38 @@ While this would be feasible, this problem shows up in software projects frequen
 
 In particular, I would like to know which c library functions may be called directly or indirectly by each function in LibAFL.
 
-\subsection{Desired Outcomes}
-I would like to learn to use TXL to process intermediate representation of a programming language.
-I would like to understand some of the challenges associated with resolving dynamic dispatch in greater detail.
-I would like to build a tool that is capable of providing some helpful information to a software engineer.
-I would also like to understand the Rust programming language better.
+\subsection{Related Work}
+
+\subsubsection{IDEs}
+
+Integrated Development Environments (IDEs) can help software engineers to understand the software more quickly by presenting extracted information such as a call hierarchy.
+In Eclipse, this is a lazily-loaded tree-shaped structure that can be loaded for any method in the Java programming language.
+It shows all of the methods that the given method may call, and can conveniently show each of the methods that those methods may call, recursively.
+% https://help.eclipse.org/2023-03/index.jsp
+
+\subsubsection{Effect Typing}
+
+Another approach to aiding software engineers in program comprehension is effect typing.
+The Koka programming language uses so called effect types to embed information about the behaviour of functions into the type of the function.
+This includes whether or not the function may crash, whether it may perform I/O, and whether it is deterministic.
+% https://arxiv.org/abs/1406.2061
+
+\subsubsection{Concrat}
+Concrat: An Automatic C-to-Rust Lock API Translator for Concurrent Programs
+
+
+\section{Project Scope}
+
+The Rust programming language was picked to be analyzed for this project ...
+
+\subsection{Goals}
+
+The first objective of this project is to build a prototype tool that will extract data from a Rust crate such as LibAFL's core crate (libafl) and present the user with the set of external functions that may be called directly or indirectly by each function in the crate.
+Ideally, it should be possible to use the same process on the crates that a given crate depends on so that the external functions are reduced to foreign functions, functions that are written in a different programming language and exposed to the Rust code, namely libc.
+Secondary objectives include exploring fact extraction using different tools and architectures and understanding the Rust programming language better.
 
 \subsection{Known Challenges}
+
 The source code in Rust projects is typically spread over multiple files.
 Files are included in other files as modules.
 I should give the example of the modules here maybe.
@@ -60,6 +88,7 @@ Statically resolving dynamic dispatch is one of those problems were you can do b
 Even getting it right at all is difficult because of type inference.
 
 Note: resolving dynamic dispatch is uncomputable, so we are making a best effort attempt out of the gate.
+
 
 \section{Design}
 
@@ -231,12 +260,25 @@ It was important to get the output formatting (whitespace) to work because it is
 
 One common mistake I made was I'd use a wildcard except for what I expected to follow the section I don't care about, but then I'd miss a way that something else could follow it (on the last iter, for example), and then it ends up eating more than it should.
 
-\section{Final Solution/Tool} % maybe this should be a subsection
+\section{Final Design} % maybe this should be a subsection
 talk about how I have several TXL passes doing: call extraction, function name normalization, and conversion to json
 why did I choose to use Python
 why did I choose thir over mir?
 
+\subsection{Stage 1: Generating Textual Intermediate Representation (THIR)}
+
+\subsection{Stage 2: Extracting Declarations and Calls}
+
+\subsection{Stage 3: Simplifying Types}
+
+\subsection{Stage 4: Conversion to JSON}
+
+\subsection{Stage 5: Constructing Transitive Internal to External Calls Relation}
+
 \subsection{Evaluation}
+
+It doesn't work on LibAFL's core crate (libafl).
+
 This is what it is capable of...
 
 I should explain the design with snips of diffs between input and output of each stage!
@@ -281,10 +323,31 @@ This will further improve the analysis because it will be able to analyze method
 The counter-intuitive part of TXL programming for me is that a replacement is not re-parsed according to the grammar.
 This means you need to consider that the non-terminal types in a replacement may be different than if the same sequence of terminals was parsed at the beginning.
 
+Getting the right intermediate representation is key.
+
+It is difficult to write parsing code in Python.
+It is much better to let TXL programs do the work of parsing complex structures such fully qualified Rust paths and types.
+
+Python works well for pairing up callees with callers because the entire procedure can be written in under a couple hundred lines, so the code wouldn't really benefit from the rigid structure of strongly, statically typed languages.
+At the same time, the process is conceptually difficult enough that it is nice to be able to debug the code using a repl.
+
+Rust paths and types put the semicolons in slightly different places...
+
 \section{Future Work}
 
 Talk about the pluses and minuses of each approach (python, TXL, link with rustc)
 
+Many of the limitations of this prototype tool can be addressed by modifying the code in rustc that generates the textual representation of the intermediate representation of the Rust crate.
+If the intermediate representation was modified to contain less metadata, the textual THIR representation for libafl would likely be small enough for TXL to process.
+Also, the intermediate representation could be changed to include annotations indicating which trait a function is being implemented for.
+This would allow my tool to limit the pairing of dynamic dispatches to function definitions that are for the same trait.
+
+While it was out of the scope of this project due to time constraints, it would be interesting to explore how the architecture of a similar prototype that linked into the Rust compiler would compare to this project's architecture.
+In that architecture, all of the processing could be done in Rust code that runs in the same process as the Rust compiler.
+
+I couldn't get the standard libraries to build using the nightly Rust compiler.
+
+I didn't have time to fix the error with `Self'.
 
 \begin{figure}
     \caption{Example of use declaration and fully qualified identifier.}
