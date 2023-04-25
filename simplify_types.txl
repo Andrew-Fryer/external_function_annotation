@@ -164,9 +164,17 @@ rule clean_caller
         caller_name path
 end rule
 
+% this converts things like "{closure # 5}" to "{closure # 0}" or "{impl # 8}" to "{impl # 0}"
+rule normalize_simple_path_segments
+    replace $ [SimplePathSegment] % this is a one-pass rule
+        '{ type [id] '# _ [number] '}
+    by
+        '{ type '# '0 '}
+end rule
+
 function main
     replace [program]
         es [Decl*]
     by
-        es [clean_caller] %[normalize_simple_path_segments] [transform_decl]
+        es [clean_caller] [normalize_simple_path_segments] %[transform_decl]
 end function
