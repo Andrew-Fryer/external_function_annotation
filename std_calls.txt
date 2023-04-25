@@ -1,33 +1,23 @@
-Decl (str :: to_string) {
-}
+Decl (str :: to_string) {}
 Decl (std :: result :: Result :: unwrap) {
 	core :: panicking :: panic;
 }
-Decl (std :: rc :: Weak :: new) {
-}
-Decl (std :: rc :: Rc :: new) {
-}
+Decl (std :: rc :: Weak :: new) {}
+Decl (std :: rc :: Rc :: new) {}
 Decl (std :: option :: Option :: unwrap) {
 	core :: panicking :: panic;
 }
-Decl (std :: vec :: Vec :: new) {
-}
-Decl (std :: vec :: Vec :: into_iter) {
-}
-Decl (std :: vec :: IntoIter :: next) {
-}
-Decl (std :: rc :: Rc :: deref) {
-}
-Decl (std :: vec :: Vec :: push) {
-}
-Decl (std :: fmt :: Arguments :: new_const) {
-}
+Decl (std :: vec :: Vec :: new) {}
+Decl (std :: vec :: Vec :: into_iter) {}
+Decl (std :: vec :: IntoIter :: next) {}
+Decl (std :: rc :: Rc :: deref) {}
+Decl (std :: vec :: Vec :: push) {}
+Decl (std :: fmt :: Arguments :: new_const) {}
 Decl (std :: rc :: Rc :: clone) {}
 Decl (std :: boxed :: Box :: new) {}
 Decl (std :: slice :: into_vec) {}
 Decl (std :: rc :: Rc :: from) {}
 Decl (std :: rc :: Rc :: downgrade) {}
-Decl (core :: panicking :: panic) {}
 Decl (std :: slice :: Iter :: next) {}
 Decl (core :: slice :: iter) {}
 Decl (std :: slice :: Iter :: enumerate) {}
@@ -51,3 +41,19 @@ Decl (std :: fs :: write) {}
 Decl (std :: path :: Path :: new) {}
 Decl (std :: fs :: read) {}
 Decl (std :: result :: Result :: map) {}
+Decl (std :: collections :: HashMap :: index) {}
+Decl (std :: vec :: Vec :: index) {}
+Decl (std :: vec :: Vec :: deref) {}
+Decl (std :: collections :: HashMap :: get) {}
+Decl (core :: slice :: get) {}
+Decl (std :: option :: Option :: map) {}
+Decl (std :: vec :: Vec :: deref) {}
+Decl (std :: string :: String :: to_string) {}
+Decl (std :: slice :: Iter :: collect) {}
+Decl (std :: vec :: Vec :: eq) {}
+Decl (std :: slice :: Iter :: zip) {}
+Decl (std :: iter :: Zip :: into_iter) {}
+Decl (std :: iter :: Zip :: next) {}
+Decl (f64 :: sub) {}
+Decl (std :: f64 :: powi) {}
+Decl (std :: slice :: Iter :: into_iter) {}
