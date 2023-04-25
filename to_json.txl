@@ -12,15 +12,15 @@ define DoubleQuote
 end define
 
 define Json
-    '{
-        [KeyValPair,]
-    '}
+    '{ [NL] [IN]
+        [KeyValPair,] [EX]
+    '} [NL]
 end define
 
 define KeyValPair
-    [DoubleQuote] [Caller] [DoubleQuote] ': '[
-        [QuotedCallee,]
-    ']
+    [DoubleQuote] [Caller] [DoubleQuote] ': '[ [NL] [IN]
+        [QuotedCallee,] [EX]
+    '] [NL]
 end define
 
 define QuotedCallee
