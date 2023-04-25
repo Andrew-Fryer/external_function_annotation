@@ -7,17 +7,17 @@
         ", " std :: rc :: Weak :: new;
         ", " core :: context :: Context :: new;
         ", " std :: rc :: Rc :: new;
-        ", " core :: DataModel :: parse;
+        ", " dyn core :: DataModel :: parse;
         ", " std :: option :: Option :: unwrap;
-        ", " core :: DataModel :: fuzz;
+        ", " dyn core :: DataModel :: fuzz;
         ", " std :: vec :: Vec :: new;
         ", " std :: vec :: Vec :: into_iter;
         ", " std :: vec :: IntoIter :: next;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: vectorize;
+        ", " dyn core :: DataModel :: vectorize;
         ", " std :: vec :: Vec :: push;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: serialize;
+        ", " dyn core :: DataModel :: serialize;
         ", " str :: to_string;
         ", " core :: bit_array :: BitArray :: to_file;
         ", " std :: fmt :: Arguments :: new_const;
@@ -35,7 +35,7 @@
         ", " std :: string :: String :: deref;
         ", " core :: bolts :: ChildMap :: index;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: int;
+        ", " dyn core :: DataModel :: int;
         "]
     , " andrew_fuzz :: dns :: dns :: {closure # 0} " : [
         " std :: rc :: Rc :: deref;
@@ -49,7 +49,7 @@
         ", " std :: string :: String :: deref;
         ", " core :: bolts :: ChildMap :: index;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: int;
+        ", " dyn core :: DataModel :: int;
         "]
     , " andrew_fuzz :: dns :: dns :: {closure # 0} " : [
         " std :: rc :: Rc :: deref;
@@ -63,7 +63,7 @@
         ", " std :: string :: String :: deref;
         ", " core :: bolts :: ChildMap :: index;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: int;
+        ", " dyn core :: DataModel :: int;
         "]
     , " andrew_fuzz :: dns :: dns :: {closure # 0} " : [
         " std :: rc :: Rc :: deref;
@@ -75,7 +75,7 @@
         ", " core :: context :: Context :: map;
         ", " core :: bolts :: ChildMap :: index;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: int;
+        ", " dyn core :: DataModel :: int;
         "]
     , " andrew_fuzz :: dns :: dns :: {closure # 0} " : [
         " std :: rc :: Rc :: deref;
@@ -89,7 +89,7 @@
         ", " std :: string :: String :: deref;
         ", " core :: bolts :: ChildMap :: index;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: int;
+        ", " dyn core :: DataModel :: int;
         "]
     , " andrew_fuzz :: dns :: dns :: {closure # 0} " : [
         " std :: rc :: Rc :: deref;
@@ -98,22 +98,22 @@
         ", " std :: vec :: Vec :: index;
         ", " std :: rc :: Rc :: clone;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: child;
+        ", " dyn core :: DataModel :: child;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: map;
+        ", " dyn core :: DataModel :: map;
         ", " str :: to_string;
         ", " std :: string :: String :: deref;
         ", " core :: bolts :: ChildMap :: get;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: child;
+        ", " dyn core :: DataModel :: child;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: int;
+        ", " dyn core :: DataModel :: int;
         "]
     , " andrew_fuzz :: dns :: dns :: {closure # 0} " : [
         " std :: rc :: Rc :: deref;
         ", " core :: context :: Context :: child;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: int;
+        ", " dyn core :: DataModel :: int;
         "]
     , " andrew_fuzz :: dns :: dns :: {closure # 0} " : [
         " std :: rc :: Rc :: deref;
@@ -127,15 +127,15 @@
         ", " std :: string :: String :: deref;
         ", " core :: bolts :: ChildMap :: index;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: child;
+        ", " dyn core :: DataModel :: child;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: int;
+        ", " dyn core :: DataModel :: int;
         "]
     , " andrew_fuzz :: dns :: dns :: {closure # 0} " : [
         " std :: rc :: Rc :: deref;
         ", " core :: context :: Context :: child;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: int;
+        ", " dyn core :: DataModel :: int;
         "]
     , " andrew_fuzz :: dns :: dns " : [
         " library :: u8 :: U8 :: new;
@@ -195,7 +195,7 @@
         ", " core :: bolts :: ChildMap :: from;
         ", " library :: sequence :: Sequence :: new;
         ", " std :: boxed :: Box :: new;
-        ", " core :: DataModel :: clone;
+        ", " dyn core :: DataModel :: clone;
         ", " std :: slice :: into_vec;
         ", " std :: rc :: Rc :: new;
         ", " std :: rc :: Rc :: from;
@@ -272,15 +272,15 @@
         "]
     , " andrew_fuzz :: library :: constraint :: {impl # 0} :: do_serialization " : [
         " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: do_serialization;
+        ", " dyn core :: DataModel :: do_serialization;
         "]
     , " andrew_fuzz :: library :: constraint :: {impl # 0} :: do_vectorization " : [
         " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: do_vectorization;
+        ", " dyn core :: DataModel :: do_vectorization;
         "]
     , " andrew_fuzz :: library :: constraint :: {impl # 0} :: do_features " : [
         " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: do_features;
+        ", " dyn core :: DataModel :: do_features;
         "]
     , " andrew_fuzz :: library :: constraint :: {impl # 0} :: set_name " : [
         " str :: to_string;
@@ -293,7 +293,7 @@
         "]
     , " andrew_fuzz :: library :: constraint :: {impl # 0} :: fuzz " : [
         " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: fuzz;
+        ", " dyn core :: DataModel :: fuzz;
         "]
     , " andrew_fuzz :: library :: constraint :: {impl # 0} :: debug " : [
         " std :: string :: String :: new;
@@ -303,7 +303,7 @@
         "]
     , " andrew_fuzz :: library :: constraint :: {impl # 0} :: parse " : [
         " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: parse;
+        ", " dyn core :: DataModel :: parse;
         ", " std :: rc :: Rc :: from;
         ", " std :: rc :: Rc :: downgrade;
         ", " std :: rc :: Rc :: clone;
@@ -446,7 +446,7 @@
         " std :: vec :: Vec :: into_iter;
         ", " std :: slice :: Iter :: next;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: do_serialization;
+        ", " dyn core :: DataModel :: do_serialization;
         "]
     , " andrew_fuzz :: library :: set :: {impl # 0} :: set_name " : [
         " str :: to_string;
@@ -465,7 +465,7 @@
         ", " std :: iter :: Enumerate :: into_iter;
         ", " std :: iter :: Enumerate :: next;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: fuzz;
+        ", " dyn core :: DataModel :: fuzz;
         ", " std :: vec :: Vec :: into_iter;
         ", " std :: vec :: IntoIter :: next;
         ", " std :: vec :: Vec :: clone;
@@ -489,7 +489,7 @@
         ", " std :: rc :: Rc :: deref;
         ", " < dyn for < ' a > std :: ops :: Fn (std :: rc :: Rc) -> bool as std :: ops :: Fn > :: call;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: parse;
+        ", " dyn core :: DataModel :: parse;
         ", " std :: rc :: Rc :: from;
         ", " std :: vec :: Vec :: push;
         ", " std :: rc :: Rc :: clone;
@@ -519,7 +519,7 @@
         "]
     , " andrew_fuzz :: library :: union :: {impl # 0} :: do_serialization " : [
         " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: do_serialization;
+        ", " dyn core :: DataModel :: do_serialization;
         "]
     , " andrew_fuzz :: library :: union :: {impl # 0} :: set_name " : [
         " str :: to_string;
@@ -538,7 +538,7 @@
         "]
     , " andrew_fuzz :: library :: union :: {impl # 0} :: fuzz " : [
         " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: fuzz;
+        ", " dyn core :: DataModel :: fuzz;
         ", " std :: vec :: Vec :: deref;
         ", " core :: slice :: iter;
         ", " std :: slice :: Iter :: map;
@@ -556,7 +556,7 @@
         ", " std :: rc :: Rc :: downgrade;
         ", " core :: context :: Context :: new;
         ", " std :: rc :: Rc :: new;
-        ", " core :: DataModel :: parse;
+        ", " dyn core :: DataModel :: parse;
         ", " std :: vec :: Vec :: push;
         ", " std :: vec :: Vec :: len;
         ", " std :: fmt :: Arguments :: new_const;
@@ -596,7 +596,7 @@
         ", " std :: vec :: Vec :: into_iter;
         ", " std :: slice :: Iter :: next;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: do_serialization;
+        ", " dyn core :: DataModel :: do_serialization;
         "]
     , " andrew_fuzz :: library :: sequence :: {impl # 0} :: set_name " : [
         " str :: to_string;
@@ -613,7 +613,7 @@
         ", " std :: vec :: Vec :: into_iter;
         ", " std :: slice :: Iter :: next;
         ", " std :: rc :: Rc :: deref;
-        ", " core :: DataModel :: fuzz;
+        ", " dyn core :: DataModel :: fuzz;
         ", " std :: vec :: Vec :: into_iter;
         ", " std :: vec :: IntoIter :: next;
         ", " core :: bolts :: ChildMap :: clone;
@@ -635,7 +635,7 @@
         ", " core :: context :: Context :: new;
         ", " std :: rc :: Rc :: deref;
         ", " std :: rc :: Rc :: new;
-        ", " core :: DataModel :: parse;
+        ", " dyn core :: DataModel :: parse;
         ", " std :: rc :: Rc :: from;
         ", " core :: bolts :: ChildMap :: push;
         ", " std :: rc :: Rc :: clone;
