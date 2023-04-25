@@ -51,6 +51,13 @@ I would also like to understand the Rust programming language better.
 \section{Design}
 
 \subsection{Known Challenges}
+The source code in Rust projects is typically spread over multiple files.
+Files are included in other files as modules.
+I should give the example of the modules here maybe.
+
+Rust has type inference and a very powerful/complex type system.
+This makes it difficult to determine which function is called in a function call by/when statically analyze Rust source code.
+
 Statically resolving dynamic dispatch is one of those problems were you can do better with more pattern recognition, but you can never get it completely right\dots
 Even getting it right at all is difficult because of type inference.
 
