@@ -134,7 +134,7 @@ Decl (andrew_fuzz : : core : : feature_vector : : {impl # 0} : : new) {
     std : : collections : : HashMap : : insert;
     std : : string : : String : : to_string;
     std : : slice : : Iter : : next;
-    < & std : : vec : : Vec as std : : iter : : IntoIterator > : : into_iter;
+    std : : vec : : Vec : : into_iter;
     std : : collections : : HashMap : : new;
 }
 Decl (andrew_fuzz : : core : : feature_vector : : {impl # 0} : : tally) {
@@ -155,7 +155,7 @@ Decl (andrew_fuzz : : core : : feature_vector : : {impl # 0} : : values) {
 }
 Decl (andrew_fuzz : : core : : feature_vector : : {impl # 0} : : dist) {
     std : : f64 : : powi;
-    < & f64 as std : : ops : : Sub > : : sub;
+    f64 : : sub;
     std : : iter : : Zip : : next;
     std : : iter : : Zip : : into_iter;
     std : : slice : : Iter : : zip;
@@ -317,13 +317,13 @@ Decl (andrew_fuzz : : library : : sequence : : {impl # 0} : : parse) {
     std : : rc : : Rc : : clone;
     core : : bolts : : ChildMap : : push;
     std : : rc : : Rc : : from;
-    < dyn core : : DataModel as core : : Parser > : : parse;
+    core : : DataModel : : parse;
     std : : rc : : Rc : : new;
     std : : rc : : Rc : : deref;
     core : : context : : Context : : new;
     std : : rc : : Rc : : downgrade;
     std : : slice : : Iter : : next;
-    < & std : : vec : : Vec as std : : iter : : IntoIterator > : : into_iter;
+    std : : vec : : Vec : : into_iter;
     core : : bolts : : ChildMap : : vals;
     core : : bolts : : ChildMap : : empty;
 }
@@ -339,10 +339,10 @@ Decl (andrew_fuzz : : library : : sequence : : {impl # 0} : : fuzz) {
     core : : bolts : : ChildMap : : clone;
     std : : vec : : IntoIter : : next;
     std : : vec : : Vec : : into_iter;
-    < dyn core : : DataModel as core : : Fuzzer > : : fuzz;
+    core : : DataModel : : fuzz;
     std : : rc : : Rc : : deref;
     std : : slice : : Iter : : next;
-    < & std : : vec : : Vec as std : : iter : : IntoIterator > : : into_iter;
+    std : : vec : : Vec : : into_iter;
     core : : bolts : : ChildMap : : vals;
     std : : vec : : Vec : : new;
 }
@@ -356,10 +356,10 @@ Decl (andrew_fuzz : : library : : sequence : : {impl # 0} : : set_name) {
     str : : to_string;
 }
 Decl (andrew_fuzz : : library : : sequence : : {impl # 0} : : do_serialization) {
-    < dyn core : : DataModel as core : : Serializer > : : do_serialization;
+    core : : DataModel : : do_serialization;
     std : : rc : : Rc : : deref;
     std : : slice : : Iter : : next;
-    < & std : : vec : : Vec as std : : iter : : IntoIterator > : : into_iter;
+    std : : vec : : Vec : : into_iter;
     core : : bolts : : ChildMap : : vals;
 }
 Decl (andrew_fuzz : : library : : union : : {impl # 0} : : new) {
@@ -396,13 +396,13 @@ Decl (andrew_fuzz : : library : : union : : {impl # 0} : : parse) {
     std : : fmt : : Arguments : : new_const;
     std : : vec : : Vec : : len;
     std : : vec : : Vec : : push;
-    < dyn core : : DataModel as core : : Parser > : : parse;
+    core : : DataModel : : parse;
     std : : rc : : Rc : : new;
     core : : context : : Context : : new;
     std : : rc : : Rc : : downgrade;
     core : : bit_array : : BitArray : : clone;
     std : : slice : : Iter : : next;
-    < & std : : vec : : Vec as std : : iter : : IntoIterator > : : into_iter;
+    std : : vec : : Vec : : into_iter;
     std : : rc : : Rc : : deref;
     std : : vec : : Vec : : new;
 }
@@ -414,7 +414,7 @@ Decl (andrew_fuzz : : library : : union : : {impl # 0} : : fuzz) {
     std : : slice : : Iter : : map;
     core : : slice : : iter;
     std : : vec : : Vec : : deref;
-    < dyn core : : DataModel as core : : Fuzzer > : : fuzz;
+    core : : DataModel : : fuzz;
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : library : : union : : {impl # 0} : : fuzz : : {closure # 0}) {
@@ -433,7 +433,7 @@ Decl (andrew_fuzz : : library : : union : : {impl # 0} : : set_name) {
     str : : to_string;
 }
 Decl (andrew_fuzz : : library : : union : : {impl # 0} : : do_serialization) {
-    < dyn core : : DataModel as core : : Serializer > : : do_serialization;
+    core : : DataModel : : do_serialization;
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : library : : set : : {impl # 0} : : new) {
@@ -463,7 +463,7 @@ Decl (andrew_fuzz : : library : : set : : {impl # 0} : : parse) {
     std : : rc : : Rc : : clone;
     std : : vec : : Vec : : push;
     std : : rc : : Rc : : from;
-    < dyn core : : DataModel as core : : Parser > : : parse;
+    core : : DataModel : : parse;
     std : : rc : : Rc : : deref;
     < dyn for < ' a > std : : ops : : Fn (std : : rc : : Rc) - > bool as std : : ops : : Fn > : : call;
     std : : rc : : Rc : : deref;
@@ -487,7 +487,7 @@ Decl (andrew_fuzz : : library : : set : : {impl # 0} : : fuzz) {
     std : : vec : : Vec : : clone;
     std : : vec : : IntoIter : : next;
     std : : vec : : Vec : : into_iter;
-    < dyn core : : DataModel as core : : Fuzzer > : : fuzz;
+    core : : DataModel : : fuzz;
     std : : rc : : Rc : : deref;
     std : : iter : : Enumerate : : next;
     std : : iter : : Enumerate : : into_iter;
@@ -506,10 +506,10 @@ Decl (andrew_fuzz : : library : : set : : {impl # 0} : : set_name) {
     str : : to_string;
 }
 Decl (andrew_fuzz : : library : : set : : {impl # 0} : : do_serialization) {
-    < dyn core : : DataModel as core : : Serializer > : : do_serialization;
+    core : : DataModel : : do_serialization;
     std : : rc : : Rc : : deref;
     std : : slice : : Iter : : next;
-    < & std : : vec : : Vec as std : : iter : : IntoIterator > : : into_iter;
+    std : : vec : : Vec : : into_iter;
 }
 Decl (andrew_fuzz : : library : : u8 : : {impl # 0} : : new) {
     library : : u8 : : U8 : : from_u8;
@@ -649,7 +649,7 @@ Decl (andrew_fuzz : : library : : constraint : : {impl # 0} : : parse) {
     std : : rc : : Rc : : clone;
     std : : rc : : Rc : : downgrade;
     std : : rc : : Rc : : from;
-    < dyn core : : DataModel as core : : Parser > : : parse;
+    core : : DataModel : : parse;
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : library : : constraint : : {impl # 0} : : debug) {
@@ -659,7 +659,7 @@ Decl (andrew_fuzz : : library : : constraint : : {impl # 0} : : debug) {
     std : : string : : String : : new;
 }
 Decl (andrew_fuzz : : library : : constraint : : {impl # 0} : : fuzz) {
-    < dyn core : : DataModel as core : : Fuzzer > : : fuzz;
+    core : : DataModel : : fuzz;
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : library : : constraint : : {impl # 0} : : name) {
@@ -672,15 +672,15 @@ Decl (andrew_fuzz : : library : : constraint : : {impl # 0} : : set_name) {
     str : : to_string;
 }
 Decl (andrew_fuzz : : library : : constraint : : {impl # 0} : : do_features) {
-    < dyn core : : DataModel as core : : Vectorizer > : : do_features;
+    core : : DataModel : : do_features;
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : library : : constraint : : {impl # 0} : : do_vectorization) {
-    < dyn core : : DataModel as core : : Vectorizer > : : do_vectorization;
+    core : : DataModel : : do_vectorization;
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : library : : constraint : : {impl # 0} : : do_serialization) {
-    < dyn core : : DataModel as core : : Serializer > : : do_serialization;
+    core : : DataModel : : do_serialization;
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : library : : button : : {impl # 0} : : new) {
@@ -757,7 +757,7 @@ Decl (andrew_fuzz : : dns : : dns) {
     std : : rc : : Rc : : from;
     std : : rc : : Rc : : new;
     std : : slice : : into_vec;
-    < dyn core : : DataModel as core : : Cloneable > : : clone;
+    core : : DataModel : : clone;
     std : : boxed : : Box : : new;
     library : : sequence : : Sequence : : new;
     core : : bolts : : ChildMap : : from;
@@ -817,15 +817,15 @@ Decl (andrew_fuzz : : dns : : dns) {
     library : : u8 : : U8 : : new;
 }
 Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
-    < dyn core : : DataModel as core : : Contextual > : : int;
+    core : : DataModel : : int;
     std : : rc : : Rc : : deref;
     core : : context : : Context : : child;
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
-    < dyn core : : DataModel as core : : Contextual > : : int;
+    core : : DataModel : : int;
     std : : rc : : Rc : : deref;
-    < dyn core : : DataModel as core : : Contextual > : : child;
+    core : : DataModel : : child;
     std : : rc : : Rc : : deref;
     core : : bolts : : ChildMap : : index;
     std : : string : : String : : deref;
@@ -839,22 +839,22 @@ Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
-    < dyn core : : DataModel as core : : Contextual > : : int;
+    core : : DataModel : : int;
     std : : rc : : Rc : : deref;
     core : : context : : Context : : child;
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
-    < dyn core : : DataModel as core : : Contextual > : : int;
+    core : : DataModel : : int;
     std : : rc : : Rc : : deref;
-    < dyn core : : DataModel as core : : Contextual > : : child;
+    core : : DataModel : : child;
     std : : rc : : Rc : : deref;
     core : : bolts : : ChildMap : : get;
     std : : string : : String : : deref;
     str : : to_string;
-    < dyn core : : DataModel as core : : Contextual > : : map;
+    core : : DataModel : : map;
     std : : rc : : Rc : : deref;
-    < dyn core : : DataModel as core : : Contextual > : : child;
+    core : : DataModel : : child;
     std : : rc : : Rc : : deref;
     std : : rc : : Rc : : clone;
     std : : vec : : Vec : : index;
@@ -863,7 +863,7 @@ Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
-    < dyn core : : DataModel as core : : Contextual > : : int;
+    core : : DataModel : : int;
     std : : rc : : Rc : : deref;
     core : : bolts : : ChildMap : : index;
     std : : string : : String : : deref;
@@ -877,7 +877,7 @@ Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
-    < dyn core : : DataModel as core : : Contextual > : : int;
+    core : : DataModel : : int;
     std : : rc : : Rc : : deref;
     core : : bolts : : ChildMap : : index;
     core : : context : : Context : : map;
@@ -889,21 +889,7 @@ Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
-    < dyn core : : DataModel as core : : Contextual > : : int;
-    std : : rc : : Rc : : deref;
-    core : : bolts : : ChildMap : : index;
-    std : : string : : String : : deref;
-    str : : to_string;
-    core : : context : : Context : : map;
-    std : : rc : : Rc : : deref;
-    core : : context : : Context : : parent;
-    std : : rc : : Rc : : deref;
-    std : : vec : : Vec : : len;
-    core : : context : : Context : : vec;
-    std : : rc : : Rc : : deref;
-}
-Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
-    < dyn core : : DataModel as core : : Contextual > : : int;
+    core : : DataModel : : int;
     std : : rc : : Rc : : deref;
     core : : bolts : : ChildMap : : index;
     std : : string : : String : : deref;
@@ -917,7 +903,21 @@ Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
-    < dyn core : : DataModel as core : : Contextual > : : int;
+    core : : DataModel : : int;
+    std : : rc : : Rc : : deref;
+    core : : bolts : : ChildMap : : index;
+    std : : string : : String : : deref;
+    str : : to_string;
+    core : : context : : Context : : map;
+    std : : rc : : Rc : : deref;
+    core : : context : : Context : : parent;
+    std : : rc : : Rc : : deref;
+    std : : vec : : Vec : : len;
+    core : : context : : Context : : vec;
+    std : : rc : : Rc : : deref;
+}
+Decl (andrew_fuzz : : dns : : dns : : {closure # 0}) {
+    core : : DataModel : : int;
     std : : rc : : Rc : : deref;
     core : : bolts : : ChildMap : : index;
     std : : string : : String : : deref;
@@ -935,17 +935,17 @@ Decl (andrew_fuzz : : main) {
     std : : fmt : : Arguments : : new_const;
     core : : bit_array : : BitArray : : to_file;
     str : : to_string;
-    < dyn core : : DataModel as core : : Serializer > : : serialize;
+    core : : DataModel : : serialize;
     std : : rc : : Rc : : deref;
     std : : vec : : Vec : : push;
-    < dyn core : : DataModel as core : : Vectorizer > : : vectorize;
+    core : : DataModel : : vectorize;
     std : : rc : : Rc : : deref;
     std : : vec : : IntoIter : : next;
     std : : vec : : Vec : : into_iter;
     std : : vec : : Vec : : new;
-    < dyn core : : DataModel as core : : Fuzzer > : : fuzz;
+    core : : DataModel : : fuzz;
     std : : option : : Option : : unwrap;
-    < dyn core : : DataModel as core : : Parser > : : parse;
+    core : : DataModel : : parse;
     std : : rc : : Rc : : new;
     core : : context : : Context : : new;
     std : : rc : : Weak : : new;

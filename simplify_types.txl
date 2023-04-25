@@ -197,10 +197,10 @@ rule remove_as_type
         '< full_type [FullQualifiedType] 'as _ [FullQualifiedType] '>
     deconstruct full_type
         type_prefix [TypePrefix?] type_segments [TypePathSegment_COLON_COLON*] type [Type]
-    deconstruct type_prefix
-        _ [empty]
+    %deconstruct type_prefix
+        %_ [empty] % I'm deciding to throw away type prefixes in this case
     deconstruct type
-        type_name [id]
+        type_name [id] % this prevents some complex generic stuff from being simplified
     construct path_segment_for_type_name [CallablePathSegment_COLON_COLON*]
         type_name '::
     construct path_segments [CallablePathSegment_COLON_COLON*]
