@@ -84,7 +84,7 @@ end define
 
 define FullQualifiedType
       [TypePrefix?] [TypePathSegment_COLON_COLON*] [Type]
-    | '( [FullQualifiedType,] ')
+    | '( [FullQualifiedType,] [', ?] ')
     | '[ 'closure '@  [not_bracket*] ']
 end define
 
