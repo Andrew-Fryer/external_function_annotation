@@ -172,9 +172,26 @@ rule normalize_simple_path_segments
         '{ type '# '0 '}
 end rule
 
+rule remove_as_type
+    replace [FullQualifiedCallable]
+        callable_start [CallableStart] ':: callable_path_segment [CallablePathSegment_COLON_COLON*] callable [Callable]
+    deconstruct callable_start
+        '< full_type [FullQualifiedType] 'as _ [FullQualifiedType] '>
+    deconstruct full_type
+        type_prefix [TypePrefix?] type_segments [TypePathSegment_COLON_COLON*] type [Type]
+    deconstruct type_prefix
+        _ [empty]
+    deconstruct type
+        type_name [id]
+    construct result [FullQualifiedCallable]
+        'asdf ':: callable_path_segment callable
+    by
+        result %[remove_generics_from_types]
+end rule
+
 function main
     replace [program]
         es [Decl*]
     by
-        es [clean_caller] [normalize_simple_path_segments] %[transform_decl]
+        es [clean_caller] [normalize_simple_path_segments] [remove_as_type]
 end function
