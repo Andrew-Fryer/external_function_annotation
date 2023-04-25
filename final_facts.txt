@@ -3,28 +3,28 @@ andrew_fuzz :: main:
 	std :: result :: Result :: unwrap;
 	std :: rc :: Weak :: new;
 	std :: rc :: Rc :: new;
-	core :: DataModel :: parse;
+	dyn core :: DataModel :: parse;
 	std :: option :: Option :: unwrap;
-	core :: DataModel :: fuzz;
+	dyn core :: DataModel :: fuzz;
 	std :: vec :: Vec :: new;
 	std :: vec :: Vec :: into_iter;
 	std :: vec :: IntoIter :: next;
 	std :: rc :: Rc :: deref;
-	core :: DataModel :: vectorize;
+	dyn core :: DataModel :: vectorize;
 	std :: vec :: Vec :: push;
-	core :: DataModel :: serialize;
+	dyn core :: DataModel :: serialize;
 	std :: fmt :: Arguments :: new_const;
 	std :: io :: _print;
 andrew_fuzz :: dns :: dns :: {closure # 0}:
 	std :: rc :: Rc :: deref;
-	core :: DataModel :: int;
+	dyn core :: DataModel :: int;
 andrew_fuzz :: dns :: dns:
 	std :: rc :: Rc :: new;
 	std :: vec :: Vec :: new;
 	std :: rc :: Rc :: clone;
 	std :: boxed :: Box :: new;
 	std :: slice :: into_vec;
-	core :: DataModel :: clone;
+	dyn core :: DataModel :: clone;
 	std :: rc :: Rc :: from;
 andrew_fuzz :: library :: button :: {impl # 0} :: do_serialization:
 andrew_fuzz :: library :: button :: {impl # 0} :: set_name:
@@ -48,20 +48,20 @@ andrew_fuzz :: library :: button :: {impl # 0} :: new:
 	std :: rc :: Rc :: new;
 andrew_fuzz :: library :: constraint :: {impl # 0} :: do_serialization:
 	std :: rc :: Rc :: deref;
-	core :: DataModel :: do_serialization;
+	dyn core :: DataModel :: do_serialization;
 andrew_fuzz :: library :: constraint :: {impl # 0} :: do_vectorization:
 	std :: rc :: Rc :: deref;
-	core :: DataModel :: do_vectorization;
+	dyn core :: DataModel :: do_vectorization;
 andrew_fuzz :: library :: constraint :: {impl # 0} :: do_features:
 	std :: rc :: Rc :: deref;
-	core :: DataModel :: do_features;
+	dyn core :: DataModel :: do_features;
 andrew_fuzz :: library :: constraint :: {impl # 0} :: set_name:
 	str :: to_string;
 	std :: rc :: Rc :: new;
 andrew_fuzz :: library :: constraint :: {impl # 0} :: name:
 	std :: rc :: Rc :: deref;
 andrew_fuzz :: library :: constraint :: {impl # 0} :: fuzz:
-	core :: DataModel :: fuzz;
+	dyn core :: DataModel :: fuzz;
 	std :: rc :: Rc :: deref;
 andrew_fuzz :: library :: constraint :: {impl # 0} :: debug:
 	std :: result :: Result :: unwrap;
@@ -70,7 +70,7 @@ andrew_fuzz :: library :: constraint :: {impl # 0} :: debug:
 	std :: string :: String :: write_fmt;
 andrew_fuzz :: library :: constraint :: {impl # 0} :: parse:
 	std :: rc :: Rc :: new;
-	core :: DataModel :: parse;
+	dyn core :: DataModel :: parse;
 	std :: rc :: Rc :: deref;
 	std :: rc :: Rc :: clone;
 	std :: boxed :: Box :: new;
@@ -146,7 +146,7 @@ andrew_fuzz :: library :: u8 :: {impl # 0} :: new:
 andrew_fuzz :: library :: set :: {impl # 0} :: do_serialization:
 	std :: vec :: Vec :: into_iter;
 	std :: rc :: Rc :: deref;
-	core :: DataModel :: do_serialization;
+	dyn core :: DataModel :: do_serialization;
 	std :: slice :: Iter :: next;
 andrew_fuzz :: library :: set :: {impl # 0} :: set_name:
 	str :: to_string;
@@ -155,7 +155,7 @@ andrew_fuzz :: library :: set :: {impl # 0} :: name:
 	std :: rc :: Rc :: deref;
 andrew_fuzz :: library :: set :: {impl # 0} :: fuzz:
 	std :: rc :: Rc :: new;
-	core :: DataModel :: fuzz;
+	dyn core :: DataModel :: fuzz;
 	std :: vec :: Vec :: new;
 	std :: vec :: Vec :: into_iter;
 	std :: vec :: IntoIter :: next;
@@ -174,7 +174,7 @@ andrew_fuzz :: library :: set :: {impl # 0} :: debug:
 	str :: to_string;
 andrew_fuzz :: library :: set :: {impl # 0} :: parse:
 	std :: rc :: Rc :: new;
-	core :: DataModel :: parse;
+	dyn core :: DataModel :: parse;
 	std :: vec :: Vec :: new;
 	std :: rc :: Rc :: deref;
 	std :: vec :: Vec :: push;
@@ -194,7 +194,7 @@ andrew_fuzz :: library :: set :: {impl # 0} :: new:
 	std :: rc :: Rc :: new;
 andrew_fuzz :: library :: union :: {impl # 0} :: do_serialization:
 	std :: rc :: Rc :: deref;
-	core :: DataModel :: do_serialization;
+	dyn core :: DataModel :: do_serialization;
 andrew_fuzz :: library :: union :: {impl # 0} :: set_name:
 	str :: to_string;
 	std :: rc :: Rc :: new;
@@ -204,7 +204,7 @@ andrew_fuzz :: library :: union :: {impl # 0} :: fuzz :: {closure # 0}:
 	std :: rc :: Rc :: new;
 	std :: rc :: Rc :: clone;
 andrew_fuzz :: library :: union :: {impl # 0} :: fuzz:
-	core :: DataModel :: fuzz;
+	dyn core :: DataModel :: fuzz;
 	std :: rc :: Rc :: deref;
 	std :: vec :: Vec :: deref;
 	core :: slice :: iter;
@@ -214,7 +214,7 @@ andrew_fuzz :: library :: union :: {impl # 0} :: debug:
 	str :: to_string;
 andrew_fuzz :: library :: union :: {impl # 0} :: parse:
 	std :: rc :: Rc :: new;
-	core :: DataModel :: parse;
+	dyn core :: DataModel :: parse;
 	std :: vec :: Vec :: new;
 	std :: vec :: Vec :: into_iter;
 	std :: rc :: Rc :: deref;
@@ -241,7 +241,7 @@ andrew_fuzz :: library :: union :: {impl # 0} :: new:
 andrew_fuzz :: library :: sequence :: {impl # 0} :: do_serialization:
 	std :: vec :: Vec :: into_iter;
 	std :: rc :: Rc :: deref;
-	core :: DataModel :: do_serialization;
+	dyn core :: DataModel :: do_serialization;
 	std :: slice :: Iter :: next;
 andrew_fuzz :: library :: sequence :: {impl # 0} :: set_name:
 	str :: to_string;
@@ -250,7 +250,7 @@ andrew_fuzz :: library :: sequence :: {impl # 0} :: name:
 	std :: rc :: Rc :: deref;
 andrew_fuzz :: library :: sequence :: {impl # 0} :: fuzz:
 	std :: rc :: Rc :: new;
-	core :: DataModel :: fuzz;
+	dyn core :: DataModel :: fuzz;
 	std :: vec :: Vec :: new;
 	std :: vec :: Vec :: into_iter;
 	std :: vec :: IntoIter :: next;
@@ -263,7 +263,7 @@ andrew_fuzz :: library :: sequence :: {impl # 0} :: debug:
 	str :: to_string;
 andrew_fuzz :: library :: sequence :: {impl # 0} :: parse:
 	std :: rc :: Rc :: new;
-	core :: DataModel :: parse;
+	dyn core :: DataModel :: parse;
 	std :: vec :: Vec :: into_iter;
 	std :: rc :: Rc :: deref;
 	std :: rc :: Rc :: clone;

@@ -60,9 +60,6 @@ for callee in all_callees:
                 print('found ambiguity between', callee_to_caller[callee], 'and', possible_caller)
             callee_to_caller[callee] = [possible_caller]
     if callee not in callee_to_caller:
-        # try to pair up with dynamic dispatch
-        possible_dyn_callers_for_callee
-    if callee not in callee_to_caller:
         external_fns.add(callee)
 
 # Build the transitive relation from internal functions to external functions
