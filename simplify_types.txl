@@ -51,7 +51,7 @@ define Callee
 end define
 
 define FullQualifiedCallable
-    [CallableStart] ':: [CallablePathSegment_COLON_COLON*] [Callable]
+    ['dyn ?] [CallableStart] ':: [CallablePathSegment_COLON_COLON*] [Callable]
 end define
 
 define Callable
@@ -84,7 +84,11 @@ end define
 define TypePrefix
       '&
     | '& 'mut
-    | 'dyn
+    | [DynTypePrefix]
+end define
+
+define DynTypePrefix
+      'dyn
     | 'dyn 'for '< '' [id] '>
 end define
 
@@ -183,6 +187,22 @@ function append_callable_path_segment type_segment [TypePathSegment_COLON_COLON]
         existing [. new]
 end function
 
+function is_dyn
+    match [TypePrefix]
+        _ [DynTypePrefix]
+end function
+
+function maybe_dyn_prefix maybe_type_prefix [TypePrefix?]
+    replace ['dyn ?]
+        _ ['dyn ?]
+    deconstruct maybe_type_prefix
+        type_prefix [TypePrefix]
+    where
+        type_prefix [is_dyn]
+    by
+        'dyn
+end function
+
 rule remove_as_type
     replace [FullQualifiedCallable]
         callable_start [CallableStart] ':: callable_path_segments [CallablePathSegment_COLON_COLON*] callable [Callable]
@@ -190,8 +210,8 @@ rule remove_as_type
         '< full_type [FullQualifiedType] 'as _ [FullQualifiedType] '>
     deconstruct full_type
         type_prefix [TypePrefix?] type_segments [TypePathSegment_COLON_COLON*] type [Type]
-    %deconstruct type_prefix
-        %_ [empty] % I'm deciding to throw away type prefixes in this case
+    construct opt_dyn_prefix ['dyn ?]
+        _ [maybe_dyn_prefix type_prefix]
     deconstruct type
         type_name [id] % this prevents some complex generic stuff from being simplified
     construct path_segment_for_type_name [CallablePathSegment_COLON_COLON*]
@@ -205,7 +225,7 @@ rule remove_as_type
         cons_path_segments [. callable_path_segments]
     construct result [FullQualifiedCallable]
         %type_segments type ':: callable_path_segment callable
-        first_path_segment ':: new_callable_path_segments callable
+        opt_dyn_prefix first_path_segment ':: new_callable_path_segments callable
     by
         result %[remove_generics_from_types]
 end rule
