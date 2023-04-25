@@ -1,0 +1,53 @@
+Decl (str :: to_string) {
+}
+Decl (std :: result :: Result :: unwrap) {
+	core :: panicking :: panic;
+}
+Decl (std :: rc :: Weak :: new) {
+}
+Decl (std :: rc :: Rc :: new) {
+}
+Decl (std :: option :: Option :: unwrap) {
+	core :: panicking :: panic;
+}
+Decl (std :: vec :: Vec :: new) {
+}
+Decl (std :: vec :: Vec :: into_iter) {
+}
+Decl (std :: vec :: IntoIter :: next) {
+}
+Decl (std :: rc :: Rc :: deref) {
+}
+Decl (std :: vec :: Vec :: push) {
+}
+Decl (std :: fmt :: Arguments :: new_const) {
+}
+Decl (std :: rc :: Rc :: clone) {}
+Decl (std :: boxed :: Box :: new) {}
+Decl (std :: slice :: into_vec) {}
+Decl (std :: rc :: Rc :: from) {}
+Decl (std :: rc :: Rc :: downgrade) {}
+Decl (core :: panicking :: panic) {}
+Decl (std :: slice :: Iter :: next) {}
+Decl (core :: slice :: iter) {}
+Decl (std :: slice :: Iter :: enumerate) {}
+Decl (std :: iter :: Enumerate :: into_iter) {}
+Decl (std :: iter :: Enumerate :: next) {}
+Decl (std :: vec :: Vec :: clone) {}
+Decl (std :: vec :: Vec :: index_mut) {}
+Decl (std :: vec :: Vec :: len) {}
+Decl (Self :: do_serialization) {}
+Decl (Self :: features) {}
+Decl (Self :: do_vectorization) {}
+Decl (std :: collections :: HashMap :: new) {}
+Decl (std :: collections :: HashMap :: insert) {}
+Decl (std :: option :: Option :: eq) {}
+Decl (std :: collections :: HashMap :: len) {}
+Decl (std :: cell :: RefCell :: borrow) {}
+Decl (std :: cell :: Ref :: deref) {}
+Decl (std :: cell :: RefCell :: new) {}
+Decl (std :: vec :: Vec :: as_ref) {}
+Decl (std :: fs :: write) {}
+Decl (std :: path :: Path :: new) {}
+Decl (std :: fs :: read) {}
+Decl (std :: result :: Result :: map) {}
