@@ -267,6 +267,65 @@ why did I choose thir over mir?
 
 \subsection{Stage 1: Generating Textual Intermediate Representation (THIR)}
 
+\begin{lstlisting}[caption=THIR-flat]{Name}
+DefId(0:36 ~ andrew_fuzz[942c]::core::bit_array::{impl#0}::new):
+Thir {
+    ...
+    exprs: [
+    ...
+    Expr {
+        kind: Call {
+        ty: fn(&'static str) -> ! {core::panicking::panic},
+        ...
+        },
+        ...
+    },
+    ],
+    ...
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=THIR-flat]{Name}
+Decl (0 : 36 ~ andrew_fuzz [942 c] :: core :: bit_array :: {impl # 0} :: new) {
+  std :: rc :: Rc :: < std :: cell :: RefCell < std :: vec :: Vec < u8 > > > :: new;
+  std :: cell :: RefCell :: < std :: vec :: Vec < u8 > > :: new;
+  std :: vec :: Vec :: < u8 > :: len;
+  core :: panicking :: panic;
+  std :: vec :: Vec :: < u8 > :: len;
+  < std :: vec :: Vec < u8 > as std :: ops :: IndexMut < usize > > :: index_mut;
+  < std :: vec :: Vec < u8 > as std :: ops :: IndexMut < usize > > :: index_mut;
+  std :: vec :: Vec :: < u8 > :: len;
+}
+\end{lstlisting}
+
+\noindent\begin{minipage}{.45\textwidth}
+    \begin{lstlisting}[caption=code 1,frame=tlrb]{Name}
+DefId(0:36 ~ andrew_fuzz[942c]::core::bit_array::{impl#0}::new):
+Thir {
+  ...
+  exprs: [
+    ...
+    Expr {
+      kind: Call {
+        ty: fn(&'static str) -> ! {core::panicking::panic},
+        ...
+      },
+      ...
+    },
+  ],
+  ...
+}
+    \end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}{.45\textwidth}
+    \begin{lstlisting}[caption=code 2,frame=tlrb]{Name}
+void code()
+{
+
+}
+    \end{lstlisting}
+\end{minipage}
+
 \subsection{Stage 2: Extracting Declarations and Calls}
 
 \subsection{Stage 3: Simplifying Types}
