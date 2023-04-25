@@ -37,9 +37,27 @@ for caller in obj:
         callee = c.strip()
         record_call(caller, callee)
 
+name_to_caller = {}
+for c in callers:
+    l = c.split('::')
+    name = l[-1]
+    if name not in name_to_caller:
+        name_to_caller[name] = OrderedSet()
+    name_to_caller[name].add(c)
+
 # Attempt to resolve callees to callers
 def possible_callers_for_callee(callee):
     callee = callee[:-1] # remove semicolon
+
+    if callee[:3] == 'dyn':
+        # this is a special case where we know that the call is a dynamic dispatch
+        l = callee.split('::')
+        name = l[-1]
+        yield from name_to_caller.get(name, [])
+        return
+
+    yield callee # for things in libraies such as std
+
     callee = "andrew_fuzz :: " + callee
 
     yield callee
@@ -57,8 +75,10 @@ for callee in all_callees:
     for possible_caller in possible_callers_for_callee(callee):
         if possible_caller in internal_fns:
             if callee in callee_to_caller:
-                print('found ambiguity between', callee_to_caller[callee], 'and', possible_caller)
-            callee_to_caller[callee] = [possible_caller]
+                # with dynamic dispatch, we find ambiguities regularly
+                # print('found ambiguity between', callee_to_caller[callee], 'and', possible_caller)
+                callee_to_caller[callee].add(possible_caller)
+            callee_to_caller[callee] = OrderedSet(possible_caller)
     if callee not in callee_to_caller:
         external_fns.add(callee)
 
