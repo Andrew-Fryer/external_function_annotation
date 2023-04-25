@@ -172,6 +172,13 @@ rule normalize_simple_path_segments
         '{ type '# '0 '}
 end rule
 
+rule remove_generics_from_types
+    replace [Type]
+        type_name [id] '< _ [FullQualifiedTypeOrLifeTime,] '>
+    by
+        type_name
+end rule
+
 function append_callable_path_segment type_segment [TypePathSegment_COLON_COLON]
     replace [CallablePathSegment_COLON_COLON*]
         existing [CallablePathSegment_COLON_COLON*]
@@ -214,5 +221,5 @@ function main
     replace [program]
         es [Decl*]
     by
-        es [clean_caller] [normalize_simple_path_segments] [remove_as_type]
+        es [clean_caller] [normalize_simple_path_segments] [remove_generics_from_types] [remove_as_type]
 end function
