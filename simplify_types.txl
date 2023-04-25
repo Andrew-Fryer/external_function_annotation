@@ -157,9 +157,16 @@ tokens
     charlit "" % undefines character literals because rust uses a single quote for lifetimes
 end tokens
 
+rule clean_caller
+    replace [Caller]
+        _ [number] ': _ [number] '~ caller_name [id] '[ _ [number] 'f '] path [COLON_COLON_SimplePathSegment*]
+    by
+        caller_name path
+end rule
+
 function main
     replace [program]
         es [Decl*]
     by
-        es %[clean_caller] [normalize_simple_path_segments] [transform_decl]
+        es [clean_caller] %[normalize_simple_path_segments] [transform_decl]
 end function
