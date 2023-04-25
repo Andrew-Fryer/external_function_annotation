@@ -224,9 +224,37 @@ rule remove_generics_from_path
         remaining
 end rule
 
+function remove_last
+    replace * [CallablePathSegment_COLON_COLON*] % searching function
+        _ [CallablePathSegment_COLON_COLON]
+    by
+        _
+end function
+
+rule get_last
+    replace [CallablePathSegment_COLON_COLON*]
+        a [CallablePathSegment_COLON_COLON] b [CallablePathSegment_COLON_COLON] remaining [CallablePathSegment_COLON_COLON*]
+    by
+        b remaining
+end rule
+
+rule remove_trailing_generics_from_path
+    replace [FullQualifiedCallable]
+        %callable_start [CallableStart] ':: segments [CallablePathSegment_COLON_COLON*] last_segment_name [id] ':: '< _ [FullQualifiedType,] '>
+        callable_start [CallableStart] ':: segments [CallablePathSegment_COLON_COLON*] '< _ [FullQualifiedType,] '>
+    construct all_but_last_segments [CallablePathSegment_COLON_COLON*]
+        segments [remove_last]
+    construct last_segment_list [CallablePathSegment_COLON_COLON*]
+        segments [get_last]
+    deconstruct last_segment_list
+        last_segment [id] '::
+    by
+        callable_start ':: all_but_last_segments last_segment
+end rule
+
 function main
     replace [program]
         es [Decl*]
     by
-        es [clean_caller] [normalize_simple_path_segments] [remove_generics_from_types] [remove_as_type] [remove_generics_from_path]
+        es [clean_caller] [normalize_simple_path_segments] [remove_generics_from_types] [remove_as_type] [remove_generics_from_path] [remove_trailing_generics_from_path]
 end function

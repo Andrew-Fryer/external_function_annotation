@@ -13,15 +13,15 @@ Decl (andrew_fuzz : : core : : bit_array : : {impl # 0} : : fresh) {
     std : : vec : : Vec : : new;
 }
 Decl (andrew_fuzz : : core : : bit_array : : {impl # 0} : : from_file) {
-    std : : result : : Result : : map : : < core : : bit_array : : BitArray, [closure @ src / core / bit_array.rs : 52 : 33 : 52 : 38] >;
-    std : : fs : : read : : < & std : : path : : Path >;
-    std : : path : : Path : : new : : < std : : string : : String >;
+    std : : result : : Result : : map;
+    std : : fs : : read;
+    std : : path : : Path : : new;
 }
 Decl (andrew_fuzz : : core : : bit_array : : {impl # 0} : : from_file : : {closure # 0}) {
     core : : bit_array : : BitArray : : new;
 }
 Decl (andrew_fuzz : : core : : bit_array : : {impl # 0} : : to_file) {
-    std : : fs : : write : : < std : : string : : String, & std : : vec : : Vec >;
+    std : : fs : : write;
     std : : vec : : Vec : : as_ref;
     std : : cell : : Ref : : deref;
     std : : cell : : RefCell : : borrow;
@@ -128,7 +128,7 @@ Decl (andrew_fuzz : : core : : bit_array : : {impl # 0} : : fmt) {
     core : : fmt : : UnsafeArg : : new;
     std : : fmt : : rt : : v1 : : Argument : : new;
     std : : fmt : : rt : : v1 : : Count : : Is;
-    core : : fmt : : ArgumentV1 : : new_debug : : < std : : rc : : Rc >;
+    core : : fmt : : ArgumentV1 : : new_debug;
 }
 Decl (andrew_fuzz : : core : : feature_vector : : {impl # 0} : : new) {
     std : : collections : : HashMap : : insert;
@@ -140,12 +140,12 @@ Decl (andrew_fuzz : : core : : feature_vector : : {impl # 0} : : new) {
 Decl (andrew_fuzz : : core : : feature_vector : : {impl # 0} : : tally) {
     std : : f64 : : powi;
     std : : option : : Option : : unwrap;
-    std : : collections : : HashMap : : get_mut : : < std : : string : : String >;
+    std : : collections : : HashMap : : get_mut;
 }
 Decl (andrew_fuzz : : core : : feature_vector : : {impl # 0} : : values) {
     std : : vec : : Vec : : push;
     std : : option : : Option : : unwrap;
-    std : : collections : : HashMap : : get : : < std : : string : : String >;
+    std : : collections : : HashMap : : get;
     std : : string : : String : : to_string;
     std : : slice : : Iter : : next;
     std : : slice : : Iter : : into_iter;
@@ -158,7 +158,7 @@ Decl (andrew_fuzz : : core : : feature_vector : : {impl # 0} : : dist) {
     < & f64 as std : : ops : : Sub > : : sub;
     std : : iter : : Zip : : next;
     std : : iter : : Zip : : into_iter;
-    std : : slice : : Iter : : zip : : < std : : slice : : Iter >;
+    std : : slice : : Iter : : zip;
     core : : slice : : iter;
     std : : vec : : Vec : : deref;
     core : : feature_vector : : FeatureVector : : values;
@@ -167,9 +167,9 @@ Decl (andrew_fuzz : : core : : feature_vector : : {impl # 0} : : dist) {
     core : : feature_vector : : FeatureVector : : values;
     core : : panicking : : panic;
     std : : vec : : Vec : : eq;
-    std : : slice : : Iter : : collect : : < std : : vec : : Vec >;
+    std : : slice : : Iter : : collect;
     core : : feature_vector : : FeatureVector : : features;
-    std : : slice : : Iter : : collect : : < std : : vec : : Vec >;
+    std : : slice : : Iter : : collect;
     core : : feature_vector : : FeatureVector : : features;
 }
 Decl (andrew_fuzz : : core : : feature_vector : : {impl # 0} : : features) {
@@ -211,10 +211,10 @@ Decl (andrew_fuzz : : core : : bolts : : {impl # 0} : : push) {
     std : : vec : : Vec : : len;
 }
 Decl (andrew_fuzz : : core : : bolts : : {impl # 0} : : get) {
-    std : : option : : Option : : map : : < std : : rc : : Rc, [closure @ src / core / bolts.rs : 36 : 34 : 36 : 38] >;
-    core : : slice : : get : : < usize >;
+    std : : option : : Option : : map;
+    core : : slice : : get;
     std : : vec : : Vec : : deref;
-    std : : collections : : HashMap : : get : : < str >;
+    std : : collections : : HashMap : : get;
     std : : rc : : Rc : : deref;
 }
 Decl (andrew_fuzz : : core : : bolts : : {impl # 0} : : get : : {closure # 0}) {
@@ -269,7 +269,7 @@ Decl (andrew_fuzz : : core : : Ast : : debug) {
     std : : result : : Result : : expect;
     std : : string : : String : : write_fmt;
     std : : fmt : : Arguments : : new_v1;
-    core : : fmt : : ArgumentV1 : : new_display : : < & std : : string : : String >;
+    core : : fmt : : ArgumentV1 : : new_display;
     Self : : name;
     std : : string : : String : : new;
 }
@@ -280,7 +280,7 @@ Decl (andrew_fuzz : : core : : Vectorizer : : do_features) {
 }
 Decl (andrew_fuzz : : core : : Vectorizer : : features) {
     core : : feature_vector : : FeatureVector : : new;
-    std : : collections : : hash_set : : IntoIter : : collect : : < std : : vec : : Vec >;
+    std : : collections : : hash_set : : IntoIter : : collect;
     std : : collections : : HashSet : : into_iter;
     Self : : do_features;
     std : : collections : : HashSet : : new;
@@ -410,8 +410,8 @@ Decl (andrew_fuzz : : library : : union : : {impl # 0} : : debug) {
     str : : to_string;
 }
 Decl (andrew_fuzz : : library : : union : : {impl # 0} : : fuzz) {
-    std : : iter : : Map : : collect : : < std : : vec : : Vec >;
-    std : : slice : : Iter : : map : : < std : : rc : : Rc, [closure @ src / library / union.rs : 90 : 38 : 90 : 53] >;
+    std : : iter : : Map : : collect;
+    std : : slice : : Iter : : map;
     core : : slice : : iter;
     std : : vec : : Vec : : deref;
     < dyn core : : DataModel as core : : Fuzzer > : : fuzz;
@@ -516,7 +516,7 @@ Decl (andrew_fuzz : : library : : u8 : : {impl # 0} : : new) {
 }
 Decl (andrew_fuzz : : library : : u8 : : {impl # 0} : : from_u8) {
     core : : bit_array : : BitArray : : new;
-    std : : slice : : into_vec : : < std : : alloc : : Global >;
+    std : : slice : : into_vec;
     std : : rc : : Rc : : new;
     core : : DataModelBase : : new;
     str : : to_string;
@@ -540,12 +540,12 @@ Decl (andrew_fuzz : : library : : u8 : : {impl # 0} : : parse) {
 Decl (andrew_fuzz : : library : : u8 : : {impl # 0} : : debug) {
     std : : string : : String : : write_fmt;
     std : : fmt : : Arguments : : new_v1;
-    core : : fmt : : ArgumentV1 : : new_upper_hex : : < i32 >;
+    core : : fmt : : ArgumentV1 : : new_upper_hex;
     library : : u8 : : U8 : : int;
     std : : string : : String : : new;
 }
 Decl (andrew_fuzz : : library : : u8 : : {impl # 0} : : fuzz) {
-    std : : slice : : into_vec : : < std : : alloc : : Global >;
+    std : : slice : : into_vec;
     std : : rc : : Rc : : new;
     library : : u8 : : U8 : : from_u8;
     std : : rc : : Rc : : new;
@@ -568,7 +568,7 @@ Decl (andrew_fuzz : : library : : u16 : : {impl # 0} : : new) {
 }
 Decl (andrew_fuzz : : library : : u16 : : {impl # 0} : : from_u16) {
     core : : bit_array : : BitArray : : new;
-    std : : slice : : into_vec : : < std : : alloc : : Global >;
+    std : : slice : : into_vec;
     std : : rc : : Rc : : new;
     core : : DataModelBase : : new;
     str : : to_string;
@@ -598,12 +598,12 @@ Decl (andrew_fuzz : : library : : u16 : : {impl # 0} : : parse) {
 Decl (andrew_fuzz : : library : : u16 : : {impl # 0} : : debug) {
     std : : string : : String : : write_fmt;
     std : : fmt : : Arguments : : new_v1;
-    core : : fmt : : ArgumentV1 : : new_upper_hex : : < i32 >;
+    core : : fmt : : ArgumentV1 : : new_upper_hex;
     library : : u16 : : U16 : : int;
     std : : string : : String : : new;
 }
 Decl (andrew_fuzz : : library : : u16 : : {impl # 0} : : fuzz) {
-    std : : slice : : into_vec : : < std : : alloc : : Global >;
+    std : : slice : : into_vec;
     std : : rc : : Rc : : new;
     library : : u16 : : U16 : : from_u16;
     std : : rc : : Rc : : new;
@@ -756,7 +756,7 @@ Decl (andrew_fuzz : : dns : : dns) {
     library : : union : : Union : : new;
     std : : rc : : Rc : : from;
     std : : rc : : Rc : : new;
-    std : : slice : : into_vec : : < std : : alloc : : Global >;
+    std : : slice : : into_vec;
     < dyn core : : DataModel as core : : Cloneable > : : clone;
     std : : boxed : : Box : : new;
     library : : sequence : : Sequence : : new;
@@ -774,7 +774,7 @@ Decl (andrew_fuzz : : dns : : dns) {
     std : : rc : : Rc : : new;
     library : : set : : Set : : set_name;
     library : : set : : Set : : new;
-    std : : slice : : into_vec : : < std : : alloc : : Global >;
+    std : : slice : : into_vec;
     std : : rc : : Rc : : clone;
     std : : rc : : Rc : : clone;
     std : : rc : : Rc : : new;
@@ -783,7 +783,7 @@ Decl (andrew_fuzz : : dns : : dns) {
     library : : union : : Union : : new;
     std : : rc : : Rc : : clone;
     std : : rc : : Rc : : new;
-    std : : slice : : into_vec : : < std : : alloc : : Global >;
+    std : : slice : : into_vec;
     std : : boxed : : Box : : new;
     library : : sequence : : Sequence : : new;
     core : : bolts : : ChildMap : : from;
