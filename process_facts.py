@@ -1,10 +1,12 @@
+import sys
 import json
 
 # https://pypi.org/project/ordered-set/
 from ordered_set import OrderedSet
 
 # Read in data
-f = open('./json.txt', mode='r')
+# f = open('./json.txt', mode='r')
+f = sys.stdin
 contents = f.read()
 f.close()
 

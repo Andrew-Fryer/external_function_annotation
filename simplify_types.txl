@@ -24,7 +24,7 @@ redefine Decl
 end redefine
 
 define Caller
-      [number] ': [number] '~ [id] '[ [number] 'f '] [COLON_COLON_SimplePathSegment*] % input
+      [number] ': [number] '~ [id] '[ [number] [id] '] [COLON_COLON_SimplePathSegment*] % input
     | [SimplePath] % output
 end define
 
@@ -156,7 +156,7 @@ end tokens
 
 rule clean_caller
     replace [Caller]
-        _ [number] ': _ [number] '~ caller_name [id] '[ _ [number] 'f '] path [COLON_COLON_SimplePathSegment*]
+        _ [number] ': _ [number] '~ caller_name [id] '[ _ [number] _ [id] '] path [COLON_COLON_SimplePathSegment*]
     by
         caller_name path
 end rule
