@@ -48,8 +48,6 @@ I would like to understand some of the challenges associated with resolving dyna
 I would like to build a tool that is capable of providing some helpful information to a software engineer.
 I would also like to understand the Rust programming language better.
 
-\section{Design}
-
 \subsection{Known Challenges}
 The source code in Rust projects is typically spread over multiple files.
 Files are included in other files as modules.
@@ -62,6 +60,8 @@ Statically resolving dynamic dispatch is one of those problems were you can do b
 Even getting it right at all is difficult because of type inference.
 
 Note: resolving dynamic dispatch is uncomputable, so we are making a best effort attempt out of the gate.
+
+\section{Design}
 
 \subsection{Proposed Design}
 
@@ -129,7 +129,7 @@ I think I will be able to make the minimum functionality work in 40-60 hours of 
     \end{lstlisting}
 \end{figure}
 
-\section{Stretch Goals}
+\subsection{Stretch Goals}
 If I have extra time, I will first work on including code from external libraries in the analysis.
 I will likely add a parameter to the bash script that will indicate where to look for Rust libraries.
 This will improve the analysis because it will be able to look through libraries all the way to \lstinline{extern} functions which are written in c and linked in.
@@ -141,7 +141,12 @@ I would like the tool to indicate when it wasn't able to resolve a function call
 (Generally, the tool is conservative/liberal, but in this case, that would mean marking the function with all FFIs, which is silly).
 Instead of FFIs, we could just do external functions.
 
-\section{Design Process and Dead Ends}
+\subsection{Design Process}
+The most time-consuming part of the development (other than dead ends) was writing TXL grammars and rules.
+To do this as efficiently as possible, I ran the same TXL program on the same input iteratively after making incremental changes to the input.
+I also used a text editor (VSCode) with diff capabilities to show precisely what impact the changes have on the output.
+
+\subsection{Dead Ends}
 I tried a bunch of stuff that didn't work.
 
 bash script to link files together is difficult because you can't find external dependencies
@@ -226,12 +231,12 @@ It was important to get the output formatting (whitespace) to work because it is
 
 One common mistake I made was I'd use a wildcard except for what I expected to follow the section I don't care about, but then I'd miss a way that something else could follow it (on the last iter, for example), and then it ends up eating more than it should.
 
-\section{Final Tool} % maybe this should be a subsection
+\section{Final Solution/Tool} % maybe this should be a subsection
 talk about how I have several TXL passes doing: call extraction, function name normalization, and conversion to json
 why did I choose to use Python
 why did I choose thir over mir?
 
-\section{Final Solution Results}
+\subsection{Evaluation}
 This is what it is capable of...
 
 I should explain the design with snips of diffs between input and output of each stage!
@@ -241,7 +246,7 @@ It seems that it is awkward to remove the most deeply nested element either way.
 
 I should do a performance benchmark here.
 
-\section{Limitations}
+\subsection{Limitations}
 It can't do...
 
 I'm pretty sure my tool will get confused if you give it a struct that implements several traits that have a method with the same name.
@@ -252,7 +257,7 @@ I think it will break if there is more than 1 closure in the same function becau
 
 Currently, I don't normalize callee names for external functions, so a function might be annotated with 2 external function tags that are really for the same external function.
 
-\section{Considerations in Hindsight}
+% \subsection{Considerations in Hindsight}
 I would pick a language that doesn't do dynamic dispatch in funky ways.
 
 I could use capitizaition as a clue because it is generally followed (documentary structure of the code).
@@ -260,6 +265,21 @@ Programmers do many unexpected things though.
 However, I think it would work to run a linter (part of the compiler, so it knows stuff) to normalize all of the capitalization.
 
 Polymorphism should behave the same for my tool whether it is static or dynamic dispatch, shouldn't it?
+
+\section{Conclusion}
+I was able to build a tool that does X.
+Unfortunately, I is unable to to y because of z and has w limitations.
+
+\subsection{Learning Outcomes}
+If I have extra time, I will first work on including code from external libraries in the analysis.
+I will likely add a parameter to the bash script that will indicate where to look for Rust libraries.
+This will improve the analysis because it will be able to look through libraries all the way to \lstinline{extern} functions which are written in c and linked in.
+
+The other stretch goal I have is to write more complex TXL rules that will build a table of all traits (similar to interfaces) and then use the table to track down trait method calls.
+This will further improve the analysis because it will be able to analyze method calls on trait objects.
+
+The counter-intuitive part of TXL programming for me is that a replacement is not re-parsed according to the grammar.
+This means you need to consider that the non-terminal types in a replacement may be different than if the same sequence of terminals was parsed at the beginning.
 
 \section{Future Work}
 
@@ -273,16 +293,5 @@ Talk about the pluses and minuses of each approach (python, TXL, link with rustc
         rust code!
     \end{lstlisting}
 \end{figure}
-
-\section{Learning Outcomes}
-If I have extra time, I will first work on including code from external libraries in the analysis.
-I will likely add a parameter to the bash script that will indicate where to look for Rust libraries.
-This will improve the analysis because it will be able to look through libraries all the way to \lstinline{extern} functions which are written in c and linked in.
-
-The other stretch goal I have is to write more complex TXL rules that will build a table of all traits (similar to interfaces) and then use the table to track down trait method calls.
-This will further imrpove the analysis because it will be able to analyze method calls on trait objects.
-
-The counter-intuitive part of TXL programming for me is that a replacement is not re-parsed according to the grammar.
-This means you need to consider that the non-terminal types in a replacement may be different than if the same sequence of terminals was parsed at the beginning.
 
 \end{document}
