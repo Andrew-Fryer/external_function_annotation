@@ -56,6 +56,7 @@ end define
 
 tokens
     charlit "" % undefines character literals because rust uses a single quote for lifetimes
+    stringlit ""
 end tokens
 
 function append_callee callee [Callee]
