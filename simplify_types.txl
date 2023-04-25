@@ -37,18 +37,6 @@ define SimplePathSegment
     | '{ [id] '# [number] '}
 end define
 
-define impl
-    '{ 'impl '# [number] '}
-end define
-
-define closure
-    '{ 'closure '# [number] '}
-end define
-
-define constant
-    '{ 'constant '# [number] '}
-end define
-
 %%%
 
 
