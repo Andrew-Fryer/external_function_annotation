@@ -24,7 +24,7 @@
 \maketitle
 
 \section{Introduction}
-asd
+asdf
 
 \subsection{Problem Definition}
 
@@ -204,9 +204,24 @@ I had to add `::' to the compounds list so that it can be parsed together in the
 Then, ... I should output JSON so that Python can read it in really easily.
 
 There is a difference between how generics are annotated for methods and types.
-\lstinline{< std :: vec :: Vec < u8 > as std :: ops :: IndexMut < usize > > :: index_mut;}
+\lstinline{std :: fs :: write :: < std :: string :: String, & std :: vec :: Vec < u8 > >}
 
 I decided to join the JSON grammar with the previous grammar at the top level because it has 
+
+Here is an example of a tricky one:
+\lstinline{std :: result :: Result :: < std :: vec :: Vec < u8 >, std :: io :: Error > :: map :: < core :: bit_array :: BitArray, [closure @ src / core / bit_array.rs : 52 : 33 : 52 : 38] >;}
+
+I'm deciding to turn this into this:
+\lstinline{< dyn core : : DataModel as core : : Parser > : : parse;}
+\lstinline{core : : DataModel : : parse;}
+But, I'll leave this as is:
+\lstinline{< dyn for < ' a > std : : ops : : Fn (std : : rc : : Rc) - > bool as std : : ops : : Fn > : : call;}
+
+It was important to get the output formatting (whitespace) to work because it is much more difficult to debug the TXL programs when it is difficult to read and compare the outputs.
+
+This is what fixed to_json.txl: 732adda5be8c920446df5977533b600b3e83f3ff
+
+One common mistake I made was I'd use a wildcard except for what I expected to follow the section I don't care about, but then I'd miss a way that something else could follow it (on the last iter, for example), and then it ends up eating more than it should.
 
 \section{Final Tool} % maybe this should be a subsection
 talk about how I have several TXL passes doing: call extraction, function name normalization, and conversion to json
@@ -216,6 +231,11 @@ why did I choose thir over mir?
 \section{Final Solution Results}
 This is what it is capable of...
 
+I should explain the design with snips of diffs between input and output of each stage!
+
+I still find it difficult to reason about which way delimiters should be grouped to items they delimit (left or right).
+It seems that it is awkward to remove the most deeply nested element either way.
+
 I should do a performance benchmark here.
 
 \section{Limitations}
@@ -223,8 +243,20 @@ It can't do...
 
 I'm pretty sure my tool will get confused if you give it a struct that implements several traits that have a method with the same name.
 
+Unfortunately, it doesn't resolve the \lstinline{Self} type to the appropriate type.
+
+I think it will break if there is more than 1 closure in the same function because I am normalizing the closure numbers... mmm, not smart.
+
+Currently, I don't normalize callee names for external functions, so a function might be annotated with 2 external function tags that are really for the same external function.
+
 \section{Considerations in Hindsight}
 I would pick a language that doesn't do dynamic dispatch in funky ways.
+
+I could use capitizaition as a clue because it is generally followed (documentary structure of the code).
+Programmers do many unexpected things though.
+However, I think it would work to run a linter (part of the compiler, so it knows stuff) to normalize all of the capitalization.
+
+Polymorphism should behave the same for my tool whether it is static or dynamic dispatch, shouldn't it?
 
 \section{Future Work}
 
