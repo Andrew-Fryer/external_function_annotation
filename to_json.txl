@@ -13,18 +13,18 @@ end define
 
 define Json
     '{
-        [DoubleQuote] [id] [DoubleQuote] %[KeyValPair,]
+        [KeyValPair,]
     '}
 end define
 
 define KeyValPair
-    '" [Caller] '" ': '[
+    [DoubleQuote] [Caller] [DoubleQuote] ': '[
         [QuotedCallee,]
     ']
 end define
 
 define QuotedCallee
-    '" [Callee] '"
+    [DoubleQuote] [Callee] [DoubleQuote]
 end define
 
 define Decl
@@ -46,6 +46,10 @@ define wildcard
     | [key]
 end define
 
+define not_brackets
+    [not '[] [not ']] [wildcard]
+end define
+
 define not_parenthesis
     [not '(] [not ')] [wildcard]
 end define
@@ -59,13 +63,39 @@ tokens
     stringlit ""
 end tokens
 
+function append_callee callee [Callee]
+    replace [QuotedCallee,]
+        existing [QuotedCallee,]
+    construct new [QuotedCallee,]
+        '" callee '"
+    by
+        new [, existing]
+end function
+
+function append_key_val_pair d [Decl]
+    replace [KeyValPair,]
+        existing [KeyValPair,]
+    deconstruct d
+        'Decl '( caller [Caller] ') '{
+            callees [Callee*]
+        '}
+    construct new_callees [QuotedCallee,]
+        _ [append_callee each callees]
+    construct new [KeyValPair,]
+        '" caller '" ': '[
+            new_callees
+        ']
+    by
+        new [, existing]
+end function
+
 function main
     replace [program]
         ds [Decl*]
     construct key_val_pairs [KeyValPair,]
-        _ %[append_key_val_pair each ds]
+        _ [append_key_val_pair each ds]
     by
         '{
-            ' " 'asdf ' "
+            key_val_pairs
         '}
 end function
