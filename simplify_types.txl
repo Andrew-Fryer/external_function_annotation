@@ -8,6 +8,11 @@ redefine program
     [Decl*]
 end define
 
+compounds
+    '::
+    '->
+end compounds
+
 tokens
     charlit "" % undefines character literals because rust uses a single quote for lifetimes
 end tokens

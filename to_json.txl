@@ -2,6 +2,11 @@
 
 % Note that the input contains no double quotes, so we can insert them wherever we like in the output to make things clear for Pyhton.
 
+compounds
+    '::
+    '->
+end compounds
+
 define program
       [Decl*]
     | [Json]
