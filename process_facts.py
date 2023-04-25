@@ -1,5 +1,8 @@
 import json
 
+# https://pypi.org/project/ordered-set/
+from ordered_set import OrderedSet
+
 
 f = open('./json.txt', mode='r')
 contents = f.read()
@@ -9,20 +12,20 @@ contents = contents.replace("\n", "")
 
 obj = json.loads(contents)
 
-callers = set()
+callers = OrderedSet()
 calls = {}
-all_callees = set()
+all_callees = OrderedSet()
 called_by = {}
 def record_caller(caller):
     assert(caller not in calls)
-    calls[caller] = set()
+    calls[caller] = OrderedSet()
     assert(caller not in callers)
     callers.add(caller)
 def record_call(caller, callee):
     calls[caller].add(callee)
     all_callees.add(callee)
     if callee not in called_by:
-        called_by[callee] = set()
+        called_by[callee] = OrderedSet()
     called_by[callee].add(caller)
 
 for caller in obj:
@@ -38,7 +41,7 @@ external_fns = all_callees - callers
 
 transitive_internal_calls_external = {}
 for fn in internal_fns:
-    transitive_internal_calls_external[fn] = set()
+    transitive_internal_calls_external[fn] = OrderedSet()
 for external_fn in external_fns:
     work = list(called_by[external_fn])
     while len(work) > 0:

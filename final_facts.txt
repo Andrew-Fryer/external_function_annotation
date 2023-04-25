@@ -1,562 +1,562 @@
-andrew_fuzz :: core :: bolts :: {impl # 0} :: from :: {constant # 0}:
-andrew_fuzz :: core :: Serializer :: serialize:
-	core :: bit_array :: BitArray :: fresh;
-	Self :: do_serialization;
-andrew_fuzz :: library :: u16 :: {impl # 0} :: from_u16:
+andrew_fuzz :: main:
+	dns :: dns;
 	str :: to_string;
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	std :: slice :: into_vec;
-	core :: bit_array :: BitArray :: new;
-andrew_fuzz :: library :: sequence :: {impl # 0} :: new:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	str :: to_string;
-andrew_fuzz :: core :: Contextual :: data:
-	core :: panicking :: panic;
-andrew_fuzz :: library :: union :: {impl # 0} :: fuzz:
-	std :: iter :: Map :: collect;
-	core :: DataModel :: fuzz;
-	std :: rc :: Rc :: deref;
-	std :: vec :: Vec :: deref;
-	std :: slice :: Iter :: map;
-	core :: slice :: iter;
-andrew_fuzz :: core :: bolts :: {impl # 0} :: get:
-	std :: rc :: Rc :: deref;
-	std :: collections :: HashMap :: get;
-	core :: slice :: get;
-	std :: vec :: Vec :: deref;
-	std :: option :: Option :: map;
-andrew_fuzz :: library :: union :: {impl # 0} :: clone:
-	std :: rc :: Rc :: clone;
-	std :: boxed :: Box :: new;
-andrew_fuzz :: library :: button :: {impl # 0} :: breed:
-	library :: button :: Button :: clone;
-andrew_fuzz :: library :: sequence :: {impl # 0} :: clone:
-	std :: rc :: Rc :: clone;
-	core :: bolts :: ChildMap :: clone;
-	std :: boxed :: Box :: new;
-andrew_fuzz :: core :: context :: {impl # 0} :: vec:
-	core :: panicking :: panic;
-andrew_fuzz :: core :: bolts :: {impl # 0} :: empty:
-	std :: rc :: Rc :: clone;
-	std :: vec :: Vec :: new;
-andrew_fuzz :: library :: button :: {impl # 0} :: debug:
-	std :: string :: String :: write_fmt;
-	std :: string :: String :: new;
-	std :: fmt :: Arguments :: new_const;
-andrew_fuzz :: library :: sequence :: {impl # 0} :: parse:
-	std :: rc :: Rc :: clone;
-	std :: vec :: Vec :: into_iter;
-	core :: bolts :: ChildMap :: vals;
-	std :: rc :: Rc :: deref;
-	std :: slice :: Iter :: next;
+	core :: bit_array :: BitArray :: from_file;
+	std :: result :: Result :: unwrap;
+	std :: rc :: Weak :: new;
 	core :: context :: Context :: new;
-	core :: DataModel :: parse;
-	std :: rc :: Rc :: downgrade;
-	std :: boxed :: Box :: new;
-	core :: bolts :: ChildMap :: empty;
 	std :: rc :: Rc :: new;
-	core :: bolts :: ChildMap :: push;
+	core :: DataModel :: parse;
+	std :: option :: Option :: unwrap;
+	core :: DataModel :: fuzz;
+	std :: vec :: Vec :: new;
+	std :: vec :: Vec :: into_iter;
+	std :: vec :: IntoIter :: next;
+	std :: rc :: Rc :: deref;
+	core :: DataModel :: vectorize;
+	std :: vec :: Vec :: push;
+	core :: DataModel :: serialize;
+	core :: bit_array :: BitArray :: to_file;
+	std :: fmt :: Arguments :: new_const;
+	std :: io :: _print;
+andrew_fuzz :: dns :: dns :: {closure # 0}:
+	std :: rc :: Rc :: deref;
+	core :: context :: Context :: child;
+	core :: DataModel :: int;
+andrew_fuzz :: dns :: dns:
+	std :: rc :: Rc :: new;
+	std :: vec :: Vec :: new;
+	library :: u8 :: U8 :: new;
+	library :: u16 :: U16 :: new;
+	std :: rc :: Rc :: clone;
+	core :: bolts :: ChildMap :: from;
+	library :: sequence :: Sequence :: new;
+	library :: constraint :: Constraint :: new;
+	library :: set :: Set :: new;
+	std :: boxed :: Box :: new;
+	std :: slice :: into_vec;
+	library :: union :: Union :: new;
+	library :: union :: Union :: set_name;
+	library :: set :: Set :: set_name;
+	core :: DataModel :: clone;
 	std :: rc :: Rc :: from;
-andrew_fuzz :: core :: feature_vector :: {impl # 0} :: features:
-	std :: vec :: Vec :: deref;
-	core :: slice :: iter;
+	library :: button :: Button :: new;
+	library :: sequence :: Sequence :: set_name;
+andrew_fuzz :: library :: button :: {impl # 0} :: do_serialization:
+andrew_fuzz :: library :: button :: {impl # 0} :: set_name:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	core :: DataModelBase :: new;
+andrew_fuzz :: library :: button :: {impl # 0} :: name:
+	std :: rc :: Rc :: deref;
+	core :: DataModelBase :: name;
 andrew_fuzz :: library :: button :: {impl # 0} :: fuzz:
 	std :: vec :: Vec :: new;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: peek:
-	core :: panicking :: panic;
-	std :: vec :: Vec :: index;
-	std :: rc :: Rc :: deref;
-	std :: cell :: Ref :: deref;
-	std :: cell :: RefCell :: borrow;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: do_features:
-	core :: DataModel :: do_features;
-	std :: rc :: Rc :: deref;
-andrew_fuzz :: library :: union :: {impl # 0} :: name:
-	core :: DataModelBase :: name;
-	std :: rc :: Rc :: deref;
-andrew_fuzz :: main:
-	std :: vec :: IntoIter :: next;
-	dns :: dns;
-	std :: rc :: Rc :: deref;
-	core :: bit_array :: BitArray :: to_file;
-	std :: rc :: Rc :: new;
-	core :: bit_array :: BitArray :: from_file;
-	std :: vec :: Vec :: push;
-	std :: result :: Result :: unwrap;
-	std :: io :: _print;
-	std :: option :: Option :: unwrap;
-	core :: DataModel :: fuzz;
-	core :: context :: Context :: new;
-	core :: DataModel :: parse;
-	str :: to_string;
+andrew_fuzz :: library :: button :: {impl # 0} :: debug:
 	std :: fmt :: Arguments :: new_const;
-	std :: rc :: Weak :: new;
-	std :: vec :: Vec :: into_iter;
-	core :: DataModel :: vectorize;
-	core :: DataModel :: serialize;
-	std :: vec :: Vec :: new;
-andrew_fuzz :: core :: context :: {impl # 0} :: map:
-	core :: panicking :: panic;
-andrew_fuzz :: library :: u16 :: {impl # 0} :: debug:
-	std :: fmt :: Arguments :: new_v1;
-	core :: fmt :: ArgumentV1 :: new_upper_hex;
-	library :: u16 :: U16 :: int;
 	std :: string :: String :: new;
 	std :: string :: String :: write_fmt;
-andrew_fuzz :: core :: bolts :: {impl # 0} :: push:
-	core :: panicking :: panic;
-	std :: collections :: HashMap :: len;
-	std :: rc :: Rc :: deref;
-	std :: vec :: Vec :: len;
-	std :: vec :: Vec :: push;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: matching_data:
-	std :: rc :: Rc :: eq;
-andrew_fuzz :: library :: union :: {impl # 0} :: do_serialization:
-	core :: DataModel :: do_serialization;
-	std :: rc :: Rc :: deref;
-andrew_fuzz :: library :: union :: {impl # 0} :: fuzz :: {closure # 0}:
-	std :: rc :: Rc :: clone;
-	std :: rc :: Rc :: new;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: pos:
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: eq:
-	core :: bit_array :: BitArray :: clone;
+andrew_fuzz :: library :: button :: {impl # 0} :: parse:
 	core :: bit_array :: BitArray :: eat;
+	library :: button :: Button :: clone;
+andrew_fuzz :: library :: button :: {impl # 0} :: breed:
+	library :: button :: Button :: clone;
+andrew_fuzz :: library :: button :: {impl # 0} :: clone:
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+andrew_fuzz :: library :: button :: {impl # 0} :: new:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	core :: DataModelBase :: new;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: do_serialization:
+	std :: rc :: Rc :: deref;
+	core :: DataModel :: do_serialization;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: do_vectorization:
+	std :: rc :: Rc :: deref;
+	core :: DataModel :: do_vectorization;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: do_features:
+	std :: rc :: Rc :: deref;
+	core :: DataModel :: do_features;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: set_name:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	core :: DataModelBase :: new;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: name:
+	std :: rc :: Rc :: deref;
+	core :: DataModelBase :: name;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: fuzz:
+	core :: DataModel :: fuzz;
+	std :: rc :: Rc :: deref;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: debug:
+	std :: result :: Result :: unwrap;
+	std :: fmt :: Arguments :: new_const;
+	std :: string :: String :: new;
+	std :: string :: String :: write_fmt;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: parse:
+	core :: context :: Context :: new;
+	std :: rc :: Rc :: new;
+	core :: DataModel :: parse;
+	std :: rc :: Rc :: deref;
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+	std :: rc :: Rc :: from;
+	std :: rc :: Rc :: downgrade;
+	< dyn for < ' a > std :: ops :: Fn (std :: rc :: Rc) -> bool as std :: ops :: Fn > :: call;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: breed:
+	library :: constraint :: Constraint :: clone;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: clone:
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: child:
+	std :: rc :: Rc :: clone;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: new:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	core :: DataModelBase :: new;
+andrew_fuzz :: library :: u16 :: {impl # 0} :: do_serialization:
+	core :: bit_array :: BitArray :: extend;
+andrew_fuzz :: library :: u16 :: {impl # 0} :: set_name:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	core :: DataModelBase :: new;
+andrew_fuzz :: library :: u16 :: {impl # 0} :: name:
+	std :: rc :: Rc :: deref;
+	core :: DataModelBase :: name;
+andrew_fuzz :: library :: u16 :: {impl # 0} :: fuzz:
+	std :: rc :: Rc :: new;
+	std :: slice :: into_vec;
+	library :: u16 :: U16 :: from_u16;
+andrew_fuzz :: library :: u16 :: {impl # 0} :: debug:
+	std :: string :: String :: new;
+	std :: string :: String :: write_fmt;
+	library :: u16 :: U16 :: int;
+	core :: fmt :: ArgumentV1 :: new_upper_hex;
+	std :: fmt :: Arguments :: new_v1;
+andrew_fuzz :: library :: u16 :: {impl # 0} :: parse:
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+	core :: bit_array :: BitArray :: eat;
+andrew_fuzz :: library :: u16 :: {impl # 0} :: breed:
+	core :: panicking :: panic;
+andrew_fuzz :: library :: u16 :: {impl # 0} :: clone:
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+	core :: bit_array :: BitArray :: clone;
+andrew_fuzz :: library :: u16 :: {impl # 0} :: int:
 	std :: option :: Option :: unwrap;
+	core :: bit_array :: BitArray :: eat;
+	core :: bit_array :: BitArray :: clone;
 	core :: bit_array :: BitArray :: peek;
-	core :: bit_array :: BitArray :: len;
+andrew_fuzz :: library :: u16 :: {impl # 0} :: from_u16:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	std :: slice :: into_vec;
+	core :: DataModelBase :: new;
+	core :: bit_array :: BitArray :: new;
+andrew_fuzz :: library :: u16 :: {impl # 0} :: new:
+	library :: u16 :: U16 :: from_u16;
+andrew_fuzz :: library :: u8 :: {impl # 0} :: do_serialization:
+	core :: bit_array :: BitArray :: extend;
+andrew_fuzz :: library :: u8 :: {impl # 0} :: set_name:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	core :: DataModelBase :: new;
+andrew_fuzz :: library :: u8 :: {impl # 0} :: name:
+	std :: rc :: Rc :: deref;
+	core :: DataModelBase :: name;
+andrew_fuzz :: library :: u8 :: {impl # 0} :: fuzz:
+	std :: rc :: Rc :: new;
+	std :: slice :: into_vec;
+	library :: u8 :: U8 :: from_u8;
+andrew_fuzz :: library :: u8 :: {impl # 0} :: debug:
+	std :: string :: String :: new;
+	std :: string :: String :: write_fmt;
+	core :: fmt :: ArgumentV1 :: new_upper_hex;
+	std :: fmt :: Arguments :: new_v1;
+	library :: u8 :: U8 :: int;
+andrew_fuzz :: library :: u8 :: {impl # 0} :: parse:
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+	core :: bit_array :: BitArray :: eat;
+andrew_fuzz :: library :: u8 :: {impl # 0} :: breed:
+	core :: panicking :: panic;
+andrew_fuzz :: library :: u8 :: {impl # 0} :: clone:
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+	core :: bit_array :: BitArray :: clone;
+andrew_fuzz :: library :: u8 :: {impl # 0} :: int:
+	core :: bit_array :: BitArray :: peek;
+andrew_fuzz :: library :: u8 :: {impl # 0} :: from_u8:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	std :: slice :: into_vec;
+	core :: DataModelBase :: new;
+	core :: bit_array :: BitArray :: new;
+andrew_fuzz :: library :: u8 :: {impl # 0} :: new:
+	library :: u8 :: U8 :: from_u8;
+andrew_fuzz :: library :: set :: {impl # 0} :: do_serialization:
+	std :: vec :: Vec :: into_iter;
+	std :: rc :: Rc :: deref;
+	core :: DataModel :: do_serialization;
+	std :: slice :: Iter :: next;
+andrew_fuzz :: library :: set :: {impl # 0} :: set_name:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	core :: DataModelBase :: new;
+andrew_fuzz :: library :: set :: {impl # 0} :: name:
+	std :: rc :: Rc :: deref;
+	core :: DataModelBase :: name;
+andrew_fuzz :: library :: set :: {impl # 0} :: fuzz:
+	std :: rc :: Rc :: new;
+	core :: DataModel :: fuzz;
+	std :: vec :: Vec :: new;
+	std :: vec :: Vec :: into_iter;
+	std :: vec :: IntoIter :: next;
+	std :: rc :: Rc :: deref;
+	std :: vec :: Vec :: push;
+	std :: rc :: Rc :: clone;
+	std :: rc :: Rc :: from;
+	std :: vec :: Vec :: deref;
+	core :: slice :: iter;
+	std :: slice :: Iter :: enumerate;
+	std :: iter :: Enumerate :: into_iter;
+	std :: iter :: Enumerate :: next;
+	std :: vec :: Vec :: clone;
+	std :: vec :: Vec :: index_mut;
+andrew_fuzz :: library :: set :: {impl # 0} :: debug:
+	str :: to_string;
+andrew_fuzz :: library :: set :: {impl # 0} :: parse:
+	core :: context :: Context :: new;
+	std :: rc :: Rc :: new;
+	core :: DataModel :: parse;
+	std :: vec :: Vec :: new;
+	std :: rc :: Rc :: deref;
+	std :: vec :: Vec :: push;
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+	std :: rc :: Rc :: from;
+	std :: rc :: Rc :: downgrade;
+	< dyn for < ' a > std :: ops :: Fn (std :: rc :: Rc) -> bool as std :: ops :: Fn > :: call;
+andrew_fuzz :: library :: set :: {impl # 0} :: breed:
+	core :: panicking :: panic;
 andrew_fuzz :: library :: set :: {impl # 0} :: clone:
 	std :: rc :: Rc :: clone;
 	std :: boxed :: Box :: new;
 	std :: vec :: Vec :: clone;
-andrew_fuzz :: library :: sequence :: {impl # 0} :: fuzz:
-	std :: rc :: Rc :: clone;
-	std :: vec :: Vec :: into_iter;
-	std :: vec :: IntoIter :: next;
-	core :: bolts :: ChildMap :: vals;
-	std :: rc :: Rc :: deref;
-	std :: slice :: Iter :: next;
-	core :: DataModel :: fuzz;
-	std :: rc :: Rc :: new;
-	std :: vec :: Vec :: push;
-	core :: bolts :: ChildMap :: push;
-	core :: bolts :: ChildMap :: clone;
-	std :: rc :: Rc :: from;
-	std :: vec :: Vec :: new;
-andrew_fuzz :: core :: Contextual :: child:
-	core :: panicking :: panic;
-andrew_fuzz :: core :: feature_vector :: {impl # 0} :: values:
-	std :: option :: Option :: unwrap;
-	std :: slice :: Iter :: into_iter;
-	std :: slice :: Iter :: next;
-	std :: collections :: HashMap :: get;
-	std :: vec :: Vec :: deref;
-	std :: string :: String :: to_string;
-	std :: vec :: Vec :: push;
-	std :: vec :: Vec :: new;
-	core :: slice :: iter;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: extend:
-	core :: bit_array :: BitArray :: clone;
-	core :: bit_array :: BitArray :: eat;
-	std :: option :: Option :: unwrap;
-	core :: bit_array :: BitArray :: clean_end_offset;
-	std :: vec :: Vec :: index_mut;
-	std :: rc :: Rc :: deref;
-	std :: cell :: RefCell :: new;
-	std :: cell :: RefMut :: deref_mut;
-	std :: vec :: Vec :: len;
-	core :: bit_array :: BitArray :: peek;
-	std :: cell :: Ref :: deref;
-	std :: rc :: Rc :: new;
-	std :: cell :: RefMut :: deref;
-	std :: vec :: Vec :: push;
-	std :: cell :: RefCell :: borrow;
-	core :: bit_array :: BitArray :: len;
-	std :: cell :: RefCell :: borrow_mut;
-	std :: vec :: Vec :: clone;
-andrew_fuzz :: library :: u16 :: {impl # 0} :: set_name:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
+andrew_fuzz :: library :: set :: {impl # 0} :: new:
 	str :: to_string;
-andrew_fuzz :: library :: u8 :: {impl # 0} :: new:
-	library :: u8 :: U8 :: from_u8;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: to_file:
-	std :: vec :: Vec :: as_ref;
-	std :: rc :: Rc :: deref;
-	std :: cell :: Ref :: deref;
-	std :: fs :: write;
-	std :: cell :: RefCell :: borrow;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: from_file:
-	std :: fs :: read;
-	std :: path :: Path :: new;
-	std :: result :: Result :: map;
-andrew_fuzz :: library :: union :: {impl # 0} :: child:
-	std :: rc :: Rc :: clone;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: child:
-	std :: rc :: Rc :: clone;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: do_vectorization:
-	core :: DataModel :: do_vectorization;
-	std :: rc :: Rc :: deref;
-andrew_fuzz :: core :: Contextual :: vec:
-	core :: panicking :: panic;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: new:
-	std :: vec :: Vec :: index_mut;
-	core :: panicking :: panic;
-	std :: cell :: RefCell :: new;
-	std :: vec :: Vec :: len;
 	std :: rc :: Rc :: new;
-andrew_fuzz :: library :: set :: {impl # 0} :: name:
-	core :: DataModelBase :: name;
+	core :: DataModelBase :: new;
+andrew_fuzz :: library :: union :: {impl # 0} :: do_serialization:
 	std :: rc :: Rc :: deref;
-andrew_fuzz :: core :: bolts :: {impl # 0} :: get :: {closure # 0}:
-	std :: rc :: Rc :: clone;
-andrew_fuzz :: core :: context :: {impl # 0} :: parent:
-	std :: rc :: Rc :: clone;
-	std :: rc :: Weak :: upgrade;
-	std :: option :: Option :: unwrap;
-andrew_fuzz :: library :: set :: {impl # 0} :: do_serialization:
-	std :: slice :: Iter :: next;
 	core :: DataModel :: do_serialization;
-	std :: vec :: Vec :: into_iter;
+andrew_fuzz :: library :: union :: {impl # 0} :: set_name:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	core :: DataModelBase :: new;
+andrew_fuzz :: library :: union :: {impl # 0} :: name:
 	std :: rc :: Rc :: deref;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: advance:
-andrew_fuzz :: library :: sequence :: {impl # 0} :: map:
+	core :: DataModelBase :: name;
+andrew_fuzz :: library :: union :: {impl # 0} :: fuzz :: {closure # 0}:
+	std :: rc :: Rc :: new;
+	std :: rc :: Rc :: clone;
+andrew_fuzz :: library :: union :: {impl # 0} :: fuzz:
+	core :: DataModel :: fuzz;
+	std :: rc :: Rc :: deref;
+	std :: vec :: Vec :: deref;
+	core :: slice :: iter;
+	std :: slice :: Iter :: map;
+	std :: iter :: Map :: collect;
 andrew_fuzz :: library :: union :: {impl # 0} :: debug:
 	str :: to_string;
-andrew_fuzz :: library :: u8 :: {impl # 0} :: name:
-	core :: DataModelBase :: name;
+andrew_fuzz :: library :: union :: {impl # 0} :: parse:
+	core :: context :: Context :: new;
+	std :: rc :: Rc :: new;
+	core :: DataModel :: parse;
+	std :: vec :: Vec :: new;
+	std :: vec :: Vec :: into_iter;
 	std :: rc :: Rc :: deref;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: new:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	str :: to_string;
-andrew_fuzz :: core :: {impl # 0} :: name:
-andrew_fuzz :: library :: button :: {impl # 0} :: new:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	str :: to_string;
+	std :: vec :: Vec :: push;
+	std :: fmt :: Arguments :: new_const;
+	std :: io :: _print;
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+	std :: rc :: Rc :: from;
+	std :: rc :: Rc :: downgrade;
+	core :: bit_array :: BitArray :: clone;
+	std :: slice :: Iter :: next;
+	std :: vec :: Vec :: len;
+	std :: vec :: Vec :: pop;
+	core :: bit_array :: BitArray :: advance_to_match;
+andrew_fuzz :: library :: union :: {impl # 0} :: breed:
+	core :: panicking :: panic;
+andrew_fuzz :: library :: union :: {impl # 0} :: clone:
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+andrew_fuzz :: library :: union :: {impl # 0} :: child:
+	std :: rc :: Rc :: clone;
 andrew_fuzz :: library :: union :: {impl # 0} :: new:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
 	str :: to_string;
-andrew_fuzz :: core :: Vectorizer :: features:
-	std :: collections :: hash_set :: IntoIter :: collect;
-	Self :: do_features;
-	core :: feature_vector :: FeatureVector :: new;
-	std :: collections :: HashSet :: new;
-	std :: collections :: HashSet :: into_iter;
+	std :: rc :: Rc :: new;
+	core :: DataModelBase :: new;
+andrew_fuzz :: library :: sequence :: {impl # 0} :: do_serialization:
+	std :: vec :: Vec :: into_iter;
+	std :: rc :: Rc :: deref;
+	core :: DataModel :: do_serialization;
+	std :: slice :: Iter :: next;
+	core :: bolts :: ChildMap :: vals;
+andrew_fuzz :: library :: sequence :: {impl # 0} :: set_name:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	core :: DataModelBase :: new;
+andrew_fuzz :: library :: sequence :: {impl # 0} :: name:
+	std :: rc :: Rc :: deref;
+	core :: DataModelBase :: name;
+andrew_fuzz :: library :: sequence :: {impl # 0} :: fuzz:
+	std :: rc :: Rc :: new;
+	core :: DataModel :: fuzz;
+	std :: vec :: Vec :: new;
+	std :: vec :: Vec :: into_iter;
+	std :: vec :: IntoIter :: next;
+	std :: rc :: Rc :: deref;
+	std :: vec :: Vec :: push;
+	std :: rc :: Rc :: clone;
+	std :: rc :: Rc :: from;
+	std :: slice :: Iter :: next;
+	core :: bolts :: ChildMap :: vals;
+	core :: bolts :: ChildMap :: clone;
+	core :: bolts :: ChildMap :: push;
 andrew_fuzz :: library :: sequence :: {impl # 0} :: debug:
 	str :: to_string;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: clean_end_offset:
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: add_assign:
-	core :: bit_array :: BitArray :: extend;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: clone:
-	std :: rc :: Rc :: clone;
-andrew_fuzz :: core :: bolts :: {impl # 0} :: {constant # 0}:
-andrew_fuzz :: library :: u16 :: {impl # 0} :: new:
-	library :: u16 :: U16 :: from_u16;
-andrew_fuzz :: core :: feature_vector :: {impl # 0} :: new:
+andrew_fuzz :: library :: sequence :: {impl # 0} :: parse:
+	core :: context :: Context :: new;
+	std :: rc :: Rc :: new;
+	core :: DataModel :: parse;
 	std :: vec :: Vec :: into_iter;
-	std :: slice :: Iter :: next;
-	std :: collections :: HashMap :: new;
-	std :: string :: String :: to_string;
-	std :: collections :: HashMap :: insert;
-andrew_fuzz :: core :: Ast :: debug:
-	core :: fmt :: ArgumentV1 :: new_display;
-	std :: fmt :: Arguments :: new_v1;
-	std :: string :: String :: write_fmt;
-	Self :: name;
-	std :: string :: String :: new;
-	std :: result :: Result :: expect;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: advance_to_match:
-	std :: rc :: Rc :: clone;
-	core :: panicking :: panic;
-	core :: bit_array :: BitArray :: pos;
-	core :: bit_array :: BitArray :: advance;
-	core :: bit_array :: BitArray :: matching_data;
-andrew_fuzz :: library :: u16 :: {impl # 0} :: name:
-	core :: DataModelBase :: name;
 	std :: rc :: Rc :: deref;
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+	std :: rc :: Rc :: from;
+	std :: rc :: Rc :: downgrade;
+	std :: slice :: Iter :: next;
+	core :: bolts :: ChildMap :: vals;
+	core :: bolts :: ChildMap :: push;
+	core :: bolts :: ChildMap :: empty;
+andrew_fuzz :: library :: sequence :: {impl # 0} :: breed:
+	core :: panicking :: panic;
+andrew_fuzz :: library :: sequence :: {impl # 0} :: clone:
+	std :: rc :: Rc :: clone;
+	std :: boxed :: Box :: new;
+	core :: bolts :: ChildMap :: clone;
+andrew_fuzz :: library :: sequence :: {impl # 0} :: map:
+andrew_fuzz :: library :: sequence :: {impl # 0} :: new:
+	str :: to_string;
+	std :: rc :: Rc :: new;
+	core :: DataModelBase :: new;
+andrew_fuzz :: core :: Serializer :: serialize:
+	core :: bit_array :: BitArray :: fresh;
+	Self :: do_serialization;
+andrew_fuzz :: core :: Vectorizer :: vectorize:
+	Self :: features;
+	Self :: do_vectorization;
+andrew_fuzz :: core :: Vectorizer :: do_vectorization:
+	str :: to_string;
+	core :: feature_vector :: FeatureVector :: tally;
+andrew_fuzz :: core :: Vectorizer :: features:
+	std :: collections :: HashSet :: new;
+	Self :: do_features;
+	std :: collections :: HashSet :: into_iter;
+	std :: collections :: hash_set :: IntoIter :: collect;
+	core :: feature_vector :: FeatureVector :: new;
+andrew_fuzz :: core :: Vectorizer :: do_features:
+	Self :: name;
+	std :: string :: String :: to_string;
+	std :: collections :: HashSet :: insert;
+andrew_fuzz :: core :: Ast :: debug:
+	std :: string :: String :: new;
+	std :: string :: String :: write_fmt;
+	std :: fmt :: Arguments :: new_v1;
+	Self :: name;
+	core :: fmt :: ArgumentV1 :: new_display;
+	std :: result :: Result :: expect;
+andrew_fuzz :: core :: Contextual :: str:
+	core :: panicking :: panic;
 andrew_fuzz :: core :: Contextual :: int:
 	core :: panicking :: panic;
-andrew_fuzz :: library :: u8 :: {impl # 0} :: breed:
+andrew_fuzz :: core :: Contextual :: data:
+	core :: panicking :: panic;
+andrew_fuzz :: core :: Contextual :: map:
+	core :: panicking :: panic;
+andrew_fuzz :: core :: Contextual :: vec:
+	core :: panicking :: panic;
+andrew_fuzz :: core :: Contextual :: child:
+	core :: panicking :: panic;
+andrew_fuzz :: core :: {impl # 0} :: name:
+andrew_fuzz :: core :: {impl # 0} :: new:
+andrew_fuzz :: core :: bolts :: {impl # 0} :: index:
+	std :: rc :: Rc :: deref;
+	std :: collections :: HashMap :: index;
+	std :: vec :: Vec :: index;
+andrew_fuzz :: core :: bolts :: {impl # 0} :: from :: {constant # 0}:
+andrew_fuzz :: core :: bolts :: {impl # 0} :: from:
+	std :: rc :: Rc :: new;
+	std :: vec :: Vec :: new;
+	std :: vec :: Vec :: push;
+	std :: rc :: Rc :: clone;
+	core :: panicking :: panic;
+	core :: slice :: iter;
+	std :: slice :: Iter :: enumerate;
+	std :: iter :: Enumerate :: into_iter;
+	std :: iter :: Enumerate :: next;
+	std :: collections :: HashMap :: new;
+	std :: collections :: HashMap :: insert;
+	std :: option :: Option :: eq;
+andrew_fuzz :: core :: bolts :: {impl # 0} :: {constant # 0}:
+andrew_fuzz :: core :: bolts :: {impl # 0} :: get :: {closure # 0}:
+	std :: rc :: Rc :: clone;
+andrew_fuzz :: core :: bolts :: {impl # 0} :: get:
+	std :: rc :: Rc :: deref;
+	std :: vec :: Vec :: deref;
+	std :: collections :: HashMap :: get;
+	core :: slice :: get;
+	std :: option :: Option :: map;
+andrew_fuzz :: core :: bolts :: {impl # 0} :: push:
+	std :: rc :: Rc :: deref;
+	std :: vec :: Vec :: push;
+	core :: panicking :: panic;
+	std :: vec :: Vec :: len;
+	std :: collections :: HashMap :: len;
+andrew_fuzz :: core :: bolts :: {impl # 0} :: vals:
+andrew_fuzz :: core :: bolts :: {impl # 0} :: clone:
+	std :: rc :: Rc :: clone;
+	std :: vec :: Vec :: clone;
+andrew_fuzz :: core :: bolts :: {impl # 0} :: empty:
+	std :: vec :: Vec :: new;
+	std :: rc :: Rc :: clone;
+andrew_fuzz :: core :: context :: {impl # 0} :: map:
+	core :: panicking :: panic;
+andrew_fuzz :: core :: context :: {impl # 0} :: vec:
 	core :: panicking :: panic;
 andrew_fuzz :: core :: context :: {impl # 0} :: child:
 	std :: rc :: Rc :: clone;
 	core :: panicking :: panic;
+andrew_fuzz :: core :: context :: {impl # 0} :: parent:
+	std :: option :: Option :: unwrap;
+	std :: rc :: Rc :: clone;
+	std :: rc :: Weak :: upgrade;
+andrew_fuzz :: core :: context :: {impl # 0} :: new:
+andrew_fuzz :: core :: feature_vector :: {impl # 0} :: features:
+	std :: vec :: Vec :: deref;
+	core :: slice :: iter;
+andrew_fuzz :: core :: feature_vector :: {impl # 0} :: dist:
+	core :: panicking :: panic;
+	std :: vec :: Vec :: deref;
+	core :: slice :: iter;
+	core :: feature_vector :: FeatureVector :: features;
+	std :: slice :: Iter :: collect;
+	std :: vec :: Vec :: eq;
+	core :: feature_vector :: FeatureVector :: values;
+	std :: slice :: Iter :: zip;
+	std :: iter :: Zip :: into_iter;
+	std :: iter :: Zip :: next;
+	f64 :: sub;
+	std :: f64 :: powi;
+andrew_fuzz :: core :: feature_vector :: {impl # 0} :: values:
+	std :: option :: Option :: unwrap;
+	std :: vec :: Vec :: new;
+	std :: vec :: Vec :: push;
+	std :: slice :: Iter :: next;
+	std :: vec :: Vec :: deref;
+	core :: slice :: iter;
+	std :: string :: String :: to_string;
+	std :: collections :: HashMap :: get;
+	std :: slice :: Iter :: into_iter;
 andrew_fuzz :: core :: feature_vector :: {impl # 0} :: tally:
 	std :: option :: Option :: unwrap;
 	std :: f64 :: powi;
 	std :: collections :: HashMap :: get_mut;
-andrew_fuzz :: library :: union :: {impl # 0} :: parse:
-	std :: rc :: Rc :: clone;
-	core :: bit_array :: BitArray :: clone;
+andrew_fuzz :: core :: feature_vector :: {impl # 0} :: new:
 	std :: vec :: Vec :: into_iter;
-	core :: bit_array :: BitArray :: advance_to_match;
-	std :: vec :: Vec :: pop;
-	std :: rc :: Rc :: deref;
 	std :: slice :: Iter :: next;
-	core :: context :: Context :: new;
-	core :: DataModel :: parse;
-	std :: rc :: Rc :: downgrade;
-	std :: vec :: Vec :: len;
-	std :: vec :: Vec :: new;
-	std :: fmt :: Arguments :: new_const;
-	std :: boxed :: Box :: new;
-	std :: rc :: Rc :: new;
-	std :: vec :: Vec :: push;
-	std :: rc :: Rc :: from;
-	std :: io :: _print;
-andrew_fuzz :: library :: u8 :: {impl # 0} :: clone:
-	std :: rc :: Rc :: clone;
-	core :: bit_array :: BitArray :: clone;
-	std :: boxed :: Box :: new;
-andrew_fuzz :: library :: button :: {impl # 0} :: clone:
-	std :: rc :: Rc :: clone;
-	std :: boxed :: Box :: new;
-andrew_fuzz :: core :: Vectorizer :: vectorize:
-	Self :: do_vectorization;
-	Self :: features;
-andrew_fuzz :: library :: set :: {impl # 0} :: debug:
-	str :: to_string;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: name:
-	core :: DataModelBase :: name;
-	std :: rc :: Rc :: deref;
-andrew_fuzz :: library :: button :: {impl # 0} :: name:
-	core :: DataModelBase :: name;
-	std :: rc :: Rc :: deref;
-andrew_fuzz :: library :: set :: {impl # 0} :: set_name:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	str :: to_string;
-andrew_fuzz :: core :: context :: {impl # 0} :: new:
-andrew_fuzz :: library :: sequence :: {impl # 0} :: breed:
-	core :: panicking :: panic;
-andrew_fuzz :: core :: Contextual :: str:
-	core :: panicking :: panic;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: clone:
-	std :: rc :: Rc :: clone;
-	std :: boxed :: Box :: new;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: set_name:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	str :: to_string;
-andrew_fuzz :: core :: bolts :: {impl # 0} :: vals:
-andrew_fuzz :: library :: u8 :: {impl # 0} :: set_name:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	str :: to_string;
-andrew_fuzz :: library :: button :: {impl # 0} :: set_name:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	str :: to_string;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: len:
-andrew_fuzz :: library :: set :: {impl # 0} :: new:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	str :: to_string;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: eat:
-	std :: rc :: Rc :: clone;
-andrew_fuzz :: core :: feature_vector :: {impl # 0} :: dist:
-	core :: panicking :: panic;
-	std :: iter :: Zip :: next;
-	std :: iter :: Zip :: into_iter;
-	f64 :: sub;
-	std :: vec :: Vec :: eq;
-	std :: vec :: Vec :: deref;
-	std :: f64 :: powi;
-	core :: slice :: iter;
-	std :: slice :: Iter :: collect;
-	core :: feature_vector :: FeatureVector :: features;
-	std :: slice :: Iter :: zip;
-	core :: feature_vector :: FeatureVector :: values;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: parse:
-	std :: rc :: Rc :: clone;
-	std :: rc :: Rc :: deref;
-	core :: context :: Context :: new;
-	core :: DataModel :: parse;
-	std :: rc :: Rc :: downgrade;
-	std :: boxed :: Box :: new;
-	std :: rc :: Rc :: new;
-	std :: rc :: Rc :: from;
-	< dyn for < ' a > std :: ops :: Fn (std :: rc :: Rc) -> bool as std :: ops :: Fn > :: call;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: do_serialization:
-	core :: DataModel :: do_serialization;
-	std :: rc :: Rc :: deref;
-andrew_fuzz :: library :: u16 :: {impl # 0} :: int:
-	core :: bit_array :: BitArray :: peek;
-	core :: bit_array :: BitArray :: clone;
-	core :: bit_array :: BitArray :: eat;
-	std :: option :: Option :: unwrap;
-andrew_fuzz :: library :: u8 :: {impl # 0} :: debug:
-	std :: fmt :: Arguments :: new_v1;
-	core :: fmt :: ArgumentV1 :: new_upper_hex;
-	library :: u8 :: U8 :: int;
-	std :: string :: String :: new;
-	std :: string :: String :: write_fmt;
-andrew_fuzz :: dns :: dns :: {closure # 0}:
-	core :: context :: Context :: child;
-	core :: DataModel :: int;
-	std :: rc :: Rc :: deref;
-andrew_fuzz :: library :: u16 :: {impl # 0} :: fuzz:
-	library :: u16 :: U16 :: from_u16;
-	std :: rc :: Rc :: new;
-	std :: slice :: into_vec;
-andrew_fuzz :: core :: Contextual :: map:
-	core :: panicking :: panic;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: debug:
-	std :: result :: Result :: unwrap;
-	std :: string :: String :: write_fmt;
-	std :: string :: String :: new;
-	std :: fmt :: Arguments :: new_const;
-andrew_fuzz :: core :: {impl # 0} :: new:
-andrew_fuzz :: library :: set :: {impl # 0} :: parse:
-	std :: rc :: Rc :: clone;
-	std :: rc :: Rc :: deref;
-	core :: context :: Context :: new;
-	core :: DataModel :: parse;
-	std :: rc :: Rc :: downgrade;
-	std :: boxed :: Box :: new;
-	std :: rc :: Rc :: new;
-	std :: vec :: Vec :: push;
-	std :: rc :: Rc :: from;
-	< dyn for < ' a > std :: ops :: Fn (std :: rc :: Rc) -> bool as std :: ops :: Fn > :: call;
-	std :: vec :: Vec :: new;
-andrew_fuzz :: library :: u8 :: {impl # 0} :: int:
-	core :: bit_array :: BitArray :: peek;
-andrew_fuzz :: library :: set :: {impl # 0} :: breed:
-	core :: panicking :: panic;
-andrew_fuzz :: core :: Vectorizer :: do_vectorization:
-	core :: feature_vector :: FeatureVector :: tally;
-	str :: to_string;
-andrew_fuzz :: library :: sequence :: {impl # 0} :: do_serialization:
-	std :: vec :: Vec :: into_iter;
-	core :: bolts :: ChildMap :: vals;
-	std :: rc :: Rc :: deref;
-	std :: slice :: Iter :: next;
-	core :: DataModel :: do_serialization;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: breed:
-	library :: constraint :: Constraint :: clone;
-andrew_fuzz :: library :: union :: {impl # 0} :: set_name:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	str :: to_string;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: clean_offset:
-andrew_fuzz :: library :: sequence :: {impl # 0} :: name:
-	core :: DataModelBase :: name;
-	std :: rc :: Rc :: deref;
-andrew_fuzz :: library :: union :: {impl # 0} :: breed:
-	core :: panicking :: panic;
-andrew_fuzz :: library :: u16 :: {impl # 0} :: clone:
-	std :: rc :: Rc :: clone;
-	core :: bit_array :: BitArray :: clone;
-	std :: boxed :: Box :: new;
-andrew_fuzz :: core :: bolts :: {impl # 0} :: from:
-	std :: rc :: Rc :: clone;
-	core :: panicking :: panic;
-	std :: slice :: Iter :: enumerate;
-	std :: iter :: Enumerate :: into_iter;
-	std :: collections :: HashMap :: new;
-	std :: iter :: Enumerate :: next;
-	std :: rc :: Rc :: new;
-	std :: option :: Option :: eq;
-	std :: vec :: Vec :: push;
-	std :: collections :: HashMap :: insert;
-	std :: vec :: Vec :: new;
-	core :: slice :: iter;
-andrew_fuzz :: library :: u16 :: {impl # 0} :: parse:
-	std :: rc :: Rc :: clone;
-	core :: bit_array :: BitArray :: eat;
-	std :: boxed :: Box :: new;
-andrew_fuzz :: dns :: dns:
-	std :: rc :: Rc :: clone;
-	library :: u8 :: U8 :: new;
-	library :: sequence :: Sequence :: new;
-	library :: union :: Union :: set_name;
-	library :: u16 :: U16 :: new;
-	library :: button :: Button :: new;
-	std :: boxed :: Box :: new;
-	core :: bolts :: ChildMap :: from;
-	library :: union :: Union :: new;
-	core :: DataModel :: clone;
-	library :: constraint :: Constraint :: new;
-	std :: rc :: Rc :: new;
-	std :: slice :: into_vec;
-	std :: rc :: Rc :: from;
-	library :: set :: Set :: new;
-	library :: set :: Set :: set_name;
-	std :: vec :: Vec :: new;
-	library :: sequence :: Sequence :: set_name;
-andrew_fuzz :: library :: u8 :: {impl # 0} :: fuzz:
-	library :: u8 :: U8 :: from_u8;
-	std :: rc :: Rc :: new;
-	std :: slice :: into_vec;
-andrew_fuzz :: library :: constraint :: {impl # 0} :: fuzz:
-	core :: DataModel :: fuzz;
-	std :: rc :: Rc :: deref;
-andrew_fuzz :: library :: u8 :: {impl # 0} :: from_u8:
-	str :: to_string;
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	std :: slice :: into_vec;
-	core :: bit_array :: BitArray :: new;
-andrew_fuzz :: core :: Vectorizer :: do_features:
-	std :: collections :: HashSet :: insert;
 	std :: string :: String :: to_string;
-	Self :: name;
-andrew_fuzz :: library :: button :: {impl # 0} :: do_serialization:
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: from_file :: {closure # 0}:
-	core :: bit_array :: BitArray :: new;
-andrew_fuzz :: library :: u16 :: {impl # 0} :: breed:
-	core :: panicking :: panic;
-andrew_fuzz :: library :: u8 :: {impl # 0} :: parse:
-	std :: rc :: Rc :: clone;
-	core :: bit_array :: BitArray :: eat;
-	std :: boxed :: Box :: new;
-andrew_fuzz :: core :: bit_array :: {impl # 0} :: fresh:
-	core :: bit_array :: BitArray :: new;
-	std :: vec :: Vec :: new;
+	std :: collections :: HashMap :: new;
+	std :: collections :: HashMap :: insert;
 andrew_fuzz :: core :: bit_array :: {impl # 0} :: fmt:
-	std :: fmt :: rt :: v1 :: Argument :: new;
-	std :: fmt :: rt :: v1 :: Count :: Is;
-	std :: fmt :: Arguments :: new_v1_formatted;
-	core :: fmt :: UnsafeArg :: new;
 	std :: io :: _print;
 	core :: fmt :: ArgumentV1 :: new_debug;
-andrew_fuzz :: library :: u8 :: {impl # 0} :: do_serialization:
-	core :: bit_array :: BitArray :: extend;
-andrew_fuzz :: library :: u16 :: {impl # 0} :: do_serialization:
-	core :: bit_array :: BitArray :: extend;
-andrew_fuzz :: library :: sequence :: {impl # 0} :: set_name:
-	core :: DataModelBase :: new;
-	std :: rc :: Rc :: new;
-	str :: to_string;
-andrew_fuzz :: library :: button :: {impl # 0} :: parse:
+	std :: fmt :: rt :: v1 :: Count :: Is;
+	std :: fmt :: rt :: v1 :: Argument :: new;
+	core :: fmt :: UnsafeArg :: new;
+	std :: fmt :: Arguments :: new_v1_formatted;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: eq:
+	std :: option :: Option :: unwrap;
 	core :: bit_array :: BitArray :: eat;
-	library :: button :: Button :: clone;
-andrew_fuzz :: library :: set :: {impl # 0} :: fuzz:
-	std :: rc :: Rc :: clone;
-	std :: vec :: Vec :: index_mut;
-	std :: vec :: Vec :: into_iter;
-	std :: vec :: IntoIter :: next;
-	std :: rc :: Rc :: deref;
-	core :: DataModel :: fuzz;
-	std :: iter :: Enumerate :: into_iter;
-	std :: slice :: Iter :: enumerate;
-	std :: vec :: Vec :: deref;
-	std :: iter :: Enumerate :: next;
+	core :: bit_array :: BitArray :: clone;
+	core :: bit_array :: BitArray :: peek;
+	core :: bit_array :: BitArray :: len;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: add_assign:
+	core :: bit_array :: BitArray :: extend;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: extend:
 	std :: rc :: Rc :: new;
-	core :: slice :: iter;
-	std :: vec :: Vec :: push;
-	std :: rc :: Rc :: from;
-	std :: vec :: Vec :: new;
-	std :: vec :: Vec :: clone;
-andrew_fuzz :: core :: bolts :: {impl # 0} :: clone:
-	std :: rc :: Rc :: clone;
-	std :: vec :: Vec :: clone;
-andrew_fuzz :: core :: bolts :: {impl # 0} :: index:
-	std :: collections :: HashMap :: index;
-	std :: vec :: Vec :: index;
+	std :: option :: Option :: unwrap;
 	std :: rc :: Rc :: deref;
+	std :: vec :: Vec :: push;
+	core :: bit_array :: BitArray :: eat;
+	core :: bit_array :: BitArray :: clone;
+	core :: bit_array :: BitArray :: peek;
+	std :: vec :: Vec :: clone;
+	std :: vec :: Vec :: index_mut;
+	std :: vec :: Vec :: len;
+	core :: bit_array :: BitArray :: len;
+	std :: cell :: RefCell :: borrow;
+	std :: cell :: Ref :: deref;
+	std :: cell :: RefCell :: new;
+	std :: cell :: RefCell :: borrow_mut;
+	core :: bit_array :: BitArray :: clean_end_offset;
+	std :: cell :: RefMut :: deref;
+	std :: cell :: RefMut :: deref_mut;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: pos:
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: advance_to_match:
+	std :: rc :: Rc :: clone;
+	core :: panicking :: panic;
+	core :: bit_array :: BitArray :: matching_data;
+	core :: bit_array :: BitArray :: pos;
+	core :: bit_array :: BitArray :: advance;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: matching_data:
+	std :: rc :: Rc :: eq;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: advance:
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: eat:
+	std :: rc :: Rc :: clone;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: len:
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: clean_end_offset:
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: clean_offset:
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: peek:
+	std :: rc :: Rc :: deref;
+	core :: panicking :: panic;
+	std :: vec :: Vec :: index;
+	std :: cell :: RefCell :: borrow;
+	std :: cell :: Ref :: deref;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: clone:
+	std :: rc :: Rc :: clone;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: to_file:
+	std :: rc :: Rc :: deref;
+	std :: cell :: RefCell :: borrow;
+	std :: cell :: Ref :: deref;
+	std :: vec :: Vec :: as_ref;
+	std :: fs :: write;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: from_file :: {closure # 0}:
+	core :: bit_array :: BitArray :: new;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: from_file:
+	std :: path :: Path :: new;
+	std :: fs :: read;
+	std :: result :: Result :: map;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: fresh:
+	std :: vec :: Vec :: new;
+	core :: bit_array :: BitArray :: new;
+andrew_fuzz :: core :: bit_array :: {impl # 0} :: new:
+	std :: rc :: Rc :: new;
+	core :: panicking :: panic;
+	std :: vec :: Vec :: index_mut;
+	std :: vec :: Vec :: len;
+	std :: cell :: RefCell :: new;
 
