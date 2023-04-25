@@ -16,7 +16,7 @@
     belowskip=20pt
 }
 
-\title{ELEC 875 Project Proposal}
+\title{ELEC 875 Project Report}
 \author{Andrew Fryer}
 \date{\today}
 
@@ -24,7 +24,6 @@
 \maketitle
 
 \section{Introduction}
-asdf
 
 \subsection{Problem Definition}
 
@@ -129,11 +128,6 @@ This will improve the analysis because it will be able to look through libraries
 The other stretch goal I have is to write more complex TXL rules that will build a table of all traits (similar to interfaces) and then use the table to track down trait method calls.
 This will further imrpove the analysis because it will be able to analyze method calls on trait objects.
 
-\section{Introduction}
-I should be able to grab this out of the propsocal.
-
-Note: resolving dynamic dispatch is uncomputable, so we are making a best effort attempt out of the gate.
-
 I would like the tool to indicate when it wasn't able to resolve a function call.
 (Generally, the tool is conservative/liberal, but in this case, that would mean marking the function with all FFIs, which is silly).
 Instead of FFIs, we could just do external functions.
@@ -219,7 +213,7 @@ But, I'll leave this as is:
 
 It was important to get the output formatting (whitespace) to work because it is much more difficult to debug the TXL programs when it is difficult to read and compare the outputs.
 
-This is what fixed to_json.txl: 732adda5be8c920446df5977533b600b3e83f3ff
+% This is what fixed to_json.txl: 732adda5be8c920446df5977533b600b3e83f3ff
 
 One common mistake I made was I'd use a wildcard except for what I expected to follow the section I don't care about, but then I'd miss a way that something else could follow it (on the last iter, for example), and then it ends up eating more than it should.
 
