@@ -8,6 +8,10 @@ redefine program
     [Decl*]
 end define
 
+tokens
+    charlit "" % undefines character literals because rust uses a single quote for lifetimes
+end tokens
+
 redefine Decl
     'Decl '( [Caller] ') '{ [NL] [IN]
         [Callee*] [EX]
@@ -93,7 +97,8 @@ end define
 
 define Type
       [id]
-    | [id] '< [FullQualifiedTypeOrLifeTime,] '>
+    | [id] '< [FullQualifiedTypeOrLifeTime,] '> % generic
+    | 'Fn '( [FullQualifiedType] ') '-> [FullQualifiedType]
 end define
 
 define TypePathSegment_COLON_COLON
