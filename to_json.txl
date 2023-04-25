@@ -39,11 +39,20 @@ define Decl
 end define
 
 define Callee
-    [not_semi_colon*] '; [NL]
+    [not_brace_or_semi_colon*] '; [NL]
 end define
 
 define not_semi_colon
     [not ';] [wildcard]
+end define
+
+define brace
+      '{
+    | '}
+end define
+
+define not_brace_or_semi_colon
+    [not brace] [not_semi_colon]
 end define
 
 define wildcard
