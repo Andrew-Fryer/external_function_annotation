@@ -172,6 +172,17 @@ rule normalize_simple_path_segments
         '{ type '# '0 '}
 end rule
 
+function append_callable_path_segment type_segment [TypePathSegment_COLON_COLON]
+    replace [CallablePathSegment_COLON_COLON*]
+        existing [CallablePathSegment_COLON_COLON*]
+    deconstruct type_segment
+        type_name [id] ':: % warning! I think this will silently skip appending non-matching segments
+    construct new [CallablePathSegment_COLON_COLON*]
+        type_name '::
+    by
+        existing [. new]
+end function
+
 rule remove_as_type
     replace [FullQualifiedCallable]
         callable_start [CallableStart] ':: callable_path_segments [CallablePathSegment_COLON_COLON*] callable [Callable]
@@ -186,7 +197,7 @@ rule remove_as_type
     construct path_segment_for_type_name [CallablePathSegment_COLON_COLON*]
         type_name '::
     construct path_segments [CallablePathSegment_COLON_COLON*]
-        _ %[append_callable_path_segment each type_segments]
+        _ [append_callable_path_segment each type_segments]
         [. path_segment_for_type_name]
     deconstruct path_segments
         first_path_segment [id] ':: cons_path_segments [CallablePathSegment_COLON_COLON*]
