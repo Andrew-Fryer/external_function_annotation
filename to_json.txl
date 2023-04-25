@@ -7,9 +7,13 @@ define program
     | [Json]
 end define
 
+define DoubleQuote
+    ' "
+end define
+
 define Json
     '{
-        ' " [id] ' " %[KeyValPair,]
+        [DoubleQuote] [id] [DoubleQuote] %[KeyValPair,]
     '}
 end define
 
