@@ -217,9 +217,16 @@ rule remove_as_type
         result %[remove_generics_from_types]
 end rule
 
+rule remove_generics_from_path
+    replace [CallablePathSegment_COLON_COLON*]
+        '< _ [Generic] '> ':: remaining [CallablePathSegment_COLON_COLON*]
+    by
+        remaining
+end rule
+
 function main
     replace [program]
         es [Decl*]
     by
-        es [clean_caller] [normalize_simple_path_segments] [remove_generics_from_types] [remove_as_type]
+        es [clean_caller] [normalize_simple_path_segments] [remove_generics_from_types] [remove_as_type] [remove_generics_from_path]
 end function
