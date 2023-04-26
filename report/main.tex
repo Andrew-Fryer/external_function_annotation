@@ -273,10 +273,12 @@ We construct a mapping from caller names to possible callee names.
 Lastly, we annotate each internal function with the set of external functions it may directly or indirectly call.
 We do this by following the called by relation and following all callees that may reference the caller in question.
 
-Note that there can be duplicate calls in the prev stage.
-It is not necessarily surjective (meaning that all of the outputs are covered) because we don't want a function that we can't resolve to pop up as another new FFI.
-mm, actually I think it is surjective (`every element of the function's codomain is the image of at least one element of its domain') because we want to flag when we can't resolve a function call (so just pretend it is a new FFI).
-% https://en.wikipedia.org/wiki/Surjective_function
+Note that the input data is not a relation because the same function may be called several times by a function.
+Also, it is important that function definitions are in the input data even if a given function does not call any other functions because the function definition's presence indicates that any calls to the function are not calls to an external function like those in libc.
+
+% It is not necessarily surjective (meaning that all of the outputs are covered) because we don't want a function that we can't resolve to pop up as another new FFI.
+% mm, actually I think it is surjective (`every element of the function's codomain is the image of at least one element of its domain') because we want to flag when we can't resolve a function call (so just pretend it is a new FFI).
+% % https://en.wikipedia.org/wiki/Surjective_function
 
 % We also want to be able to specify the set of internal functions (which is different from the domain of the relation because internal functions do not necessarily call another function).
 % (I think I had an example of this.)
@@ -308,42 +310,31 @@ andrew_fuzz :: library :: constraint :: {impl # 0} :: parse:
 andrew_fuzz :: library :: button :: {impl # 0} :: fuzz:
 \end{lstlisting}
 
-It doesn't work on LibAFL's core crate (libafl).
-
-This is what it is capable of...
-
-I should explain the design with snips of diffs between input and output of each stage!
-
-I still find it difficult to reason about which way delimiters should be grouped to items they delimit (left or right).
-It seems that it is awkward to remove the most deeply nested element either way.
-
-I should do a performance benchmark here.
-
 \subsection{Limitations}
 
-Unfortunately, it is possible that the \lstinline{fuzz} function in Listing \ref{code:final_facts} will print data if a call it makes was paired up with the wrong function definition and the matching process did not find the correct function definition.
+Unfortunately, the prototype tool does not work on LibAFL's core crate (libafl) because the generated THIR is too long for TXL to process.
+The documentation for the error message states that `The total length of the input to the TXL program, in terms of individual input items, is longer than the TXL implementation can handle at the present size.'
+% https://www.txl.ca/docs/TXL106ErrorGuide.pdf
+
+Unfortunately, lack of some important data in the THIR makes the pairing of calls to function definitions inaccurate.
+it is possible that the \lstinline{fuzz} function in Listing \ref{code:final_facts} will print data if a call it makes was paired up with the wrong function definition and the matching process did not find the correct function definition.
 If the call does not match with any function definitions, then it shows up in the output as seen in the case of the dynamically dispatched call to a closure in the \lstinline{parse} function.
-
 The prototype tool is not able to match up a call to a closure with the closure's definition.
+The analysis will also assume it is possible for a function call to go to any of several functions on the same type with the same name (implementing different traits) because the THIR does not indicate which trait is being implemented by a function definition.
+% I think it will break if there is more than 1 closure in the same function because I am normalizing the closure numbers... mmm, not smart.
 
-It can't do...
+Lastly, the tool does resolve the \lstinline{Self} type to the appropriate type, resulting in calls that are qualified by \lstinline{Self} such as \lstinline{Self::foo()}.
 
-I'm pretty sure my tool will get confused if you give it a struct that implements several traits that have a method with the same name.
-
-Unfortunately, it doesn't resolve the \lstinline{Self} type to the appropriate type.
-
-I think it will break if there is more than 1 closure in the same function because I am normalizing the closure numbers... mmm, not smart.
-
-Currently, I don't normalize callee names for external functions, so a function might be annotated with 2 external function tags that are really for the same external function.
+% Currently, I don't normalize callee names for external functions, so a function might be annotated with 2 external function tags that are really for the same external function.
 
 % \subsection{Considerations in Hindsight}
-I would pick a language that doesn't do dynamic dispatch in funky ways.
+% I would pick a language that doesn't do dynamic dispatch in funky ways.
 
-I could use capitizaition as a clue because it is generally followed (documentary structure of the code).
-Programmers do many unexpected things though.
-However, I think it would work to run a linter (part of the compiler, so it knows stuff) to normalize all of the capitalization.
+% I could use capitizaition as a clue because it is generally followed (documentary structure of the code).
+% Programmers do many unexpected things though.
+% However, I think it would work to run a linter (part of the compiler, so it knows stuff) to normalize all of the capitalization.
 
-Polymorphism should behave the same for my tool whether it is static or dynamic dispatch, shouldn't it?
+% Polymorphism should behave the same for my tool whether it is static or dynamic dispatch, shouldn't it?
 
 \section{Conclusion}
 I was able to build a tool that does X.
@@ -371,6 +362,9 @@ At the same time, the process is conceptually difficult enough that it is nice t
 Rust paths and types put the semicolons in slightly different places...
 
 One common mistake I made was I'd use a wildcard except for what I expected to follow the section I don't care about, but then I'd miss a way that something else could follow it (on the last iter, for example), and then it ends up eating more than it should.
+
+I still find it difficult to reason about which way delimiters should be grouped to items they delimit (left or right).
+It seems that it is awkward to remove the most deeply nested element either way.
 
 \section{Future Work}
 
