@@ -28,7 +28,7 @@ define Caller
     | [SimplePath] % output
 end define
 
-% inspiration taken from rust.grm:
+% inspiration taken from rust.grm available at https://www.txl.ca/txl-resources.html:
 define SimplePath
     [id] [COLON_COLON_SimplePathSegment*]
 end define
