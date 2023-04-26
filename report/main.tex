@@ -91,6 +91,8 @@ The most time-consuming part of the development (other than dead ends) was writi
 To do this as efficiently as possible, I ran the same TXL program on the same input iteratively after making incremental changes to the input.
 I also used a text editor (VSCode) with diff capabilities to show precisely what impact the changes have on the output.
 
+One important detail is that I was careful to insert special directives into the TXL grammars so that the output of the TXL programs is easy to read.
+
 \subsection{Dead Ends}
 
 \subsubsection{Joining Files}
@@ -129,56 +131,39 @@ I pivoted away from this design because Rust has type inference and so it would 
 % Another whole thing is that the TXL stuff originally output a table.
 % Now, this has been changed to output a structure that makes more sense (allows specifying the input and output sets separately from the relation, which implies the domain and range).
 
-\subsubsection{Random Notes}
+% \subsubsection{Random Notes}
 
-There is a difference between how generics are annotated for methods and types.
-\lstinline{std :: fs :: write :: < std :: string :: String, & std :: vec :: Vec < u8 > >}
+% There is a difference between how generics are annotated for methods and types.
+% \lstinline{std :: fs :: write :: < std :: string :: String, & std :: vec :: Vec < u8 > >}
 
-I decided to join the JSON grammar with the previous grammar at the top level because it has 
+% I decided to join the JSON grammar with the previous grammar at the top level because it has 
 
-Here is an example of a tricky one:
-\lstinline{std :: result :: Result :: < std :: vec :: Vec < u8 >, std :: io :: Error > :: map :: < core :: bit_array :: BitArray, [closure @ src / core / bit_array.rs : 52 : 33 : 52 : 38] >;}
+% Here is an example of a tricky one:
+% \lstinline{std :: result :: Result :: < std :: vec :: Vec < u8 >, std :: io :: Error > :: map :: < core :: bit_array :: BitArray, [closure @ src / core / bit_array.rs : 52 : 33 : 52 : 38] >;}
 
-I'm deciding to turn this into this:
-\lstinline{< dyn core : : DataModel as core : : Parser > : : parse;}
-\lstinline{core : : DataModel : : parse;}
-But, I'll leave this as is:
-\lstinline{< dyn for < ' a > std : : ops : : Fn (std : : rc : : Rc) - > bool as std : : ops : : Fn > : : call;}
+% I'm deciding to turn this into this:
+% \lstinline{< dyn core : : DataModel as core : : Parser > : : parse;}
+% \lstinline{core : : DataModel : : parse;}
+% But, I'll leave this as is:
+% \lstinline{< dyn for < ' a > std : : ops : : Fn (std : : rc : : Rc) - > bool as std : : ops : : Fn > : : call;}
 
-% This is what fixed to_json.txl: 732adda5be8c920446df5977533b600b3e83f3ff
+% % This is what fixed to_json.txl: 732adda5be8c920446df5977533b600b3e83f3ff
 
-One common mistake I made was I'd use a wildcard except for what I expected to follow the section I don't care about, but then I'd miss a way that something else could follow it (on the last iter, for example), and then it ends up eating more than it should.
+\subsection{Final Design}
 
-\subsection{Final Design} % maybe this should be a subsection
+The final design for the prototype tool runs in 5 stages.
+The first extracts THIR, a textual intermediate representation from a Rust crate by invoking the Rust compiler.
+The second extracts all of the function definitions and calls from the THIR.
+The third simplifies the paths and types in the function definitions and calls.
+The forth converts the data into JSON.
+The fifth and final stage is a Python program that matches calls to function definitions and does some simple relational algebra operations.
 
-For debugging ease!
-
-I remembered from the lectures that it is good TXL practice to write several TXL programs that run in a pipeline.
-This way, the TXL parser (which is fast) can do much of the work by representing the data in a way that works well for the desired operation.
-In this case, brackets and braces are used for different things and extracting the functions calls is a different process than working out which function call corresponds to which function definition.
-(the -> stuff screws stuff up for island grammars, but we need to pair up < and > symbols when we remove generics)
-
-I got rid of spaces and added new lines in the first TXL program's output like so:
-\lstinline{[SPOFF] [IslandGrammar] '-->> [not_brace*] '; [SPON] [NL]}
-Note that it may still add extra new lines if a line is very long.
-Removing spaces is important because the next TXL program in the pipeline groups the characts into tokens differently (does it really?).
-This causes TXL to remove spaces between identifiers, causing them to be merged... wtf?!?
-    this is a problem because the "is" keyword gets squashed with neighboring identifiers.
-Update:
-I'm not doing this.
-I had to add `::' to the compounds list so that it can be parsed together in the next stage I think.
-    Yes, I've confirmed that this matters (for the next stage because ": :" doesn't match "::" when parsing).
-
-Then, ... I should output JSON so that Python can read it in really easily.
-It was important to get the output formatting (whitespace) to work because it is much more difficult to debug the TXL programs when it is difficult to read and compare the outputs.
-
-talk about how I have several TXL passes doing: call extraction, function name normalization, and conversion to json
-why did I choose to use Python
-why did I choose thir over mir?
+This pipeline was developed for ease of debugging because it is easy to inspect the output of each stage.
+Another benefit of this design is that the middle 3 stages, all written in TXL, are able to utilize the TXL parser to represent the data in a way that is easy for that particular stage to process as each of these stages has different concerns.
 
 \subsection{Stage 1: Generating Textual Intermediate Representation (THIR)}
 
-Extracting the calls can be done using a TXL island grammar and a TXL program that uses TXL's extraction capability.
+Listings \ref{code:rust_code} and \ref{code:thir} show how a function call from a piece of Rust source code is represented in the THIR.
 
 \begin{lstlisting}[caption=Rust Code, label=code:rust_code]{Name}
 impl BitArray {
@@ -215,6 +200,9 @@ In this case, it is not a trait at all, but the implementation is defining assoc
 
 \subsection{Stage 2: Extracting Declarations and Calls}
 
+Listing \ref{code:all_calls} shows the output of the second stage.
+This stage drastically reduces the amount of text as only one line is written for each function and two lines for each function definition.
+
 \begin{lstlisting}[caption=Extracted Calls, label=code:all_calls]{Name}
 Decl (0 : 36 ~ andrew_fuzz [942 c] :: core :: bit_array :: {impl # 0} :: new) {
   ...
@@ -225,7 +213,9 @@ Decl (0 : 36 ~ andrew_fuzz [942 c] :: core :: bit_array :: {impl # 0} :: new) {
 
 \subsection{Stage 3: Simplifying Types}
 
-\begin{lstlisting}[caption=Before Simplifying Types, label=before_simplify_types]{Name}
+Listings \ref{code:before_simplify_types} and \ref{code:after_simplifying_types} show how several forms of calls are simplified in the third stage.
+
+\begin{lstlisting}[caption=Before Simplifying Types, label=code:before_simplify_types]{Name}
 Decl (0 : 511 ~ andrew_fuzz [942 c] :: main) {
   std :: io :: _print;
   core :: bit_array :: BitArray :: new;
@@ -234,7 +224,7 @@ Decl (0 : 511 ~ andrew_fuzz [942 c] :: main) {
   std :: rc :: Rc :: < core :: context :: Context < ' _ > > :: new;
 }
 \end{lstlisting}
-\begin{lstlisting}[caption=After Simplifying Types, label=after_simplifying_types]{Name}
+\begin{lstlisting}[caption=After Simplifying Types, label=code:after_simplifying_types]{Name}
 Decl (andrew_fuzz :: main) {
   std :: io :: _print;
   core :: bit_array :: BitArray :: new;
@@ -257,7 +247,20 @@ Then, when the Python code processes the facts, it will record entries for each 
 
 \subsection{Stage 4: Conversion to JSON}
 
+Listing \ref{code:json} shows the output of the forth stage.
 Notice that there are no double quotes in the prev stage.
+This makes it very simple to generate JSON.
+The formatting is strange, but is it easy enough to read and it parses as valid JSON, so I didn't spend time debugging this.
+
+\begin{lstlisting}[caption=JSON, label=code:json]{Name}
+{
+  " andrew_fuzz :: main " : [
+  " dns :: dns;
+  ", ... " std :: io :: _print;
+  "]
+  , ...
+}
+\end{lstlisting}
 
 \subsection{Stage 5: Constructing Transitive Internal to External Calls Relation}
 
@@ -366,6 +369,8 @@ Python works well for pairing up callees with callers because the entire procedu
 At the same time, the process is conceptually difficult enough that it is nice to be able to debug the code using a repl.
 
 Rust paths and types put the semicolons in slightly different places...
+
+One common mistake I made was I'd use a wildcard except for what I expected to follow the section I don't care about, but then I'd miss a way that something else could follow it (on the last iter, for example), and then it ends up eating more than it should.
 
 \section{Future Work}
 
