@@ -1,5 +1,7 @@
 \documentclass[11pt]{article}
 
+\usepackage{hyperref}
+
 \usepackage{listings}
 % \lstset{
 %     language=c,
@@ -282,7 +284,7 @@ impl BitArray {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[caption=THIR-flat, label=code:all_calls]{Name}
+\begin{lstlisting}[caption=THIR-flat, label=code:thir]{Name}
 DefId(0:36 ~ andrew_fuzz[942c]::core::bit_array::{impl#0}::new):
 Thir {
     ...
@@ -303,6 +305,8 @@ Thir {
 There is nothing that says what trait is being implemented.
 In this case, it is not a trait at all, but the implementation is defining associated functions for the \lstinline{struct} \lstinline{BitArray}, which is not mentioned (other than in the return type, which is concealed in the ellipses).
 
+\subsection{Stage 2: Extracting Declarations and Calls}
+
 \begin{lstlisting}[caption=Extracted Calls, label=code:all_calls]{Name}
 Decl (0 : 36 ~ andrew_fuzz [942 c] :: core :: bit_array :: {impl # 0} :: new) {
   ...
@@ -311,37 +315,34 @@ Decl (0 : 36 ~ andrew_fuzz [942 c] :: core :: bit_array :: {impl # 0} :: new) {
 }
 \end{lstlisting}
 
-\subsection{Stage 2: Extracting Declarations and Calls}
-
-\noindent\begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[caption=Before Simplifying Types, label=before_simplify_types]{Name}
-DefId(0:36 ~ andrew_fuzz[942c]::core::bit_array::{impl#0}::new):
-Thir {
-  ...
-  exprs: [
-    ...
-    Expr {
-      kind: Call {
-        ty: fn(&'static str) -> ! {core::panicking::panic},
-        ...
-      },
-      ...
-    },
-  ],
-  ...
-}
-    \end{lstlisting}
-\end{minipage}\hfill
-\begin{minipage}{.45\textwidth}
-    \begin{lstlisting}[caption=After Simplifying Types, label=after_simplifying_types]{Name}
-void code()
-{
-
-}
-    \end{lstlisting}
-\end{minipage}
-
 \subsection{Stage 3: Simplifying Types}
+
+\begin{lstlisting}[caption=Before Simplifying Types, label=before_simplify_types]{Name}
+Decl (0 : 511 ~ andrew_fuzz [942 c] :: main) {
+  std :: io :: _print;
+  core :: bit_array :: BitArray :: new;
+  < str as std :: string :: ToString > :: to_string;
+  < dyn core :: DataModel as core :: Serializer > :: serialize;
+  std :: rc :: Rc :: < core :: context :: Context < ' _ > > :: new;
+}
+\end{lstlisting}
+\begin{lstlisting}[caption=After Simplifying Types, label=after_simplifying_types]{Name}
+Decl (andrew_fuzz :: main) {
+  std :: io :: _print;
+  core :: bit_array :: BitArray :: new;
+  str :: to_string;
+  dyn core :: DataModel :: serialize;
+  std :: rc :: Rc :: new;
+}
+\end{lstlisting}
+
+\lstinline{_print} is an example of a function we are especially interested in because it performs I/O.
+The call to \lstinline{new} shows how the callee name contains \lstinline{BitArray} whereas the caller name (seen in Listing \ref{code:all_calls}) contains \lstinline|{impl # 0}| instead.
+
+There are far too many forms to describe them here.
+They can be understood by looking at \href{https://github.com/Andrew-Fryer/external_function_annotation/blob/master/simplify_types.txl#L49}{the grammar}.
+
+This stage also normalizes the numbers in implementations and closures so that they can be matched exactly in the next stage of the pipeline.
 
 \subsection{Stage 4: Conversion to JSON}
 
@@ -430,13 +431,5 @@ In that architecture, all of the processing could be done in Rust code that runs
 I couldn't get the standard libraries to build using the nightly Rust compiler.
 
 I didn't have time to fix the error with `Self'.
-
-\begin{figure}
-    \caption{Example of use declaration and fully qualified identifier.}
-    \label{fig:qualifiers}
-    \begin{lstlisting}
-        rust code!
-    \end{lstlisting}
-\end{figure}
 
 \end{document}
