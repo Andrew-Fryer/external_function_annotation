@@ -50,19 +50,19 @@ In particular, I would like to know which libc functions may be called directly 
 \subsubsection{IDEs}
 
 Integrated Development Environments (IDEs) can help software engineers to understand the software more quickly by presenting extracted information such as a call hierarchy.
-In Eclipse, this is a lazily-loaded tree-shaped structure that can be loaded for any method in the Java programming language.
+In Eclipse, this is a lazily-loaded tree-shaped structure that can be loaded for any method in the Java programming language \cite{Eclipse}.
 It shows all of the methods that the given method may call, and can conveniently show each of the methods that those methods may call, recursively.
 % https://help.eclipse.org/2023-03/index.jsp
 
 \subsubsection{Effect Typing}
 
 Another approach to aiding software engineers in program comprehension is effect typing.
-The Koka programming language uses so called effect types to embed information about the behaviour of functions into the type of the function.
+The Koka programming language uses so called effect types to embed information about the behaviour of functions into the type of the function \cite{Leijen_2014}.
 This includes whether or not the function may crash, whether it may perform I/O, and whether it is deterministic.
 % https://arxiv.org/abs/1406.2061
 
 \subsubsection{Concrat}
-Concrat is a tool for converting C code to Rust code focusing on concurrent programs.
+Concrat is a tool for converting C code to Rust code focusing on concurrent programs \cite{hong2023concrat}.
 % https://arxiv.org/abs/2301.10943
 It does its analysis on the Rust compiler's HIR and MIR intermediate representations in memory.
 
@@ -315,7 +315,7 @@ andrew_fuzz :: library :: button :: {impl # 0} :: fuzz:
 \subsection{Limitations}
 
 Unfortunately, the prototype tool does not work on LibAFL's core crate (libafl) because the generated THIR is too long for TXL to process.
-The documentation for the error message states that `The total length of the input to the TXL program, in terms of individual input items, is longer than the TXL implementation can handle at the present size.'
+The documentation for the error message states that `The total length of the input to the TXL program, in terms of individual input items, is longer than the TXL implementation can handle at the present size' \cite{TXL_Error_Guide}
 % https://www.txl.ca/docs/TXL106ErrorGuide.pdf
 
 Unfortunately, lack of some important data in the THIR makes the pairing of calls to function definitions inaccurate.
@@ -339,38 +339,37 @@ Lastly, the tool does resolve the \lstinline{Self} type to the appropriate type,
 % Polymorphism should behave the same for my tool whether it is static or dynamic dispatch, shouldn't it?
 
 \section{Conclusion}
-I was able to build a tool that does X.
-Unfortunately, I is unable to to y because of z and has w limitations.
+
+I was able to build a tool that produces a list of all the functions defined in a Rust crate, each annotated with the set of external functions that may be directly or indirectly called by the function (with a handful of caveats).
+% I was able to build a tool that does X.
+% Unfortunately, I is unable to to y because of z and has w limitations.
 
 \subsection{Learning Outcomes}
-If I have extra time, I will first work on including code from external libraries in the analysis.
-I will likely add a parameter to the bash script that will indicate where to look for Rust libraries.
-This will improve the analysis because it will be able to look through libraries all the way to \lstinline{extern} functions which are written in c and linked in.
 
-The other stretch goal I have is to write more complex TXL rules that will build a table of all traits (similar to interfaces) and then use the table to track down trait method calls.
-This will further improve the analysis because it will be able to analyze method calls on trait objects.
+One of the goals for this project was to explore different architectures for extracting facts from code.
+In one design iteration, I began implementing some of the later TXL programs' operations in Python code.
+As I increased the complexity of the code to handle more and more different structures of Rust paths and types, I realized that I needed a powerful recursive parsing approach and considered writing a custom recursive descent parser in Python before realizing that TXL is much better suited to do this.
 
-The counter-intuitive part of TXL programming for me is that a replacement is not re-parsed according to the grammar.
-This means you need to consider that the non-terminal types in a replacement may be different than if the same sequence of terminals was parsed at the beginning.
+This process also helped me to understand TXL programming better.
+In particular, it was initially counter-intuitive to me that a replacement is not re-parsed according to the grammar.
+This means you need to consider that the non-terminal types in a replacement may be different than if the same sequence of terminals was parsed from the input stream.
 
-Getting the right intermediate representation is key.
+This prototype also demonstrates the power of reparsing data according to different grammars to perform different operations.
+It would be far more difficult to write TXL rules and functions that all operate on the same grammar.
 
-It is difficult to write parsing code in Python.
-It is much better to let TXL programs do the work of parsing complex structures such fully qualified Rust paths and types.
+% Python works well for pairing up callees with callers because the entire procedure can be written in under a couple hundred lines, so the code wouldn't really benefit from the rigid structure of strongly, statically typed languages.
+% At the same time, the process is conceptually difficult enough that it is nice to be able to debug the code using a repl.
 
-Python works well for pairing up callees with callers because the entire procedure can be written in under a couple hundred lines, so the code wouldn't really benefit from the rigid structure of strongly, statically typed languages.
-At the same time, the process is conceptually difficult enough that it is nice to be able to debug the code using a repl.
+I also learned a bit about Rust as I now understand the syntax of paths and types much better.
+As seen in the last line of Listing \ref{code:before_simplify_types}, generics in paths appear like \lstinline{Foo::<generic>} and generics in types appear like \lstinline{Foo<generic>}.
 
-Rust paths and types put the semicolons in slightly different places...
+% One common mistake I made was I'd use a wildcard except for what I expected to follow the section I don't care about, but then I'd miss a way that something else could follow it (on the last iter, for example), and then it ends up eating more than it should.
+% ...so this taught me to consider that more I guess...
 
-One common mistake I made was I'd use a wildcard except for what I expected to follow the section I don't care about, but then I'd miss a way that something else could follow it (on the last iter, for example), and then it ends up eating more than it should.
-
-I still find it difficult to reason about which way delimiters should be grouped to items they delimit (left or right).
-It seems that it is awkward to remove the most deeply nested element either way.
+% I still find it difficult to reason about which way delimiters should be grouped to items they delimit (left or right).
+% It seems that it is awkward to remove the most deeply nested element either way.
 
 \section{Future Work}
-
-Talk about the pluses and minuses of each approach (python, TXL, link with rustc)
 
 Many of the limitations of this prototype tool can be addressed by modifying the code in rustc that generates the textual representation of the intermediate representation of the Rust crate.
 If the intermediate representation was modified to contain less metadata, the textual THIR representation for libafl would likely be small enough for TXL to process.
@@ -380,8 +379,7 @@ This would allow my tool to limit the pairing of dynamic dispatches to function 
 While it was out of the scope of this project due to time constraints, it would be interesting to explore how the architecture of a similar prototype that linked into the Rust compiler would compare to this project's architecture.
 In that architecture, all of the processing could be done in Rust code that runs in the same process as the Rust compiler.
 
-I couldn't get the standard libraries to build using the nightly Rust compiler.
-
-I didn't have time to fix the error with `Self'.
+\bibliographystyle{elsarticle-num}
+\bibliography{Refs}
 
 \end{document}
