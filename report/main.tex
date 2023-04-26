@@ -1,5 +1,7 @@
 \documentclass[11pt]{article}
 
+\usepackage{hyperref}
+
 \usepackage{listings}
 % \lstset{
 %     language=c,
@@ -13,10 +15,11 @@
     xleftmargin=3.5ex,
     xrightmargin=3.5ex,
     aboveskip=20pt,
-    belowskip=20pt
+    belowskip=20pt,
+    breaklines=true
 }
 
-\title{ELEC 875 Project Proposal}
+\title{ELEC 875 Project Report}
 \author{Andrew Fryer}
 \date{\today}
 
@@ -24,184 +27,109 @@
 \maketitle
 
 \section{Introduction}
-asdf
 
-\subsection{Problem Definition}
+Making changes to software systems is a necessary task that is often costly due to the time it takes software engineers to understand enough of the software system to make the changes.
+This is typically done by reading the source code and running the system with various inputs to understand its behaviour.
 
-I am trying to modify LibAFL to add support for collecting data that is output from the software system that is being fuzzed.
-This feature should ideally be added in a way that fits in well with the existing software abstractions.
-At a high level, there are many Rust traits that describe the interface of abstract fuzzer components.
-For example, the \lstinline{Executor} trait provides the interface to a \lstinline{struct} that can run the target system that is being fuzzed with a given \lstinline{Input}.
-Some implementations of \lstinline{Executor} use the clib functions \lstinline{fork} and \lstinline{execve} to run the target system in a child process.
-Other implementations fork when they are initialized and then run each input by writing it to a file or shared memory and then sending control signals over a pipe.
+\subsection{Motivating Example}
 
+I have recently been working on modifying LibAFL, a software system written in the Rust programming language.
+At a high level, there are many Rust traits that describe the interface of abstract components.
+Different implementations of the traits perform different system calls when they run.
+When reading the source code, it can be difficult to understand and remember which implementations call the \lstinline{fork} system call for example.
 To complete this software engineering task, I need to do design recovery to understand the abtractions and how each implementation works.
 
 Tracing the inner workings of each implementation of each fuzzer component manually can be very time consuming.
 Additionally, recording this findings in an intelligible way may be time consuming.
 While this would be feasible, this problem shows up in software projects frequently enough that I believe it warrants the development of special tooling to support software engineers.
 
-In particular, I would like to know which c library functions may be called directly or indirectly by each function in LibAFL.
+In particular, I would like to know which libc functions may be called directly or indirectly by each function in LibAFL.
 
-\subsection{Desired Outcomes}
-I would like to learn to use TXL to process intermediate representation of a programming language.
-I would like to understand some of the challenges associated with resolving dynamic dispatch in greater detail.
-I would like to build a tool that is capable of providing some helpful information to a software engineer.
-I would also like to understand the Rust programming language better.
+\subsection{Related Work}
+
+\subsubsection{IDEs}
+
+Integrated Development Environments (IDEs) can help software engineers to understand the software more quickly by presenting extracted information such as a call hierarchy.
+In Eclipse, this is a lazily-loaded tree-shaped structure that can be loaded for any method in the Java programming language.
+It shows all of the methods that the given method may call, and can conveniently show each of the methods that those methods may call, recursively.
+% https://help.eclipse.org/2023-03/index.jsp
+
+\subsubsection{Effect Typing}
+
+Another approach to aiding software engineers in program comprehension is effect typing.
+The Koka programming language uses so called effect types to embed information about the behaviour of functions into the type of the function.
+This includes whether or not the function may crash, whether it may perform I/O, and whether it is deterministic.
+% https://arxiv.org/abs/1406.2061
+
+\subsubsection{Concrat}
+Concrat is a tool for converting C code to Rust code focusing on concurrent programs.
+% https://arxiv.org/abs/2301.10943
+It does its analysis on the Rust compiler's HIR and MIR intermediate representations in memory.
+
+\section{Project Scope}
+
+% The Rust programming language was picked to be analyzed for this project ...
+
+\subsection{Goals}
+
+The first objective of this project is to build a prototype tool that will extract data from a Rust crate such as LibAFL's core crate (libafl) and present the user with the set of external functions that may be called directly or indirectly by each function in the crate.
+Ideally, it should be possible to use the same process on the crates that a given crate depends on so that the external functions are reduced to foreign functions, functions that are written in a different programming language and exposed to the Rust code, namely those in libc.
+Secondary objectives include exploring fact extraction using different tools and architectures and understanding the Rust programming language better.
+
+% \subsection{Known Challenges}
+
+% Statically resolving dynamic dispatch is one of those problems were you can do better with more pattern recognition, but you can never get it completely right\dots
+% Even getting it right at all is difficult because of type inference.
+
+% Note: resolving dynamic dispatch is uncomputable, so we are making a best effort attempt out of the gate.
+
 
 \section{Design}
 
-\subsection{Known Challenges}
-Statically resolving dynamic dispatch is one of those problems were you can do better with more pattern recognition, but you can never get it completely right\dots
-Even getting it right at all is difficult because of type inference.
+\subsection{Design Process}
+The most time-consuming part of the development (other than dead ends) was writing TXL grammars and rules.
+To do this as efficiently as possible, I ran the same TXL program on the same input iteratively after making incremental changes to the input.
+I also used a text editor (VSCode) with diff capabilities to show precisely what impact the changes have on the output.
 
-\subsection{Proposed Design}
+\subsection{Dead Ends}
 
-I will write a bash script that will accept the path to a directory containing a Rust project.
-% I may use `cargo expand' and TXL to process the source code as described in sub-section \ref{sub-section:txl}.
+\subsubsection{Joining Files}
+The source code in Rust projects is typically spread over multiple files.
+Files are included in other files as nested modules, so the files cannot simply be concatenated.
 
-The bash script will first use \lstinline{cargo expand} to generate one file that contains all of the source code in the project.
-The modules of the Rust project are structured coherently, but identifiers are generally not fully qualified to be globally unique.
-In Rust, the \lstinline{use} keyword brings nested identifiers into scope directly so that they can be referenced without fully qualifying them.
-An example of this is given in Figure \ref{fig:qualifiers}.
-Next, the bash scrip will run TXL on the file containing all the project source code.
-The TXL program will traverse the syntax tree.
-In each Rust scope block, the TXL program will iterate through each use declaration or statement that is not nested.
-Use declarations will be tabulated.
-Each identifier in the statements will be replaced by its fully qualified identifier.
+In the original design, a Bash script would recursively substitute the contents of Rust source files into their parent source file in the Rust module tree.
 
-Then, a separate TXL tree traversal will find all of the function calls and which function is making the call.
-The caller callee pair of fully qualified function identifiers will then be output to a text file (using TXL's `write' keyword).
-This extracts the `calls' relation from the source code.
-This TXL tree traversal can also record the names of all functions that have been defined.
-That way, we know which we cannot find a definition for.
+I pivoted away from this design because I discovered that a tool called cargo-expand could do this for me.
 
-Lastly, the text file generated by TXL can be automatically formatted and fed to grok.
+\subsubsection{Fully Qualifying Identifiers}
 
-The end result is that the user can make grok queries.
-This includes the ability to find all of the functions whose definitions are unknown (because they are defined externally or our analysis failed to find them) that may be called when a given function is called because grok supports transitive closure.
+Once the entire crate is joined into one text stream, a TXL program could extract the module tree and replace identifiers such as \lstinline{foo} with their fully qualified name, such as \lstinline{crate::my_module::foo} which gives a path from the root of the Rust crate.
 
-I am hopeful that I will be able to keep track of the type of each parameter and most variables so that most method calls can also be traced.
-% Crap, this might actually be really hard because Rust infers types!
-Unfortunately, Rust's type inference might make it very dificult to determine which method is being called if the declaration of the object whose method is being called does not state its type.
-I may decide to change the design instead to use the Rust compiler to generate a representation that has already done this work.
+I pivoted away from this design because Rust has type inference and so it would be difficult to find the type of local variables that are initialized to the result of an expression such as a function call.
 
-% extract the `calls' relation from the source code.
-% Any function that calls a closure or other function that cannot be identified will be marked.
+% \subsubsection{THIR-tree}
 
-% Hold on, doesn't \lstinline{strace -k ./program} give us fully qualified function names on the call stack?
-% To find which functions call which system calls in a given execution is a trivial grep operation...
-% Hmm, maybe instead of doing static analysis I should just parse the output from strace and then turn that into annotations for the Rust functions that I could then add as comments to the Rust code using TXL\dots
+% It is difficult to understand exactly what everything in the textual intermediate representations means.
+% To keep the project in a reasonable scope (easy debugging) (and because I wanted to use TXL (phrase this as: I wanted to explore how a functional tree-based language, namely, TXL, could be used to extract facts from an intermediate language)) I decided to use the text and TXL instead of writing code that links with rustc.
+% (I should have investigated precisely what information is in the textual format more rigorously.)
+% Of the representations, HIR doesn't have types, MIR doesn't have clear function call sites (it is hard to see where a function is called and whatnot I think).
+% THIR is best.
+% THIR-flat is better than THIR-tree. (I found this by reading the source.)
+% (THIR-tree has a bug with matching parenthesis.)
 
-I think I will be able to make the minimum functionality work in 40-60 hours of focused work.
+% \subsubsection{Parse in Python}
 
-% \section{Goal: Technical Requirements/Satisiability Criteria}
-
-% The tool can be a command line interface.
-
-% The tool should accept a the path to a main.rs Rust file (which contains a `main' function).
-
-% The tool should output the fully qualified names of all functions that may be called from this `main' function and the set of clib functions that may be called directly or indirectly from the function.
-
-\begin{figure}
-    \caption{Example of use declaration and fully qualified identifier.}
-    \label{fig:qualifiers}
-    \begin{lstlisting}
-        mod my_module {
-            pub fn foo() {}
-        }
-        // function call with indirect/nested identifier
-        my_module::foo();
-        // use declaration brings `foo` into scope
-        use my_module::foo;
-        // function call with direct identifier
-        foo();
-        // function call with fully qualified identifier
-        crate::my_module::foo();
-    \end{lstlisting}
-\end{figure}
-
-\section{Stretch Goals}
-If I have extra time, I will first work on including code from external libraries in the analysis.
-I will likely add a parameter to the bash script that will indicate where to look for Rust libraries.
-This will improve the analysis because it will be able to look through libraries all the way to \lstinline{extern} functions which are written in c and linked in.
-
-The other stretch goal I have is to write more complex TXL rules that will build a table of all traits (similar to interfaces) and then use the table to track down trait method calls.
-This will further imrpove the analysis because it will be able to analyze method calls on trait objects.
-
-\section{Introduction}
-I should be able to grab this out of the propsocal.
-
-Note: resolving dynamic dispatch is uncomputable, so we are making a best effort attempt out of the gate.
-
-I would like the tool to indicate when it wasn't able to resolve a function call.
-(Generally, the tool is conservative/liberal, but in this case, that would mean marking the function with all FFIs, which is silly).
-Instead of FFIs, we could just do external functions.
-
-\section{Design Process and Dead Ends}
-I tried a bunch of stuff that didn't work.
-
-bash script to link files together is difficult because you can't find external dependencies
-But, cargo expand doesn't actually solve that I don't think
-
-Cargo expand
-I looked through the project, but had trouble following how it works.
-
-expand use declarations
-I got this to work for the most part, but then pivoted when I learned how to generate intermediate representation text from rustc
-
-I decided to use an intermediate representation because it will resolve which function is being called (at least better than I could without).
-
-It is difficult to understand exactly what everything in the textual intermediate representations means.
-To keep the project in a reasonable scope (easy debugging) (and because I wanted to use TXL (phrase this as: I wanted to explore how a functional tree-based language, namely, TXL, could be used to extract facts from an intermediate language)) I decided to use the text and TXL instead of writing code that links with rustc.
-(I should have investigated precisely what information is in the textual format more rigorously.)
-Of the representations, HIR doesn't have types, MIR doesn't have clear function call sites (it is hard to see where a function is called and whatnot I think).
-THIR is best.
-THIR-flat is better than THIR-tree. (I found this by reading the source.)
-(THIR-tree has a bug with matching parenthesis.)
-
-Extracting the calls can be done using a TXL island grammar and a TXL program that uses TXL's extraction capability.
-(I can give an example of what the THIR-flat looks like and what the extracted calls look like.)
-
-Rather than using grok or a full graph database, I decided to implement my own solution since the logic is very easy to implement given an implementation of a hash table.
-I chose to use Python (3) for this because it is very easy to debug Python code (since it is an interpreted language) and the dict type in Python implements the hash table functionality in a way that is easy to use.
-
-I started by parsing the output of the TXL program directly.
-This became complicated when I tried to correct for differences between how the same function/method is represented in its definition and in its call sites.
-(Show an example here.)
+% I started by parsing the output of the TXL program directly.
+% This became complicated when I tried to correct for differences between how the same function/method is represented in its definition and in its call sites.
+% (Show an example here.)
 % \lstinline{0:333~andrew_fuzz[c4b5]::library::u8::{impl#0}::from_u8} vs. \lstinline{library::u8::U8::from_u8}
 
-I remembered from the lectures that it is good TXL practice to write several TXL programs that run in a pipeline.
-This way, the TXL parser (which is fast) can do much of the work by representing the data in a way that works well for the desired operation.
-In this case, brackets and braces are used for different things and extracting the functions calls is a different process than working out which function call corresponds to which function definition.
-(the -> stuff screws stuff up for island grammars, but we need to pair up < and > symbols when we remove generics)
+% \subsubsection{Output Structure}
 
-To make a best effort attempt at dynamic dispatch, I'm just going to replace dynamic objects with a tag indicating that it is dynamic (not known at compile time).
-Then, when the Python code processes the facts, it will record entries for each defined function both in its dynamic and static forms.
+% Another whole thing is that the TXL stuff originally output a table.
+% Now, this has been changed to output a structure that makes more sense (allows specifying the input and output sets separately from the relation, which implies the domain and range).
 
-Another whole thing is that the TXL stuff originally output a table.
-Now, this has been changed to output a structure that makes more sense (allows specifying the input and output sets separately from the relation, which implies the domain and range).
-
-It is not necessarily surjective (meaning that all of the outputs are covered) becuase we don't want a function that we can't resolve to pop up as another new FFI.
-mm, actually I think it is surjective (`every element of the function's codomain is the image of at least one element of its domain') because we wnat to flag when we can't resolve a function call (so just pretend it is a new FFI).
-% https://en.wikipedia.org/wiki/Surjective_function
-
-We also want to be able to specify the set of internal functions (which is different from the domain of the relation because internal functions do not necessarily call another function).
-(I think I had an example of this.)
-Therefore, we are not only extracting the calls relation.
-
-I got rid of spaces and added new lines in the first TXL program's output like so:
-\lstinline{[SPOFF] [IslandGrammar] '-->> [not_brace*] '; [SPON] [NL]}
-Note that it may still add extra new lines if a line is very long.
-Removing spaces is important because the next TXL program in the pipeline groups the characts into tokens differently (does it really?).
-This causes TXL to remove spaces between identifiers, causing them to be merged... wtf?!?
-    this is a problem because the "is" keyword gets squashed with neighboring identifiers.
-Update:
-I'm not doing this.
-I had to add `::' to the compounds list so that it can be parsed together in the next stage I think.
-    Yes, I've confirmed that this matters (for the next stage because ": :" doesn't match "::" when parsing).
-
-Then, ... I should output JSON so that Python can read it in really easily.
+\subsubsection{Random Notes}
 
 There is a difference between how generics are annotated for methods and types.
 \lstinline{std :: fs :: write :: < std :: string :: String, & std :: vec :: Vec < u8 > >}
@@ -217,18 +145,168 @@ I'm deciding to turn this into this:
 But, I'll leave this as is:
 \lstinline{< dyn for < ' a > std : : ops : : Fn (std : : rc : : Rc) - > bool as std : : ops : : Fn > : : call;}
 
-It was important to get the output formatting (whitespace) to work because it is much more difficult to debug the TXL programs when it is difficult to read and compare the outputs.
-
-This is what fixed to_json.txl: 732adda5be8c920446df5977533b600b3e83f3ff
+% This is what fixed to_json.txl: 732adda5be8c920446df5977533b600b3e83f3ff
 
 One common mistake I made was I'd use a wildcard except for what I expected to follow the section I don't care about, but then I'd miss a way that something else could follow it (on the last iter, for example), and then it ends up eating more than it should.
 
-\section{Final Tool} % maybe this should be a subsection
+\subsection{Final Design} % maybe this should be a subsection
+
+For debugging ease!
+
+I remembered from the lectures that it is good TXL practice to write several TXL programs that run in a pipeline.
+This way, the TXL parser (which is fast) can do much of the work by representing the data in a way that works well for the desired operation.
+In this case, brackets and braces are used for different things and extracting the functions calls is a different process than working out which function call corresponds to which function definition.
+(the -> stuff screws stuff up for island grammars, but we need to pair up < and > symbols when we remove generics)
+
+I got rid of spaces and added new lines in the first TXL program's output like so:
+\lstinline{[SPOFF] [IslandGrammar] '-->> [not_brace*] '; [SPON] [NL]}
+Note that it may still add extra new lines if a line is very long.
+Removing spaces is important because the next TXL program in the pipeline groups the characts into tokens differently (does it really?).
+This causes TXL to remove spaces between identifiers, causing them to be merged... wtf?!?
+    this is a problem because the "is" keyword gets squashed with neighboring identifiers.
+Update:
+I'm not doing this.
+I had to add `::' to the compounds list so that it can be parsed together in the next stage I think.
+    Yes, I've confirmed that this matters (for the next stage because ": :" doesn't match "::" when parsing).
+
+Then, ... I should output JSON so that Python can read it in really easily.
+It was important to get the output formatting (whitespace) to work because it is much more difficult to debug the TXL programs when it is difficult to read and compare the outputs.
+
 talk about how I have several TXL passes doing: call extraction, function name normalization, and conversion to json
 why did I choose to use Python
 why did I choose thir over mir?
 
-\section{Final Solution Results}
+\subsection{Stage 1: Generating Textual Intermediate Representation (THIR)}
+
+Extracting the calls can be done using a TXL island grammar and a TXL program that uses TXL's extraction capability.
+
+\begin{lstlisting}[caption=Rust Code, label=code:rust_code]{Name}
+impl BitArray {
+  pub fn new(mut data: Vec<u8>, num_bits: Option<i32>) -> Self {
+    ...
+    if num_bits > data.len() as i32 * 8 {
+        panic!();
+    }
+    ...
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=THIR-flat, label=code:thir]{Name}
+DefId(0:36 ~ andrew_fuzz[942c]::core::bit_array::{impl#0}::new):
+Thir {
+    ...
+    exprs: [
+    ...
+    Expr {
+        kind: Call {
+        ty: fn(&'static str) -> ! {core::panicking::panic},
+        ...
+        },
+        ...
+    },
+    ],
+    ...
+}
+\end{lstlisting}
+
+There is nothing that says what trait is being implemented.
+In this case, it is not a trait at all, but the implementation is defining associated functions for the \lstinline{struct} \lstinline{BitArray}, which is not mentioned (other than in the return type, which is concealed in the ellipses).
+
+\subsection{Stage 2: Extracting Declarations and Calls}
+
+\begin{lstlisting}[caption=Extracted Calls, label=code:all_calls]{Name}
+Decl (0 : 36 ~ andrew_fuzz [942 c] :: core :: bit_array :: {impl # 0} :: new) {
+  ...
+  core :: panicking :: panic;
+  ...
+}
+\end{lstlisting}
+
+\subsection{Stage 3: Simplifying Types}
+
+\begin{lstlisting}[caption=Before Simplifying Types, label=before_simplify_types]{Name}
+Decl (0 : 511 ~ andrew_fuzz [942 c] :: main) {
+  std :: io :: _print;
+  core :: bit_array :: BitArray :: new;
+  < str as std :: string :: ToString > :: to_string;
+  < dyn core :: DataModel as core :: Serializer > :: serialize;
+  std :: rc :: Rc :: < core :: context :: Context < ' _ > > :: new;
+}
+\end{lstlisting}
+\begin{lstlisting}[caption=After Simplifying Types, label=after_simplifying_types]{Name}
+Decl (andrew_fuzz :: main) {
+  std :: io :: _print;
+  core :: bit_array :: BitArray :: new;
+  str :: to_string;
+  dyn core :: DataModel :: serialize;
+  std :: rc :: Rc :: new;
+}
+\end{lstlisting}
+
+\lstinline{_print} is an example of a function we are especially interested in because it performs I/O.
+The call to \lstinline{new} shows how the callee name contains \lstinline{BitArray} whereas the caller name (seen in Listing \ref{code:all_calls}) contains \lstinline|{impl # 0}| instead.
+
+There are far too many forms to describe them here.
+They can be understood by looking at \href{https://github.com/Andrew-Fryer/external_function_annotation/blob/master/simplify_types.txl#L49}{the grammar}.
+
+This stage also normalizes the numbers in implementations and closures so that they can be matched exactly in the next stage of the pipeline.
+
+To make a best effort attempt at dynamic dispatch, I'm just going to replace dynamic objects with a tag indicating that it is dynamic (not known at compile time).
+Then, when the Python code processes the facts, it will record entries for each defined function both in its dynamic and static forms.
+
+\subsection{Stage 4: Conversion to JSON}
+
+Notice that there are no double quotes in the prev stage.
+
+\subsection{Stage 5: Constructing Transitive Internal to External Calls Relation}
+
+Rather than using grok or a full graph database, I decided to implement my own solution since the logic is very easy to implement given an implementation of a hash table.
+I chose to use Python (3) for this because it is very easy to debug Python code (since it is an interpreted language) and the dict type in Python implements the hash table functionality in a way that is easy to use.
+
+We construct a the called by relation (the inverse of the calls relation) over Rust functions.
+Unfortunately, the caller function names are in a different form than the callee function names.
+We construct a mapping from caller names to possible callee names.
+Lastly, we annotate each internal function with the set of external functions it may directly or indirectly call.
+We do this by following the called by relation and following all callees that may reference the caller in question.
+
+Note that there can be duplicate calls in the prev stage.
+It is not necessarily surjective (meaning that all of the outputs are covered) because we don't want a function that we can't resolve to pop up as another new FFI.
+mm, actually I think it is surjective (`every element of the function's codomain is the image of at least one element of its domain') because we want to flag when we can't resolve a function call (so just pretend it is a new FFI).
+% https://en.wikipedia.org/wiki/Surjective_function
+
+% We also want to be able to specify the set of internal functions (which is different from the domain of the relation because internal functions do not necessarily call another function).
+% (I think I had an example of this.)
+% Therefore, we are not only extracting the calls relation.
+
+\subsection{Manual Fact Generation}
+
+Unfortunately, I was not able to generate THIR for the standard Rust libraries because I couldn't figure out how to build the Rust compiler with the nightly Rust compiler, which is needed because generating THIR is not a stable feature yet.
+Therefore, I couldn't automatically extract the call facts for the Rust standard libraries.
+To prevent all calls to functions in the standard libraries being annotated, I manually wrote facts for many of these functions.
+The manually written facts are concatenated with the automatically extracted facts in the pipeline.
+
+\subsection{Evaluation}
+
+Listing \ref{code:final_facts} shows the final output of the prototype tool.
+This shows that the \lstinline{main} function can result in the program crashing, as the \lstinline{panic} function is guaranteed to crash.
+The output also shows that \lstinline{main} may write to stdout, but the closure defined in the \lstinline{dns} function will not.
+The output suggests \lstinline{fuzz} function in the listing will neither panic nor print data.
+
+\begin{lstlisting}[caption=External Function Annotions, label=code:final_facts]{Name}
+andrew_fuzz :: main:
+	std :: io :: _print;
+	core :: panicking :: panic;
+andrew_fuzz :: dns :: dns :: {closure # 0}:
+	core :: panicking :: panic;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: parse:
+	< dyn for < ' a > std :: ops :: Fn (std :: rc :: Rc) -> bool as std :: ops :: Fn > :: call;
+	core :: panicking :: panic;
+andrew_fuzz :: library :: button :: {impl # 0} :: fuzz:
+\end{lstlisting}
+
+It doesn't work on LibAFL's core crate (libafl).
+
 This is what it is capable of...
 
 I should explain the design with snips of diffs between input and output of each stage!
@@ -238,7 +316,13 @@ It seems that it is awkward to remove the most deeply nested element either way.
 
 I should do a performance benchmark here.
 
-\section{Limitations}
+\subsection{Limitations}
+
+Unfortunately, it is possible that the \lstinline{fuzz} function in Listing \ref{code:final_facts} will print data if a call it makes was paired up with the wrong function definition and the matching process did not find the correct function definition.
+If the call does not match with any function definitions, then it shows up in the output as seen in the case of the dynamically dispatched call to a closure in the \lstinline{parse} function.
+
+The prototype tool is not able to match up a call to a closure with the closure's definition.
+
 It can't do...
 
 I'm pretty sure my tool will get confused if you give it a struct that implements several traits that have a method with the same name.
@@ -249,7 +333,7 @@ I think it will break if there is more than 1 closure in the same function becau
 
 Currently, I don't normalize callee names for external functions, so a function might be annotated with 2 external function tags that are really for the same external function.
 
-\section{Considerations in Hindsight}
+% \subsection{Considerations in Hindsight}
 I would pick a language that doesn't do dynamic dispatch in funky ways.
 
 I could use capitizaition as a clue because it is generally followed (documentary structure of the code).
@@ -258,28 +342,45 @@ However, I think it would work to run a linter (part of the compiler, so it know
 
 Polymorphism should behave the same for my tool whether it is static or dynamic dispatch, shouldn't it?
 
-\section{Future Work}
+\section{Conclusion}
+I was able to build a tool that does X.
+Unfortunately, I is unable to to y because of z and has w limitations.
 
-Talk about the pluses and minuses of each approach (python, TXL, link with rustc)
-
-
-\begin{figure}
-    \caption{Example of use declaration and fully qualified identifier.}
-    \label{fig:qualifiers}
-    \begin{lstlisting}
-        rust code!
-    \end{lstlisting}
-\end{figure}
-
-\section{Learning Outcomes}
+\subsection{Learning Outcomes}
 If I have extra time, I will first work on including code from external libraries in the analysis.
 I will likely add a parameter to the bash script that will indicate where to look for Rust libraries.
 This will improve the analysis because it will be able to look through libraries all the way to \lstinline{extern} functions which are written in c and linked in.
 
 The other stretch goal I have is to write more complex TXL rules that will build a table of all traits (similar to interfaces) and then use the table to track down trait method calls.
-This will further imrpove the analysis because it will be able to analyze method calls on trait objects.
+This will further improve the analysis because it will be able to analyze method calls on trait objects.
 
 The counter-intuitive part of TXL programming for me is that a replacement is not re-parsed according to the grammar.
 This means you need to consider that the non-terminal types in a replacement may be different than if the same sequence of terminals was parsed at the beginning.
+
+Getting the right intermediate representation is key.
+
+It is difficult to write parsing code in Python.
+It is much better to let TXL programs do the work of parsing complex structures such fully qualified Rust paths and types.
+
+Python works well for pairing up callees with callers because the entire procedure can be written in under a couple hundred lines, so the code wouldn't really benefit from the rigid structure of strongly, statically typed languages.
+At the same time, the process is conceptually difficult enough that it is nice to be able to debug the code using a repl.
+
+Rust paths and types put the semicolons in slightly different places...
+
+\section{Future Work}
+
+Talk about the pluses and minuses of each approach (python, TXL, link with rustc)
+
+Many of the limitations of this prototype tool can be addressed by modifying the code in rustc that generates the textual representation of the intermediate representation of the Rust crate.
+If the intermediate representation was modified to contain less metadata, the textual THIR representation for libafl would likely be small enough for TXL to process.
+Also, the intermediate representation could be changed to include annotations indicating which trait a function is being implemented for.
+This would allow my tool to limit the pairing of dynamic dispatches to function definitions that are for the same trait.
+
+While it was out of the scope of this project due to time constraints, it would be interesting to explore how the architecture of a similar prototype that linked into the Rust compiler would compare to this project's architecture.
+In that architecture, all of the processing could be done in Rust code that runs in the same process as the Rust compiler.
+
+I couldn't get the standard libraries to build using the nightly Rust compiler.
+
+I didn't have time to fix the error with `Self'.
 
 \end{document}
