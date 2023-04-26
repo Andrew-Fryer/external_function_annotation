@@ -161,6 +161,8 @@ The fifth and final stage is a Python program that matches calls to function def
 This pipeline was developed for ease of debugging because it is easy to inspect the output of each stage.
 Another benefit of this design is that the middle 3 stages, all written in TXL, are able to utilize the TXL parser to represent the data in a way that is easy for that particular stage to process as each of these stages has different concerns.
 
+All of the code is available at: \url{https://github.com/Andrew-Fryer/external_function_annotation}.
+
 \subsection{Stage 1: Generating Textual Intermediate Representation (THIR)}
 
 Listings \ref{code:rust_code} and \ref{code:thir} show how a function call from a piece of Rust source code is represented in the THIR.
