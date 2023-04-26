@@ -352,7 +352,7 @@ The manually written facts are concatenated with the automatically extracted fac
 
 \subsection{Evaluation}
 
-Listing \ref{} shows the final output of the prototype tool.
+Listing \ref{code:final_facts} shows the final output of the prototype tool.
 This shows that the \lstinline{main} function can result in the program crashing, as the \lstinline{panic} function is guaranteed to crash.
 The output also shows that \lstinline{main} may write to stdout, but the closure defined in the \lstinline{dns} function will not.
 The output suggests \lstinline{fuzz} function in the listing will neither panic nor print data.
