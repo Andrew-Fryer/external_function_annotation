@@ -33,20 +33,17 @@ This is typically done by reading the source code and running the system with va
 
 \subsection{Motivating Example}
 
-I am trying to modify LibAFL to add support for collecting data that is output from the software system that is being fuzzed.
-This feature should ideally be added in a way that fits in well with the existing software abstractions.
-At a high level, there are many Rust traits that describe the interface of abstract fuzzer components.
-For example, the \lstinline{Executor} trait provides the interface to a \lstinline{struct} that can run the target system that is being fuzzed with a given \lstinline{Input}.
-Some implementations of \lstinline{Executor} use the clib functions \lstinline{fork} and \lstinline{execve} to run the target system in a child process.
-Other implementations fork when they are initialized and then run each input by writing it to a file or shared memory and then sending control signals over a pipe.
-
+I have recently been working on modifying LibAFL, a software system written in the Rust programming language.
+At a high level, there are many Rust traits that describe the interface of abstract components.
+Different implementations of the traits perform different system calls when they run.
+When reading the source code, it can be difficult to understand and remember which implementations call the \lstinline{fork} system call for example.
 To complete this software engineering task, I need to do design recovery to understand the abtractions and how each implementation works.
 
 Tracing the inner workings of each implementation of each fuzzer component manually can be very time consuming.
 Additionally, recording this findings in an intelligible way may be time consuming.
 While this would be feasible, this problem shows up in software projects frequently enough that I believe it warrants the development of special tooling to support software engineers.
 
-In particular, I would like to know which c library functions may be called directly or indirectly by each function in LibAFL.
+In particular, I would like to know which libc functions may be called directly or indirectly by each function in LibAFL.
 
 \subsection{Related Work}
 
@@ -65,24 +62,24 @@ This includes whether or not the function may crash, whether it may perform I/O,
 % https://arxiv.org/abs/1406.2061
 
 \subsubsection{Concrat}
-Concrat: An Automatic C-to-Rust Lock API Translator for Concurrent Programs
-
+Concrat is a tool for converting C code to Rust code focusing on concurrent programs.
+% https://arxiv.org/abs/2301.10943
+It does its analysis on the Rust compiler's HIR and MIR intermediate representations in memory.
 
 \section{Project Scope}
 
-The Rust programming language was picked to be analyzed for this project ...
+% The Rust programming language was picked to be analyzed for this project ...
 
 \subsection{Goals}
 
 The first objective of this project is to build a prototype tool that will extract data from a Rust crate such as LibAFL's core crate (libafl) and present the user with the set of external functions that may be called directly or indirectly by each function in the crate.
-Ideally, it should be possible to use the same process on the crates that a given crate depends on so that the external functions are reduced to foreign functions, functions that are written in a different programming language and exposed to the Rust code, namely libc.
+Ideally, it should be possible to use the same process on the crates that a given crate depends on so that the external functions are reduced to foreign functions, functions that are written in a different programming language and exposed to the Rust code, namely those in libc.
 Secondary objectives include exploring fact extraction using different tools and architectures and understanding the Rust programming language better.
 
 \subsection{Known Challenges}
 
 The source code in Rust projects is typically spread over multiple files.
-Files are included in other files as modules.
-I should give the example of the modules here maybe.
+Files are included in other files as nested modules, so the files cannot simply be concatenated.
 
 Rust has type inference and a very powerful/complex type system.
 This makes it difficult to determine which function is called in a function call by/when statically analyze Rust source code.
@@ -160,18 +157,6 @@ I think I will be able to make the minimum functionality work in 40-60 hours of 
         crate::my_module::foo();
     \end{lstlisting}
 \end{figure}
-
-\subsection{Stretch Goals}
-If I have extra time, I will first work on including code from external libraries in the analysis.
-I will likely add a parameter to the bash script that will indicate where to look for Rust libraries.
-This will improve the analysis because it will be able to look through libraries all the way to \lstinline{extern} functions which are written in c and linked in.
-
-The other stretch goal I have is to write more complex TXL rules that will build a table of all traits (similar to interfaces) and then use the table to track down trait method calls.
-This will further imrpove the analysis because it will be able to analyze method calls on trait objects.
-
-I would like the tool to indicate when it wasn't able to resolve a function call.
-(Generally, the tool is conservative/liberal, but in this case, that would mean marking the function with all FFIs, which is silly).
-Instead of FFIs, we could just do external functions.
 
 \subsection{Design Process}
 The most time-consuming part of the development (other than dead ends) was writing TXL grammars and rules.
@@ -358,7 +343,31 @@ We do this by following the called by relation and following all callees that ma
 
 Note that there can be duplicate calls in the prev stage.
 
+\subsection{Manual Fact Generation}
+
+Unfortunately, I was not able to generate THIR for the standard Rust libraries because I couldn't figure out how to build the Rust compiler with the nightly Rust compiler, which is needed because generating THIR is not a stable feature yet.
+Therefore, I couldn't automatically extract the call facts for the Rust standard libraries.
+To prevent all calls to functions in the standard libraries being annotated, I manually wrote facts for many of these functions.
+The manually written facts are concatenated with the automatically extracted facts in the pipeline.
+
 \subsection{Evaluation}
+
+Listing \ref{} shows the final output of the prototype tool.
+This shows that the \lstinline{main} function can result in the program crashing, as the \lstinline{panic} function is guaranteed to crash.
+The output also shows that \lstinline{main} may write to stdout, but the closure defined in the \lstinline{dns} function will not.
+The output suggests \lstinline{fuzz} function in the listing will neither panic nor print data.
+
+\begin{lstlisting}[caption=External Function Annotions, label=code:final_facts]{Name}
+andrew_fuzz :: main:
+	std :: io :: _print;
+	core :: panicking :: panic;
+andrew_fuzz :: dns :: dns :: {closure # 0}:
+	core :: panicking :: panic;
+andrew_fuzz :: library :: constraint :: {impl # 0} :: parse:
+	< dyn for < ' a > std :: ops :: Fn (std :: rc :: Rc) -> bool as std :: ops :: Fn > :: call;
+	core :: panicking :: panic;
+andrew_fuzz :: library :: button :: {impl # 0} :: fuzz:
+\end{lstlisting}
 
 It doesn't work on LibAFL's core crate (libafl).
 
@@ -372,6 +381,12 @@ It seems that it is awkward to remove the most deeply nested element either way.
 I should do a performance benchmark here.
 
 \subsection{Limitations}
+
+Unfortunately, it is possible that the \lstinline{fuzz} function in Listing \ref{code:final_facts} will print data if a call it makes was paired up with the wrong function definition and the matching process did not find the correct function definition.
+If the call does not match with any function definitions, then it shows up in the output as seen in the case of the dynamically dispatched call to a closure in the \lstinline{parse} function.
+
+The prototype tool is not able to match up a call to a closure with the closure's definition.
+
 It can't do...
 
 I'm pretty sure my tool will get confused if you give it a struct that implements several traits that have a method with the same name.
